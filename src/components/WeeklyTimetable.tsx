@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Footer } from './Footer';
 import { BookOpen, MapPin, User, Calendar as CalendarIcon, Clock } from 'lucide-react';
 
 interface ClassSession {
@@ -272,9 +271,6 @@ export const WeeklyTimetable = () => {
         </div>
 
       </main>
-
-      {/* Footer Details */}
-      <Footer />
 
       {/* Class Session Details Modal */}
       {detailSession && (

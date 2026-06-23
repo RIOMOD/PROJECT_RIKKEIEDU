@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Footer } from './Footer';
 import { Trash2, Star, CheckCircle2 } from 'lucide-react';
 
 interface HistoryItem {
@@ -306,9 +305,6 @@ export const RegistrationHistory = () => {
         </div>
 
       </main>
-
-      {/* Footer contacts */}
-      <Footer />
 
       {/* Cancellation Confirmation Modal */}
       {cancelTarget && (

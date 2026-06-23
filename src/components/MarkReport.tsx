@@ -1,4 +1,3 @@
-import { Footer } from './Footer';
 
 interface MarkReportProps {
   lang: 'vi' | 'en';
@@ -284,9 +283,6 @@ export const MarkReport = ({ lang }: MarkReportProps) => {
         </div>
 
       </main>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 };

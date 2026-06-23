@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Footer } from './Footer';
 import { MessageSquare, CheckCircle2 } from 'lucide-react';
 
 interface FeedbackItem {
@@ -172,9 +171,6 @@ export const TeacherFeedback = () => {
         </div>
 
       </main>
-
-      {/* Footer contacts */}
-      <Footer />
 
       {/* Comment Editor Survey Modal */}
       {editTarget && (

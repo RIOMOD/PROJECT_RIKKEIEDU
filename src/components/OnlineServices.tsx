@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Footer } from './Footer';
-import { ClipboardList, CheckCircle2 } from 'lucide-react';
+import { ClipboardList, CheckCircle2, ArrowLeft, Upload, AlertCircle } from 'lucide-react';
 
 interface ServiceItem {
   stt: number;
@@ -8,15 +7,58 @@ interface ServiceItem {
   desc: string;
 }
 
-export const OnlineServices = () => {
-  const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
-  const [showSuccess, setShowSuccess] = useState(false);
+const TEACHERS: Record<string, string> = {
+  'luannt22@fe.edu.vn': 'Nguyễn Thành Luân',
+  'dungnq5@fe.edu.vn': 'Nguyễn Quốc Dũng',
+  'khanhpg3@fe.edu.vn': 'Phạm Gia Khánh',
+  'phuonglh12@fe.edu.vn': 'Lê Hồng Phương'
+};
 
-  // Mock list of 10 services from the second screenshot
+const SUBJECTS = [
+  '[10587] SD102 - Web Design',
+  '[10588] SD103 - Programming Fundamentals',
+  '[10589] SD104 - Database Management Systems',
+  '[10590] SD105 - Software Engineering',
+  '[10591] SD106 - Mobile Application Development'
+];
+
+const CLASSES = ['WD18301', 'WD18302', 'WD18303', 'WD18304'];
+const SLOTS = [
+  'Slot 1 (07:30 - 09:30)',
+  'Slot 2 (09:40 - 11:40)',
+  'Slot 3 (12:30 - 14:30)',
+  'Slot 4 (14:40 - 16:40)',
+  'Slot 5 (17:00 - 19:00)',
+  'Slot 6 (19:10 - 21:10)'
+];
+
+const DATES = ['2026-06-23', '2026-06-22', '2026-06-21', '2026-06-20', '2026-06-19'];
+
+export const OnlineServices = () => {
+  const [view, setView] = useState<'list' | 'attendance-recovery'>('list');
+  const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  // Form States
+  const [subject, setSubject] = useState('');
+  const [classCode, setClassCode] = useState('');
+  const [date, setDate] = useState('');
+  const [slot, setSlot] = useState('');
+  const [teacherAccount, setTeacherAccount] = useState('');
+  const [teacherName, setTeacherName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [reason, setReason] = useState('');
+  const [fileName, setFileName] = useState('');
+  
+  // Validation State
+  const [validationError, setValidationError] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // Mock list of services
   const services: ServiceItem[] = [
     {
       stt: 1,
-      task: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM',
+      task: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH',
       desc: ''
     },
     {
@@ -67,16 +109,55 @@ export const OnlineServices = () => {
   ];
 
   const handleRegisterClick = (service: ServiceItem) => {
-    setSelectedService(service);
-    setShowSuccess(false);
+    if (service.stt === 1) {
+      setView('attendance-recovery');
+      setValidationError('');
+      setSubmitSuccess(false);
+      resetForm();
+    } else {
+      setSelectedService(service);
+      setShowSuccessModal(false);
+    }
   };
 
-  const handleConfirmRegistration = () => {
-    setShowSuccess(true);
-    // Auto close success alert after 2 seconds
+  const resetForm = () => {
+    setSubject('');
+    setClassCode('');
+    setDate('');
+    setSlot('');
+    setTeacherAccount('');
+    setTeacherName('');
+    setPhone('');
+    setReason('');
+    setFileName('');
+  };
+
+  const handleTeacherChange = (email: string) => {
+    setTeacherAccount(email);
+    setTeacherName(TEACHERS[email] || '');
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFileName(e.target.files[0].name);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!subject || !classCode || !date || !slot || !teacherAccount || !phone || !reason) {
+      setValidationError('Vui lòng điền đầy đủ các thông tin bắt buộc (*)');
+      return;
+    }
+    setValidationError('');
+    setSubmitSuccess(true);
+  };
+
+  const handleConfirmModalRegistration = () => {
+    setShowSuccessModal(true);
     setTimeout(() => {
       setSelectedService(null);
-      setShowSuccess(false);
+      setShowSuccessModal(false);
     }, 2000);
   };
 
@@ -86,60 +167,341 @@ export const OnlineServices = () => {
       {/* Main Content Area */}
       <main className="dashboard-container">
         
-        {/* Page Title */}
-        <h2 className="services-section-title">Danh sách các dịch vụ trực tuyến</h2>
+        {view === 'list' ? (
+          <>
+            {/* Page Title */}
+            <h2 className="services-section-title">Danh sách các dịch vụ trực tuyến</h2>
 
-        {/* Table Container */}
-        <div className="services-table-wrapper">
-          <table className="services-table">
-            <thead className="services-thead">
-              <tr>
-                <th className="services-th center">STT</th>
-                <th className="services-th">Nhiệm vụ</th>
-                <th className="services-th">Mô tả</th>
-                <th className="services-th center">Đăng ký</th>
-              </tr>
-            </thead>
-            <tbody>
-              {services.map((item) => (
-                <tr key={item.stt} className="services-tr">
-                  <td className="services-td center services-td stt">{item.stt}</td>
-                  <td className="services-td services-td task-name">{item.task}</td>
-                  <td className="services-td services-td desc">
-                    {item.desc || <span style={{ color: '#E2E8F0', fontStyle: 'italic' }}>—</span>}
-                  </td>
-                  <td className="services-td center">
-                    <button 
-                      onClick={() => handleRegisterClick(item)}
-                      className="register-btn"
-                    >
-                      Đăng ký
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            {/* Table Container */}
+            <div className="services-table-wrapper">
+              <table className="services-table">
+                <thead className="services-thead">
+                  <tr>
+                    <th className="services-th center">STT</th>
+                    <th className="services-th">Nhiệm vụ</th>
+                    <th className="services-th">Mô tả</th>
+                    <th className="services-th center">Đăng ký</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {services.map((item) => (
+                    <tr key={item.stt} className="services-tr">
+                      <td className="services-td center services-td stt">{item.stt}</td>
+                      <td className="services-td services-td task-name">{item.task}</td>
+                      <td className="services-td services-td desc">
+                        {item.desc || <span style={{ color: '#E2E8F0', fontStyle: 'italic' }}>—</span>}
+                      </td>
+                      <td className="services-td center">
+                        <button 
+                          onClick={() => handleRegisterClick(item)}
+                          className="register-btn"
+                        >
+                          Đăng ký
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
-          {/* Pagination */}
-          <div className="pagination-container">
-            <button className="pagination-btn">Trước</button>
-            <span className="pagination-arrows">&lt;&lt;</span>
-            <span className="pagination-arrows">&gt;&gt;</span>
-            <button className="pagination-btn">Kế tiếp</button>
+              {/* Pagination */}
+              <div className="pagination-container">
+                <button className="pagination-btn">Trước</button>
+                <span className="pagination-arrows">&lt;&lt;</span>
+                <span className="pagination-arrows">&gt;&gt;</span>
+                <button className="pagination-btn">Kế tiếp</button>
+              </div>
+            </div>
+          </>
+        ) : (
+          /* Attendance Recovery Form View */
+          <div className="recovery-form-wrapper">
+            
+            {/* Navigation back */}
+            <button onClick={() => setView('list')} className="recovery-back-btn">
+              <ArrowLeft size={16} />
+              <span>Quay lại danh sách</span>
+            </button>
+
+            {/* Title Section */}
+            <div className="recovery-title-section">
+              <h2 className="recovery-form-title">ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH</h2>
+              <p className="recovery-form-subtitle">
+                YOU ARE REQUIRED TO FULFILL BLANK BOXES BELOW TO FINISH YOUR REQUEST AND ATTACH SUPPORTING DOCUMENTS (IF ANY) BEFORE SUBMITTING THIS FORM
+              </p>
+            </div>
+
+            {submitSuccess ? (
+              <div className="recovery-success-box">
+                <div className="recovery-success-icon-wrapper">
+                  <CheckCircle2 size={48} className="text-emerald-500" />
+                </div>
+                <h3 className="recovery-success-title">Đăng ký dịch vụ thành công!</h3>
+                <p className="recovery-success-desc">
+                  Yêu cầu khôi phục điểm danh môn <strong>{subject}</strong> lớp <strong>{classCode}</strong> của bạn đã được ghi nhận thành công và gửi tới Ban Đào Tạo.
+                </p>
+                <p className="recovery-success-notice">
+                  ⚠️ Lưu ý: Vui lòng nhắc giảng viên <strong>{teacherName}</strong> xác nhận yêu cầu này để phòng đào tạo xử lý tiếp.
+                </p>
+                <button onClick={() => setView('list')} className="recovery-success-back-btn">
+                  Trở lại Dịch vụ trực tuyến
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="recovery-form-element">
+                
+                {/* Error Banner */}
+                {validationError && (
+                  <div className="recovery-validation-banner">
+                    <AlertCircle size={18} />
+                    <span>{validationError}</span>
+                  </div>
+                )}
+
+                {/* Top Info Grid */}
+                <div className="recovery-summary-grid">
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">DỊCH VỤ</div>
+                    <div className="recovery-summary-badge">Đăng ký khôi phục điểm danh</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">KỲ ĐỢT DỊCH VỤ:</div>
+                    <div className="recovery-summary-value-box">FALL 2023</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">TRẠNG THÁI SINH VIÊN</div>
+                    <div className="recovery-summary-value-box">HL</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">SỐ DƯ</div>
+                    <div className="recovery-summary-value-box">VND 0 đ</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">NGÀNH HỌC</div>
+                    <div className="recovery-summary-value-box">Lập trình máy tính</div>
+                  </div>
+                </div>
+
+                {/* Main Form Fields Layout */}
+                <div className="recovery-fields-card">
+                  
+                  {/* Row 1: Môn xin điểm danh */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Môn xin điểm danh (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <select 
+                        value={subject} 
+                        onChange={(e) => setSubject(e.target.value)} 
+                        className="recovery-select-element"
+                      >
+                        <option value="">-- Chọn môn học --</option>
+                        {SUBJECTS.map(subj => (
+                          <option key={subj} value={subj}>{subj}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 2: Lớp xin điểm danh */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Lớp xin điểm danh (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <select 
+                        value={classCode} 
+                        onChange={(e) => setClassCode(e.target.value)} 
+                        className="recovery-select-element"
+                      >
+                        <option value="">-- Chọn lớp học --</option>
+                        {CLASSES.map(cls => (
+                          <option key={cls} value={cls}>{cls}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 3: Ngày xin điểm danh */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Ngày xin điểm danh (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <select 
+                        value={date} 
+                        onChange={(e) => setDate(e.target.value)} 
+                        className="recovery-select-element"
+                      >
+                        <option value="">-- Chọn ngày --</option>
+                        {DATES.map(d => (
+                          <option key={d} value={d}>{d}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 4: Slot xin điểm danh */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Slot xin điểm danh (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <select 
+                        value={slot} 
+                        onChange={(e) => setSlot(e.target.value)} 
+                        className="recovery-select-element"
+                      >
+                        <option value="">-- Chọn ca học --</option>
+                        {SLOTS.map(sl => (
+                          <option key={sl} value={sl}>{sl}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 5: Account Giảng viên */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Account Giảng viên (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <select 
+                        value={teacherAccount} 
+                        onChange={(e) => handleTeacherChange(e.target.value)} 
+                        className="recovery-select-element"
+                      >
+                        <option value="">-- Chọn tài khoản giảng viên --</option>
+                        {Object.keys(TEACHERS).map(email => (
+                          <option key={email} value={email}>{email}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 6: Tên Giảng viên */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Tên Giảng viên (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <input 
+                        type="text" 
+                        value={teacherName} 
+                        readOnly 
+                        placeholder="Tự động hiển thị khi chọn Account"
+                        className="recovery-input-element disabled-bg"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 7: Số điện thoại */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Số điện thoại (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <input 
+                        type="tel" 
+                        value={phone} 
+                        onChange={(e) => setPhone(e.target.value)} 
+                        placeholder="Nhập số điện thoại của bạn"
+                        className="recovery-input-element"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 8: Lý do */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Lý do (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <textarea 
+                        value={reason} 
+                        onChange={(e) => setReason(e.target.value.slice(0, 500))} 
+                        placeholder="Vui lòng ghi rõ yêu cầu cần xử lý"
+                        className="recovery-textarea-element"
+                      />
+                      <div className="recovery-char-counter">
+                        {reason.length} / 500 ký tự
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Row 9: Phí dịch vụ */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Phí dịch vụ
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <input 
+                        type="text" 
+                        value="VND 0 đ" 
+                        readOnly 
+                        className="recovery-input-element disabled-bg"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 10: Tài liệu đính kèm */}
+                  <div className="recovery-field-row" style={{ borderBottom: 'none' }}>
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Tài liệu đính kèm
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <div className="recovery-file-upload-container">
+                        <input 
+                          type="file" 
+                          id="file-attachment" 
+                          onChange={handleFileChange}
+                          style={{ display: 'none' }}
+                        />
+                        <div className="recovery-file-info-row">
+                          <span className="recovery-file-path-input">
+                            {fileName || 'Chưa có tệp nào được chọn'}
+                          </span>
+                          <label htmlFor="file-attachment" className="recovery-file-browse-btn">
+                            <Upload size={14} style={{ marginRight: 6 }} />
+                            Browse
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Important Notes */}
+                <div className="recovery-notes-box">
+                  <div className="recovery-notes-title">Lưu ý:</div>
+                  <ul className="recovery-notes-list">
+                    <li>1. Sinh viên chỉ được đăng ký 1 lần/ môn/ kỳ trong vòng 2 ngày kể từ khi không được điểm danh.</li>
+                    <li>2. Khi đăng ký dịch vụ thành công, bạn vui lòng nhắc giảng viên xác nhận để phòng đào tạo xử lý tiếp.</li>
+                  </ul>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="recovery-form-actions">
+                  <button type="submit" className="recovery-btn-submit">
+                    SUBMIT
+                  </button>
+                </div>
+
+              </form>
+            )}
+
           </div>
-        </div>
+        )}
 
       </main>
 
-      {/* Footer Details */}
-      <Footer />
-
-      {/* Confirmation / Success Modal Popups */}
+      {/* Confirmation Modal for other services */}
       {selectedService && (
         <div className="modal-overlay">
           <div className="modal-content">
-            {!showSuccess ? (
+            {!showSuccessModal ? (
               <>
                 <div className="modal-icon">
                   <ClipboardList size={28} />
@@ -149,7 +511,7 @@ export const OnlineServices = () => {
                   Bạn có chắc chắn muốn đăng ký dịch vụ <strong>{selectedService.task}</strong> không? Đơn đăng ký của bạn sẽ được gửi tới Ban Đào Tạo BTEC để phê duyệt.
                 </p>
                 <div className="modal-actions">
-                  <button onClick={handleConfirmRegistration} className="modal-btn-confirm">
+                  <button onClick={handleConfirmModalRegistration} className="modal-btn-confirm">
                     Đồng ý đăng ký
                   </button>
                   <button onClick={() => setSelectedService(null)} className="modal-btn-cancel">

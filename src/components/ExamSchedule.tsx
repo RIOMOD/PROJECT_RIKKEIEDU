@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Footer } from './Footer';
 
 interface ExamScheduleProps {
   lang: 'vi' | 'en';
@@ -151,9 +150,6 @@ export const ExamSchedule = ({ lang }: ExamScheduleProps) => {
         </div>
 
       </main>
-      
-      {/* Reusable contact footer */}
-      <Footer />
     </div>
   );
 };

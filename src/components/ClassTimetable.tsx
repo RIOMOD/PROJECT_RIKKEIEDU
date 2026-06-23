@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Footer } from './Footer';
 import { Users, Calendar, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface ClassTimetableProps {
@@ -295,10 +294,6 @@ export const ClassTimetable = ({ lang }: ClassTimetableProps) => {
         )}
 
       </main>
-
-      {/* Footer contacts */}
-      <Footer />
-
     </div>
   );
 };

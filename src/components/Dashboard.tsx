@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { LearningIllustration } from './LearningIllustration';
-import { Footer } from './Footer';
 import { Search } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -151,9 +150,6 @@ export const Dashboard = () => {
 
         </div>
       </main>
-
-      {/* Two-column Footer contact details */}
-      <Footer />
     </div>
   );
 };

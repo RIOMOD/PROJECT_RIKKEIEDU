@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Footer } from './Footer';
 
 interface AttendanceReportProps {
   lang: 'vi' | 'en';
@@ -297,9 +296,6 @@ export const AttendanceReport = ({ lang }: AttendanceReportProps) => {
         </div>
 
       </main>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 };

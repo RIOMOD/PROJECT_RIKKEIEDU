@@ -1,4 +1,3 @@
-import { Footer } from './Footer';
 import { FileSpreadsheet } from 'lucide-react';
 
 interface AcademicTranscriptProps {
@@ -413,9 +412,6 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
         </div>
 
       </main>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 };
