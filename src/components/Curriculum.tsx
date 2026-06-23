@@ -69,14 +69,14 @@ export const Curriculum = ({ lang }: CurriculumProps) => {
         <div className="transcript-info-header" style={{ marginBottom: '16px' }}>
           <div className="transcript-info-left" style={{ gap: '4px' }}>
             <div className="transcript-info-item" style={{ gap: '6px' }}>
-              <GraduationCap size={16} className="text-orange-500" style={{ color: '#f37021' }} />
+              <GraduationCap size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
               <span className="transcript-info-label" style={{ color: '#334155', fontWeight: 'bold' }}>
                 STUDENT:{' '}
               </span>
               <span className="transcript-info-val" style={{ color: '#334155', fontWeight: 'bold' }}>Nguyễn Văn Hùng - BS00679</span>
             </div>
             <div className="transcript-info-item" style={{ gap: '6px' }}>
-              <BookOpen size={16} className="text-orange-500" style={{ color: '#f37021' }} />
+              <BookOpen size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
               <span className="transcript-info-label" style={{ color: '#334155', fontWeight: 'bold' }}>Syllabus:BC_V6_01</span>
             </div>
           </div>
@@ -86,7 +86,7 @@ export const Curriculum = ({ lang }: CurriculumProps) => {
         <div className="transcript-table-wrapper" style={{ borderRadius: '0', border: '1px solid #cbd5e1', marginBottom: '24px' }}>
           <table className="transcript-table">
             <thead>
-              <tr className="transcript-thead-tr" style={{ backgroundColor: '#f37021' }}>
+              <tr className="transcript-thead-tr" style={{ backgroundColor: 'var(--primary)' }}>
                 {headers1.map((h, i) => (
                   <th key={i} className="transcript-th" style={{ border: '1px solid #cbd5e1', textTransform: 'uppercase' }}>
                     {h}
@@ -124,7 +124,7 @@ export const Curriculum = ({ lang }: CurriculumProps) => {
 
         {/* Table 2: Subject Prerequisite */}
         <div className="transcript-obsolete-header" style={{ borderBottom: 'none', marginBottom: '10px', marginTop: '16px' }}>
-          <BookOpen size={16} className="text-orange-500" style={{ color: '#f37021' }} />
+          <BookOpen size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
           <span className="transcript-obsolete-text" style={{ fontWeight: 'bold', color: '#334155' }}>
             {t('Subject Prequisite', 'Subject Prequisite')}
           </span>
@@ -133,7 +133,7 @@ export const Curriculum = ({ lang }: CurriculumProps) => {
         <div className="transcript-table-wrapper" style={{ borderRadius: '0', border: '1px solid #cbd5e1', marginBottom: '30px' }}>
           <table className="transcript-table">
             <thead>
-              <tr className="transcript-thead-tr" style={{ backgroundColor: '#f37021' }}>
+              <tr className="transcript-thead-tr" style={{ backgroundColor: 'var(--primary)' }}>
                 {headers2.map((h, i) => (
                   <th key={i} className="transcript-th" style={{ border: '1px solid #cbd5e1', textTransform: 'uppercase' }}>
                     {h}

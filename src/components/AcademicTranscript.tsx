@@ -314,19 +314,19 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
         <div className="transcript-info-header">
           <div className="transcript-info-left" style={{ gap: '4px' }}>
             <div className="transcript-info-item" style={{ gap: '6px' }}>
-              <GraduationCap size={16} className="text-orange-500" style={{ color: '#f37021' }} />
+              <GraduationCap size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
               <span className="transcript-info-label" style={{ color: '#334155', fontWeight: 'bold' }}>
                 STUDENT:{' '}
               </span>
               <span className="transcript-info-val" style={{ color: '#334155', fontWeight: 'bold' }}>Nguyễn Văn Hùng - BS00679</span>
             </div>
             <div className="transcript-info-item" style={{ gap: '6px' }}>
-              <BookOpen size={16} className="text-orange-500" style={{ color: '#f37021' }} />
+              <BookOpen size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
               <span className="transcript-info-label" style={{ color: '#334155', fontWeight: 'bold' }}>Syllabus:BC_V6_01</span>
             </div>
           </div>
           <div className="transcript-info-right">
-            <button className="export-excel-btn" style={{ backgroundColor: '#f37021' }}>
+            <button className="export-excel-btn" style={{ backgroundColor: 'var(--primary)' }}>
               <FileSpreadsheet size={16} />
               <span>{t('Export to Excel', 'Export to Excel')}</span>
             </button>
@@ -337,7 +337,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
         <div className="transcript-table-wrapper" style={{ borderRadius: '0', border: '1px solid #cbd5e1' }}>
           <table className="transcript-table">
             <thead>
-              <tr className="transcript-thead-tr" style={{ backgroundColor: '#f37021' }}>
+              <tr className="transcript-thead-tr" style={{ backgroundColor: 'var(--primary)' }}>
                 {headers.map((h, i) => (
                   <th key={i} className="transcript-th" style={{ border: '1px solid #cbd5e1' }}>
                     {h}
@@ -404,7 +404,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
 
         {/* Bottom Obsolete section */}
         <div className="transcript-obsolete-header" style={{ borderBottom: 'none', marginBottom: '10px' }}>
-          <BookOpen size={16} className="text-orange-500" style={{ color: '#f37021' }} />
+          <BookOpen size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
           <span className="transcript-obsolete-text" style={{ fontWeight: 'bold', color: '#334155' }}>
             {t('ENGLISH PREPARATORY & OBSOLETE COURSES', 'ENGLISH PREPARATORY & OBSOLETE COURSES')}
           </span>
