@@ -68,29 +68,10 @@ export const Login = ({ onLogin, currentLang, onLangChange }: LoginProps) => {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      width: '100vw',
-      height: '100vh',
-      backgroundColor: '#f8fafc',
-      fontFamily: "'Inter', sans-serif",
-      overflow: 'hidden',
-      boxSizing: 'border-box'
-    }}>
+    <div className="login-container">
       
       {/* LEFT COLUMN: Login Form */}
-      <div style={{
-        width: '50%',
-        height: '100%',
-        backgroundColor: '#ffffff',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        padding: '60px 80px',
-        position: 'relative',
-        boxSizing: 'border-box',
-        boxShadow: '10px 0 30px rgba(0, 0, 0, 0.02)'
-      }}>
+      <div className="login-form-column">
         
         {/* Language Switcher at Top-Right of form container */}
         <div style={{
@@ -340,18 +321,7 @@ export const Login = ({ onLogin, currentLang, onLangChange }: LoginProps) => {
       </div>
 
       {/* RIGHT COLUMN: Marketing Slide Showcase Banner */}
-      <div style={{
-        width: '50%',
-        height: '100%',
-        backgroundColor: '#0D226B', // Rikkei Blue
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
-        boxSizing: 'border-box',
-        padding: '40px'
-      }}>
+      <div className="login-banner-column">
         
         {/* Decorative Grid Overlay */}
         <div style={{

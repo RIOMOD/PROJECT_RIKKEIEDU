@@ -85,7 +85,8 @@ export const Header = ({ onMenuToggle, title, lang, onLangChange, setActiveItem,
           title="Switch Language"
         >
           <Globe size={15} />
-          <span>{lang === 'vi' ? '🇻🇳 Tiếng Việt' : '🇬🇧 English'}</span>
+          <span className="lang-toggle-desktop">{lang === 'vi' ? '🇻🇳 Tiếng Việt' : '🇬🇧 English'}</span>
+          <span className="lang-toggle-mobile">{lang === 'vi' ? '🇻🇳' : '🇬🇧'}</span>
         </button>
 
         {/* Bell Notifications */}
