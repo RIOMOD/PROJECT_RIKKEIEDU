@@ -1,4 +1,4 @@
-import { FileSpreadsheet } from 'lucide-react';
+import { FileSpreadsheet, GraduationCap, BookOpen } from 'lucide-react';
 
 interface AcademicTranscriptProps {
   lang: 'vi' | 'en';
@@ -23,14 +23,14 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
   };
 
   const headers = [
-    t('STT', 'No'),
-    t('KỲ', 'Term'),
-    t('HỌC KỲ', 'Semester'),
-    t('MÃ MÔN HỌC', 'Subject Code'),
-    t('MÔN THAY THẾ', 'Replaced Subject'),
-    t('TÊN MÔN HỌC', 'Subject Name'),
-    t('SỐ TÍN CHỈ', 'Credit'),
-    t('ĐIỂM (SỐ)', 'Grade (Number)')
+    t('No', 'No'),
+    t('Term', 'Term'),
+    t('Semester', 'Semester'),
+    t('Subject Code', 'Subject Code'),
+    t('Replaced Subject', 'Replaced Subject'),
+    t('Subject Name', 'Subject Name'),
+    t('Credit', 'Credit'),
+    t('Grade (Number)', 'Grade (Number)')
   ];
 
   // 24 transcript rows matching mockup
@@ -38,7 +38,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 1,
       term: -4,
-      semesterVi: 'HỌC KỲ THU 2022',
+      semesterVi: 'FALL 2022',
       semesterEn: 'FALL 2022',
       subjectCode: 'ENT100.1',
       replacedSubject: 'ENT100',
@@ -49,7 +49,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 2,
       term: -3,
-      semesterVi: 'HỌC KỲ XUÂN 2023',
+      semesterVi: 'SPRING 2023',
       semesterEn: 'SPRING 2023',
       subjectCode: 'ENT101.1',
       replacedSubject: '',
@@ -60,7 +60,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 3,
       term: -2,
-      semesterVi: 'HỌC KỲ XUÂN 2023',
+      semesterVi: 'SPRING 2023',
       semesterEn: 'SPRING 2023',
       subjectCode: 'ENT102.1',
       replacedSubject: '',
@@ -71,7 +71,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 4,
       term: -1,
-      semesterVi: 'HỌC KỲ HÈ 2023',
+      semesterVi: 'SUMMER 2023',
       semesterEn: 'SUMMER 2023',
       subjectCode: 'ENT103.1',
       replacedSubject: 'ENT301',
@@ -82,7 +82,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 5,
       term: 0,
-      semesterVi: 'HỌC KỲ HÈ 2023',
+      semesterVi: 'SUMMER 2023',
       semesterEn: 'SUMMER 2023',
       subjectCode: 'ENT104.1',
       replacedSubject: 'ENT4011',
@@ -93,7 +93,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 6,
       term: 0,
-      semesterVi: 'HỌC KỲ XUÂN 2023',
+      semesterVi: 'SPRING 2023',
       semesterEn: 'SPRING 2023',
       subjectCode: 'CF02',
       replacedSubject: '',
@@ -104,7 +104,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 7,
       term: 0,
-      semesterVi: 'HỌC KỲ THU 2024',
+      semesterVi: 'FALL 2024',
       semesterEn: 'FALL 2024',
       subjectCode: 'VO100',
       replacedSubject: '',
@@ -115,7 +115,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 8,
       term: 0,
-      semesterVi: 'HỌC KỲ THU 2022',
+      semesterVi: 'FALL 2022',
       semesterEn: 'FALL 2022',
       subjectCode: 'CF01',
       replacedSubject: '',
@@ -126,7 +126,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 9,
       term: 0,
-      semesterVi: 'HỌC KỲ XUÂN 2023',
+      semesterVi: 'SPRING 2023',
       semesterEn: 'SPRING 2023',
       subjectCode: 'PDP101',
       replacedSubject: '',
@@ -137,7 +137,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 10,
       term: 1,
-      semesterVi: 'HỌC KỲ HÈ 2023',
+      semesterVi: 'SUMMER 2023',
       semesterEn: 'SUMMER 2023',
       subjectCode: '7393',
       replacedSubject: '',
@@ -148,7 +148,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 11,
       term: 1,
-      semesterVi: 'HỌC KỲ XUÂN 2024',
+      semesterVi: 'SPRING 2024',
       semesterEn: 'SPRING 2024',
       subjectCode: '7388',
       replacedSubject: '',
@@ -159,7 +159,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 12,
       term: 2,
-      semesterVi: 'HỌC KỲ THU 2023',
+      semesterVi: 'FALL 2023',
       semesterEn: 'FALL 2023',
       subjectCode: '7398',
       replacedSubject: '',
@@ -170,7 +170,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 13,
       term: 2,
-      semesterVi: 'HỌC KỲ THU 2023',
+      semesterVi: 'FALL 2023',
       semesterEn: 'FALL 2023',
       subjectCode: '7400',
       replacedSubject: '',
@@ -181,7 +181,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 14,
       term: 2,
-      semesterVi: 'HỌC KỲ THU 2023',
+      semesterVi: 'FALL 2023',
       semesterEn: 'FALL 2023',
       subjectCode: '7407',
       replacedSubject: '',
@@ -192,7 +192,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 15,
       term: 3,
-      semesterVi: 'HỌC KỲ XUÂN 2024',
+      semesterVi: 'SPRING 2024',
       semesterEn: 'SPRING 2024',
       subjectCode: '7406',
       replacedSubject: '',
@@ -203,7 +203,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 16,
       term: 3,
-      semesterVi: 'HỌC KỲ XUÂN 2026',
+      semesterVi: 'SPRING 2026',
       semesterEn: 'SPRING 2026',
       subjectCode: '7408',
       replacedSubject: '',
@@ -214,7 +214,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 17,
       term: 3,
-      semesterVi: 'HỌC KỲ XUÂN 2024',
+      semesterVi: 'SPRING 2024',
       semesterEn: 'SPRING 2024',
       subjectCode: '7419',
       replacedSubject: '',
@@ -225,7 +225,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 18,
       term: 4,
-      semesterVi: 'HỌC KỲ HÈ 2024',
+      semesterVi: 'SUMMER 2024',
       semesterEn: 'SUMMER 2024',
       subjectCode: '7429',
       replacedSubject: '',
@@ -236,7 +236,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 19,
       term: 4,
-      semesterVi: 'HỌC KỲ THU 2025',
+      semesterVi: 'FALL 2025',
       semesterEn: 'FALL 2025',
       subjectCode: '4902',
       replacedSubject: '',
@@ -247,7 +247,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 20,
       term: 4,
-      semesterVi: 'HỌC KỲ XUÂN 2026',
+      semesterVi: 'SPRING 2026',
       semesterEn: 'SPRING 2026',
       subjectCode: '7428',
       replacedSubject: '',
@@ -258,7 +258,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 21,
       term: 5,
-      semesterVi: 'HỌC KỲ THU 2025',
+      semesterVi: 'FALL 2025',
       semesterEn: 'FALL 2025',
       subjectCode: '7436',
       replacedSubject: '',
@@ -269,7 +269,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 22,
       term: 5,
-      semesterVi: 'HỌC KỲ THU 2025',
+      semesterVi: 'FALL 2025',
       semesterEn: 'FALL 2025',
       subjectCode: '7430',
       replacedSubject: '',
@@ -280,7 +280,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 23,
       term: 5,
-      semesterVi: 'HỌC KỲ THU 2025',
+      semesterVi: 'FALL 2025',
       semesterEn: 'FALL 2025',
       subjectCode: '7481',
       replacedSubject: '',
@@ -291,7 +291,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     {
       no: 24,
       term: 6,
-      semesterVi: 'HỌC KỲ XUÂN 2026',
+      semesterVi: 'SPRING 2026',
       semesterEn: 'SPRING 2026',
       subjectCode: '7425',
       replacedSubject: '',
@@ -312,35 +312,34 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
 
         {/* Student Information & Export Row */}
         <div className="transcript-info-header">
-          <div className="transcript-info-left">
-            <div className="transcript-info-item">
-              <span className="transcript-info-icon">🎓</span>
-              <span className="transcript-info-label">
-                {t('SINH VIÊN: ', 'STUDENT: ')}
+          <div className="transcript-info-left" style={{ gap: '4px' }}>
+            <div className="transcript-info-item" style={{ gap: '6px' }}>
+              <GraduationCap size={16} className="text-orange-500" style={{ color: '#f37021' }} />
+              <span className="transcript-info-label" style={{ color: '#334155', fontWeight: 'bold' }}>
+                STUDENT:{' '}
               </span>
-              <span className="transcript-info-val">Nguyễn Văn Hùng - BS00679</span>
+              <span className="transcript-info-val" style={{ color: '#334155', fontWeight: 'bold' }}>Nguyễn Văn Hùng - BS00679</span>
             </div>
-            <div className="transcript-info-item" style={{ marginTop: '4px' }}>
-              <span className="transcript-info-icon">📋</span>
-              <span className="transcript-info-label">Syllabus:</span>
-              <span className="transcript-info-val">BC_V6_01</span>
+            <div className="transcript-info-item" style={{ gap: '6px' }}>
+              <BookOpen size={16} className="text-orange-500" style={{ color: '#f37021' }} />
+              <span className="transcript-info-label" style={{ color: '#334155', fontWeight: 'bold' }}>Syllabus:BC_V6_01</span>
             </div>
           </div>
           <div className="transcript-info-right">
-            <button className="export-excel-btn">
+            <button className="export-excel-btn" style={{ backgroundColor: '#f37021' }}>
               <FileSpreadsheet size={16} />
-              <span>{t('Xuất Excel', 'Export to Excel')}</span>
+              <span>{t('Export to Excel', 'Export to Excel')}</span>
             </button>
           </div>
         </div>
 
         {/* Transcript Data Table */}
-        <div className="transcript-table-wrapper">
+        <div className="transcript-table-wrapper" style={{ borderRadius: '0', border: '1px solid #cbd5e1' }}>
           <table className="transcript-table">
             <thead>
-              <tr className="transcript-thead-tr">
+              <tr className="transcript-thead-tr" style={{ backgroundColor: '#f37021' }}>
                 {headers.map((h, i) => (
-                  <th key={i} className="transcript-th">
+                  <th key={i} className="transcript-th" style={{ border: '1px solid #cbd5e1' }}>
                     {h}
                   </th>
                 ))}
@@ -348,52 +347,52 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
             </thead>
             <tbody>
               {transcriptData.map((row) => {
-                // Highlight Row 22 (Data Structures & Algorithms) in light gray
-                const rowClass = row.no === 22 ? 'tr-highlight-gray' : '';
+                // Highlight Row 24 (Computer Research Project (Pearson Set)) in light gray to match mockup
+                const rowClass = row.no === 24 ? 'tr-highlight-gray' : '';
 
                 return (
                   <tr key={row.no} className={`transcript-tr ${rowClass}`}>
                     {/* STT */}
-                    <td className="transcript-td text-center font-bold text-slate-500">
+                    <td className="transcript-td text-center" style={{ border: '1px solid #cbd5e1' }}>
                       {row.no}
                     </td>
 
                     {/* Kỳ */}
-                    <td className="transcript-td text-center">
+                    <td className="transcript-td text-center" style={{ border: '1px solid #cbd5e1' }}>
                       {row.term}
                     </td>
 
                     {/* Học kỳ */}
-                    <td className="transcript-td text-center font-mono">
+                    <td className="transcript-td text-center font-mono" style={{ border: '1px solid #cbd5e1' }}>
                       {t(row.semesterVi, row.semesterEn)}
                     </td>
 
                     {/* Mã môn */}
-                    <td className="transcript-td text-center font-bold font-mono">
+                    <td className="transcript-td text-center font-bold font-mono" style={{ border: '1px solid #cbd5e1', color: '#0066cc', textDecoration: 'underline', cursor: 'pointer' }}>
                       {row.subjectCode}
                     </td>
 
                     {/* Môn thay thế */}
-                    <td className="transcript-td text-center font-mono">
-                      {row.replacedSubject || <span className="text-slate-300">—</span>}
+                    <td className="transcript-td text-center font-mono" style={{ border: '1px solid #cbd5e1' }}>
+                      {row.replacedSubject || ''}
                     </td>
 
                     {/* Tên môn học */}
-                    <td className="transcript-td subject-name-col">
+                    <td className="transcript-td subject-name-col" style={{ border: '1px solid #cbd5e1' }}>
                       {row.subjectName}
                     </td>
 
                     {/* Tín chỉ */}
-                    <td className="transcript-td text-center font-mono">
+                    <td className="transcript-td text-center font-mono" style={{ border: '1px solid #cbd5e1' }}>
                       {row.credit}
                     </td>
 
                     {/* Điểm (Số) */}
-                    <td className="transcript-td text-center font-bold">
+                    <td className="transcript-td text-center font-bold" style={{ border: '1px solid #cbd5e1' }}>
                       {row.grade ? (
-                        <span className="grade-link-blue">{row.grade}</span>
+                        <span className="grade-link-blue" style={{ color: '#0066cc' }}>{row.grade}</span>
                       ) : (
-                        <span className="text-slate-300">—</span>
+                        ''
                       )}
                     </td>
                   </tr>
@@ -404,10 +403,10 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
         </div>
 
         {/* Bottom Obsolete section */}
-        <div className="transcript-obsolete-header">
-          <span className="transcript-info-icon">📋</span>
-          <span className="transcript-obsolete-text">
-            {t('CÁC KHÓA HỌC TIẾNG ANH DỰ BỊ & MÔN HỌC CŨ', 'ENGLISH PREPARATORY & OBSOLETE COURSES')}
+        <div className="transcript-obsolete-header" style={{ borderBottom: 'none', marginBottom: '10px' }}>
+          <BookOpen size={16} className="text-orange-500" style={{ color: '#f37021' }} />
+          <span className="transcript-obsolete-text" style={{ fontWeight: 'bold', color: '#334155' }}>
+            {t('ENGLISH PREPARATORY & OBSOLETE COURSES', 'ENGLISH PREPARATORY & OBSOLETE COURSES')}
           </span>
         </div>
 

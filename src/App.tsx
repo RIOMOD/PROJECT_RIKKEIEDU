@@ -11,6 +11,7 @@ import { ExamSchedule } from './components/ExamSchedule';
 import { AttendanceReport } from './components/AttendanceReport';
 import { MarkReport } from './components/MarkReport';
 import { AcademicTranscript } from './components/AcademicTranscript';
+import { Curriculum } from './components/Curriculum';
 import { Construction, ArrowLeft } from 'lucide-react';
 
 function App() {
@@ -30,7 +31,7 @@ function App() {
     'bc-diem-danh': { vi: 'Trang chủ / Báo cáo điểm danh', en: 'Home / Attendance Report' },
     'bc-mark': { vi: 'Trang chủ / Báo cáo Mark', en: 'Home / Mark Report' },
     'bang-diem-ht': { vi: 'Home / Academic Transcript', en: 'Home / Academic Transcript' },
-    'chuong-trinh-gd': { vi: 'Chương trình giảng dạy', en: 'Curriculum' },
+    'chuong-trinh-gd': { vi: 'Home / Curriculum', en: 'Home / Curriculum' },
     'so-tay-sv': { vi: 'Sổ tay sinh viên', en: 'Student Handbook' }
   };
 
@@ -74,6 +75,10 @@ function App() {
 
     if (activeItem === 'bang-diem-ht') {
       return <AcademicTranscript lang={lang} />;
+    }
+
+    if (activeItem === 'chuong-trinh-gd') {
+      return <Curriculum lang={lang} />;
     }
 
     const currentTitle = menuTitles[activeItem]?.[lang] || 'Cổng thông tin';
