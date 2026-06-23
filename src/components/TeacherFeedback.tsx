@@ -103,63 +103,61 @@ export const TeacherFeedback = () => {
       <main className="dashboard-container">
         
         {/* Title Heading */}
-        <h2 className="services-section-title">Danh sách phản hồi cho Nguyễn Văn Hùng (BS00679)</h2>
+        <h2 className="services-section-title">DANH SÁCH PHẢN HỒI CHO NGUYỄN VĂN HÙNG (BS00679)</h2>
 
         {/* Feedback List Table */}
-        <div className="services-table-wrapper">
-          <table className="services-table">
-            <thead className="services-thead">
+        <div className="feedback-table-wrapper">
+          <table className="feedback-table">
+            <thead className="feedback-thead">
               <tr>
-                <th className="services-th">Tên nhóm</th>
-                <th className="services-th">Ngày khai trương</th>
-                <th className="services-th">Giảng viên</th>
-                <th className="services-th">Chủ đề</th>
-                <th className="services-th">Hạn chót</th>
-                <th className="services-th">Nhận phản hồi</th>
+                <th className="feedback-th">TÊN NHÓM</th>
+                <th className="feedback-th">NGÀY KHAI TRƯƠNG</th>
+                <th className="feedback-th">GIẢNG VIÊN</th>
+                <th className="feedback-th">CHỦ ĐỀ</th>
+                <th className="feedback-th">HẠN CHỐT</th>
+                <th className="feedback-th">NHẬN PHẢN HỒI</th>
               </tr>
             </thead>
             <tbody>
               {feedbackList.map((item, index) => (
-                <tr key={index} className="services-tr">
+                <tr key={index} className="feedback-tr">
                   {/* Tên nhóm */}
-                  <td className="services-td" style={{ fontWeight: '700' }}>
+                  <td className="feedback-td feedback-td-center" style={{ fontWeight: '700' }}>
                     {item.groupName}
                   </td>
                   
                   {/* Ngày khai trương */}
-                  <td className="services-td font-mono">
+                  <td className="feedback-td feedback-td-center font-mono">
                     {item.startDate}
                   </td>
                   
                   {/* Giảng viên */}
-                  <td className="services-td" style={{ fontWeight: '600' }}>
+                  <td className="feedback-td feedback-td-center" style={{ fontWeight: '600' }}>
                     {item.teacher}
                   </td>
                   
                   {/* Chủ đề */}
-                  <td className="services-td" style={{ color: '#334155' }}>
+                  <td className="feedback-td" style={{ color: '#334155' }}>
                     {item.topic}
                   </td>
                   
                   {/* Hạn chót */}
-                  <td className="services-td">
+                  <td className="feedback-td feedback-td-center">
                     {item.deadline || <span style={{ color: '#CBD5E1' }}>—</span>}
                   </td>
                   
                   {/* Nhận phản hồi links */}
-                  <td className="services-td">
+                  <td className="feedback-td feedback-td-center">
                     <span 
                       onClick={() => handleEditClick(item)}
-                      style={{ color: 'var(--fpt-blue)', cursor: 'pointer', fontWeight: '600' }}
-                      className="hover:underline"
+                      className="feedback-link"
                     >
                       Chỉnh sửa bình luận
                     </span>
                     <span style={{ color: '#CBD5E1', margin: '0 8px' }}>|</span>
                     <span 
                       onClick={() => handleCaptureFeedback(item)}
-                      style={{ color: 'var(--fpt-blue)', cursor: 'pointer', fontWeight: '600' }}
-                      className="hover:underline"
+                      className="feedback-link"
                     >
                       Chụp lại
                     </span>
