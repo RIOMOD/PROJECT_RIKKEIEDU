@@ -26,11 +26,15 @@
   font-family: 'Plus Jakarta Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+html, body {
+  height: 100vh;
+  overflow: hidden;
+}
+
 body {
   background-color: var(--bg-cream);
   color: var(--text-dark);
   font-size: 14px;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -54,8 +58,9 @@ body {
 /* Base layouts */
 .app-container {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   background-color: var(--bg-cream);
+  overflow: hidden;
 }
 
 .main-content-wrapper {
