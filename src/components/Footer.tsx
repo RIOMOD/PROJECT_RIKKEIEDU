@@ -8,7 +8,7 @@ export const Footer = () => {
         {/* Left Column - HCMC Campus Contact (Vietnamese) */}
         <div className="footer-column">
           <p className="footer-headline">
-            Mọi người góp ý, thắc mắc xin liên hệ: Trung tâm Cao đẳng quốc tế tại Hồ Chí Minh - Trường Cao đẳng FPT Polytechnic
+            Mọi người góp ý, thắc mắc xin liên hệ: Trung tâm Cao đẳng quốc tế tại Hồ Chí Minh – Trường Cao đẳng FPT Polytechnic
           </p>
           <div className="footer-contact-list">
             <div className="footer-contact-row">
@@ -25,7 +25,7 @@ export const Footer = () => {
                 <span style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                   <span>Phòng TC&QLĐT: <a href="mailto:Academic.btec.hcm@fe.edu.vn" className="footer-link">Academic.btec.hcm@fe.edu.vn</a></span>
                   <span>DVSV/CTSV: <a href="mailto:Sro.btec.hcm@fe.edu.vn" className="footer-link">Sro.btec.hcm@fe.edu.vn</a></span>
-                  <span>Bộ phận thu ngân hàng: <a href="mailto:Accounting.btec.hcm@fe.edu.vn" className="footer-link">Accounting.btec.hcm@fe.edu.vn</a></span>
+                  <span>Bộ phận thu ngân: <a href="mailto:Accounting.btec.hcm@fe.edu.vn" className="footer-link">Accounting.btec.hcm@fe.edu.vn</a></span>
                 </span>
               </div>
             </div>
