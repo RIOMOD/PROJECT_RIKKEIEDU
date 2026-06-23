@@ -168,7 +168,7 @@ function App() {
         />
 
         {/* Dynamic Inner Page Content */}
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflowY: 'auto' }}>
+        <div className="scrollable-content" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflowY: 'auto' }}>
           {renderContent()}
           <Footer lang={lang} />
         </div>

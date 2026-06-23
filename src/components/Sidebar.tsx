@@ -57,6 +57,19 @@ export const Sidebar = ({
     }
   };
 
+  const handleLogoClick = () => {
+    setActiveItem('trang-chu');
+    // Scroll the content container to the top
+    const scrollContainer = document.querySelector('.scrollable-content');
+    if (scrollContainer) {
+      scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    // Close sidebar on mobile
+    if (window.innerWidth < 1024) {
+      onClose();
+    }
+  };
+
   // Translation mapping helper
   const t = (viText: string, enText: string) => {
     return lang === 'en' ? enText : viText;
@@ -76,9 +89,22 @@ export const Sidebar = ({
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         
         {/* Sidebar Header with Rikkei Logo */}
-        <div className="sidebar-brand">
+        <div 
+          className="sidebar-brand" 
+          onClick={handleLogoClick}
+          style={{ cursor: 'pointer', transition: 'opacity 0.2s' }}
+          onMouseOver={(e) => e.currentTarget.style.opacity = '0.8'}
+          onMouseOut={(e) => e.currentTarget.style.opacity = '1'}
+        >
           <BtecLogo height={46} className="sidebar-brand-logo" />
-          <button onClick={onClose} className="sidebar-close-btn" aria-label="Close sidebar">
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }} 
+            className="sidebar-close-btn" 
+            aria-label="Close sidebar"
+          >
             <X size={18} />
           </button>
         </div>
