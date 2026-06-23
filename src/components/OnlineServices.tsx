@@ -22,6 +22,14 @@ const SUBJECTS = [
   '[10591] SD106 - Mobile Application Development'
 ];
 
+const RETAKE_SUBJECTS = [
+  'SPRING 2026 - 7408 - Software Development Life Cycle',
+  'SPRING 2026 - 7409 - Database Design & Development',
+  'SPRING 2026 - 7410 - Web Design & Development',
+  'SPRING 2026 - 7411 - Object-Oriented Programming',
+  'SPRING 2026 - 7412 - Application Development'
+];
+
 const CLASSES = ['WD18301', 'WD18302', 'WD18303', 'WD18304'];
 const SLOTS = [
   'Slot 1 (07:30 - 09:30)',
@@ -30,6 +38,15 @@ const SLOTS = [
   'Slot 4 (14:40 - 16:40)',
   'Slot 5 (17:00 - 19:00)',
   'Slot 6 (19:10 - 21:10)'
+];
+
+const RETAKE_SLOTS = [
+  'Ca 1 (07:15:00 - 09:15:00)',
+  'Ca 2 (09:30:00 - 11:30:00)',
+  'Ca 3 (12:30:00 - 14:30:00)',
+  'Ca 4 (14:45:00 - 16:45:00)',
+  'Ca 5 (17:00:00 - 19:00:00)',
+  'Ca 6 (19:15:00 - 21:15:00)'
 ];
 
 const DATES = ['2026-06-23', '2026-06-22', '2026-06-21', '2026-06-20', '2026-06-19'];
@@ -46,7 +63,7 @@ const INFO_CATEGORIES = [
 ];
 
 export const OnlineServices = () => {
-  const [view, setView] = useState<'list' | 'attendance-recovery' | 'student-card-reissue' | 'change-info' | 'withdraw'>('list');
+  const [view, setView] = useState<'list' | 'attendance-recovery' | 'student-card-reissue' | 'change-info' | 'withdraw' | 'retake'>('list');
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -80,6 +97,20 @@ export const OnlineServices = () => {
   const [withdrawStatus, setWithdrawStatus] = useState('Hoàn thành');
   const [withdrawPhone, setWithdrawPhone] = useState('');
   const [withdrawFileName, setWithdrawFileName] = useState('');
+
+  // --- Retake Form States ---
+  const [retakeSubject, setRetakeSubject] = useState('SPRING 2026 - 7408 - Software Development Life Cycle');
+  const [retakeSlot, setRetakeSlot] = useState('Ca 1 (07:15:00 - 09:15:00)');
+  const [retakeDays, setRetakeDays] = useState<Record<string, boolean>>({
+    'Thứ 2': false,
+    'Thứ 3': false,
+    'Thứ 4': false,
+    'Thứ 5': false,
+    'Thứ 6': false,
+    'Thứ 7': false
+  });
+  const [retakeFallbackOption, setRetakeFallbackOption] = useState('');
+  const [retakeFee] = useState('2.730.000 đ');
 
   // Validation & Submit State
   const [validationError, setValidationError] = useState('');
@@ -160,6 +191,9 @@ export const OnlineServices = () => {
     } else if (service.stt === 7) {
       setView('withdraw');
       resetWithdrawForm();
+    } else if (service.stt === 9) {
+      setView('retake');
+      resetRetakeForm();
     } else {
       setSelectedService(service);
       setShowSuccessModal(false);
@@ -198,6 +232,20 @@ export const OnlineServices = () => {
     setWithdrawStatus('Hoàn thành');
     setWithdrawPhone('');
     setWithdrawFileName('');
+  };
+
+  const resetRetakeForm = () => {
+    setRetakeSubject('SPRING 2026 - 7408 - Software Development Life Cycle');
+    setRetakeSlot('Ca 1 (07:15:00 - 09:15:00)');
+    setRetakeDays({
+      'Thứ 2': false,
+      'Thứ 3': false,
+      'Thứ 4': false,
+      'Thứ 5': false,
+      'Thứ 6': false,
+      'Thứ 7': false
+    });
+    setRetakeFallbackOption('');
   };
 
   const handleTeacherChange = (email: string) => {
@@ -239,6 +287,13 @@ export const OnlineServices = () => {
     setAddedCategories(addedCategories.filter(cat => cat !== catToRemove));
   };
 
+  const handleDayCheckboxChange = (day: string) => {
+    setRetakeDays({
+      ...retakeDays,
+      [day]: !retakeDays[day]
+    });
+  };
+
   const handleAttendanceSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!subject || !classCode || !date || !slot || !teacherAccount || !phone || !reason) {
@@ -276,6 +331,16 @@ export const OnlineServices = () => {
   const handleWithdrawSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!withdrawReason || !withdrawPhone) {
+      setValidationError('Vui lòng điền đầy đủ các thông tin bắt buộc (*)');
+      return;
+    }
+    setValidationError('');
+    setSubmitSuccess(true);
+  };
+
+  const handleRetakeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!retakeSubject || !retakeSlot || !retakeFallbackOption) {
       setValidationError('Vui lòng điền đầy đủ các thông tin bắt buộc (*)');
       return;
     }
@@ -1238,6 +1303,270 @@ export const OnlineServices = () => {
                   <button type="submit" className="recovery-btn-submit">
                     SUBMIT
                   </button>
+                </div>
+
+              </form>
+            )}
+
+          </div>
+        )}
+
+        {view === 'retake' && (
+          /* Retake Form View */
+          <div className="recovery-form-wrapper">
+            
+            {/* Navigation back */}
+            <button onClick={() => setView('list')} className="recovery-back-btn">
+              <ArrowLeft size={16} />
+              <span>Quay lại danh sách</span>
+            </button>
+
+            {/* Title Section */}
+            <div className="recovery-title-section">
+              <h2 className="recovery-form-title">ĐĂNG KÝ HỌC LẠI</h2>
+              <p className="recovery-form-subtitle">
+                YOU ARE REQUIRED TO FULFILL BLANK BOXES BELOW TO FINISH YOUR REQUEST AND ATTACH SUPPORTING DOCUMENTS (IF ANY) BEFORE SUBMITTING THIS FORM
+              </p>
+            </div>
+
+            {submitSuccess ? (
+              <div className="recovery-success-box">
+                <div className="recovery-success-icon-wrapper">
+                  <CheckCircle2 size={48} className="text-emerald-500" />
+                </div>
+                <h3 className="recovery-success-title">Đăng ký thành công!</h3>
+                <p className="recovery-success-desc">
+                  Yêu cầu đăng ký học lại môn <strong>{retakeSubject}</strong> đã được ghi nhận. Số tiền: <strong>{retakeFee}</strong>.
+                </p>
+                <p className="recovery-success-notice">
+                  ⚠️ Lưu ý: Trong trường hợp bạn đã thanh toán nhưng trạng thái đơn chưa đổi sang "Đã thanh toán", vui lòng nhấn nút "Kiểm tra thanh toán" tại trang Dịch vụ đã đăng ký.
+                </p>
+                <button onClick={() => setView('list')} className="recovery-success-back-btn">
+                  Trở lại Dịch vụ trực tuyến
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleRetakeSubmit} className="recovery-form-element">
+                
+                {/* Error Banner */}
+                {validationError && (
+                  <div className="recovery-validation-banner">
+                    <AlertCircle size={18} />
+                    <span>{validationError}</span>
+                  </div>
+                )}
+
+                {/* Top Info Grid */}
+                <div className="recovery-summary-grid">
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">DỊCH VỤ</div>
+                    <div className="recovery-summary-badge">Đăng ký học lại</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">KỲ ĐỢT DỊCH VỤ:</div>
+                    <div className="recovery-summary-value-box">SUMMER 2026</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">TRẠNG THÁI SINH VIÊN</div>
+                    <div className="recovery-summary-value-box">HL</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">SỐ DƯ</div>
+                    <div className="recovery-summary-value-box">VND 0 đ</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">NGÀNH HỌC</div>
+                    <div className="recovery-summary-value-box">Lập trình máy tính</div>
+                  </div>
+                </div>
+
+                {/* Main Form Fields Layout */}
+                <div className="recovery-fields-card">
+                  
+                  {/* Row 1: Loại dịch vụ */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      Loại dịch vụ
+                    </div>
+                    <div className="recovery-field-input-wrapper" style={{ fontSize: '13.5px', fontWeight: 600, color: '#334155' }}>
+                      Đăng ký học lại
+                    </div>
+                  </div>
+
+                  {/* Row 2: Chọn môn */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      Chọn môn
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <select 
+                        value={retakeSubject} 
+                        onChange={(e) => setRetakeSubject(e.target.value)} 
+                        className="recovery-select-element"
+                      >
+                        {RETAKE_SUBJECTS.map(subj => (
+                          <option key={subj} value={subj}>{subj}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 3: Chọn ca dự kiến */}
+                  <div className="recovery-field-row" style={{ alignItems: 'flex-start' }}>
+                    <div className="recovery-field-label" style={{ paddingTop: '16px' }}>
+                      Chọn ca dự kiến ❓
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <select 
+                        value={retakeSlot} 
+                        onChange={(e) => setRetakeSlot(e.target.value)} 
+                        className="recovery-select-element"
+                        style={{ marginBottom: '14px' }}
+                      >
+                        {RETAKE_SLOTS.map(sl => (
+                          <option key={sl} value={sl}>{sl}</option>
+                        ))}
+                      </select>
+                      
+                      {/* Checkbox grid */}
+                      <div style={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: 'repeat(3, 1fr)', 
+                        gap: '12px',
+                        backgroundColor: '#F8FAFC',
+                        padding: '12px 16px',
+                        borderRadius: '6px',
+                        border: '1px solid #E2E8F0'
+                      }}>
+                        {Object.keys(retakeDays).map(day => (
+                          <label key={day} style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '8px', 
+                            fontSize: '13px',
+                            fontWeight: 600,
+                            color: '#475569',
+                            cursor: 'pointer'
+                          }}>
+                            <input 
+                              type="checkbox" 
+                              checked={retakeDays[day]} 
+                              onChange={() => handleDayCheckboxChange(day)}
+                              style={{ 
+                                cursor: 'pointer',
+                                accentColor: 'var(--primary)'
+                              }}
+                            />
+                            {day}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Row 4: Số tiền */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      Số tiền
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <input 
+                        type="text" 
+                        value={retakeFee} 
+                        readOnly 
+                        className="recovery-input-element disabled-bg"
+                        style={{ fontWeight: 700, color: '#1E293B' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 5: Trong trường hợp không xếp được lớp */}
+                  <div className="recovery-field-row" style={{ alignItems: 'flex-start', borderBottom: 'none' }}>
+                    <div className="recovery-field-label" style={{ paddingTop: '16px', lineHeight: 1.4 }}>
+                      Trong trường hợp không xếp được lớp (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <label style={{ 
+                        display: 'flex', 
+                        alignItems: 'flex-start', 
+                        gap: '10px', 
+                        fontSize: '13px', 
+                        color: '#334155',
+                        cursor: 'pointer',
+                        fontWeight: 500,
+                        lineHeight: 1.4
+                      }}>
+                        <input 
+                          type="radio" 
+                          name="fallback-option" 
+                          value="cancel"
+                          checked={retakeFallbackOption === 'cancel'}
+                          onChange={() => setRetakeFallbackOption('cancel')}
+                          style={{ marginTop: '3px', cursor: 'pointer', accentColor: 'var(--primary)' }}
+                        />
+                        <span>Hủy đăng ký và hoàn lại 100% học phí học lại của đăng ký</span>
+                      </label>
+                      <label style={{ 
+                        display: 'flex', 
+                        alignItems: 'flex-start', 
+                        gap: '10px', 
+                        fontSize: '13px', 
+                        color: '#334155',
+                        cursor: 'pointer',
+                        fontWeight: 500,
+                        lineHeight: 1.4
+                      }}>
+                        <input 
+                          type="radio" 
+                          name="fallback-option" 
+                          value="reserve"
+                          checked={retakeFallbackOption === 'reserve'}
+                          onChange={() => setRetakeFallbackOption('reserve')}
+                          style={{ marginTop: '3px', cursor: 'pointer', accentColor: 'var(--primary)' }}
+                        />
+                        <span>Bảo lưu đăng ký, đợi xếp lớp trong các kỳ tiếp theo</span>
+                      </label>
+
+                      <div style={{ fontSize: '12px', color: '#DC2626', marginTop: '6px', fontWeight: 600, fontStyle: 'italic' }}>
+                        Lưu ý: Sinh viên hủy đăng ký sẽ không được bảo lưu ưu đãi Đăng ký học lại sớm
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Action Buttons */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
+                  <button 
+                    type="submit" 
+                    style={{ 
+                      backgroundColor: '#10B981', 
+                      color: '#FFFFFF', 
+                      border: 'none', 
+                      padding: '12px 60px', 
+                      borderRadius: '6px', 
+                      fontSize: '14px', 
+                      fontWeight: 700, 
+                      cursor: 'pointer',
+                      transition: 'var(--transition-smooth)',
+                      boxShadow: 'var(--shadow-sm)'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#059669'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#10B981'}
+                  >
+                    Hoàn tất đăng ký
+                  </button>
+
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: '#D97706', 
+                    maxWidth: '800px', 
+                    textAlign: 'center', 
+                    lineHeight: 1.5,
+                    fontWeight: 600
+                  }}>
+                    Trong trường hợp sinh viên đã thanh toán nhưng trạng thái đơn chưa đổi sang <span style={{ color: '#059669' }}>Đã thanh toán</span> sinh viên phải chủ động nhấn nút <span style={{ color: '#D97706', textDecoration: 'underline', cursor: 'pointer' }}>Kiểm tra thanh toán</span> tại trang Dịch vụ đã đăng ký để cập nhật trạng thái đơn
+                  </div>
                 </div>
 
               </form>
