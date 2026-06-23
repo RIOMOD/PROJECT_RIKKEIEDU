@@ -10,9 +10,9 @@ import {
   ChevronUp, 
   BookOpen, 
   DollarSign, 
-  Users,
-  Mail
+  Users
 } from 'lucide-react';
+import { Footer } from './Footer';
 
 interface ProfileProps {
   lang: 'vi' | 'en';
@@ -362,79 +362,8 @@ export const Profile = ({ lang }: ProfileProps) => {
 
       </main>
 
-      {/* Bilingual Contact Footer */}
-      <hr style={{ border: 'none', borderTop: '1px solid #cbd5e1', margin: '40px 0 20px 0' }} />
-      <footer className="portal-footer" style={{ padding: '20px 0', backgroundColor: 'transparent' }}>
-        <div className="footer-grid">
-          {/* Left Column - Vietnamese */}
-          <div className="footer-column">
-            <p className="footer-headline">
-              Mọi góp ý, thắc mắc xin liên hệ: Trung tâm Cao đẳng quốc tế tại Hồ Chí Minh – Trường Cao đẳng RIKKEI
-            </p>
-            <div className="footer-contact-list">
-              <div className="footer-contact-row">
-                <MapPin size={16} className="footer-contact-icon" style={{ color: '#f37021' }} />
-                <div>
-                  <span className="footer-contact-label">Địa chỉ:</span>
-                  <span>Tòa Genpacific, Công viên Phần Mềm Quang Trung, Phường Trung Mỹ Tây, Thành phố Hồ Chí Minh.</span>
-                </div>
-              </div>
-              <div className="footer-contact-row">
-                <Mail size={16} className="footer-contact-icon" style={{ color: '#f37021' }} />
-                <div>
-                  <span className="footer-contact-label">Email:</span>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                    <span>• Phòng TC&QLĐT: <a href="mailto:Academic.rk.hcm@rikkei.edu.vn" className="footer-link">Academic.rk.hcm@rikkei.edu.vn</a></span>
-                    <span>• DVSV/CTSV: <a href="mailto:Sro.rk.hcm@rikkei.edu.vn" className="footer-link">Sro.rk.hcm@rikkei.edu.vn</a></span>
-                    <span>• Bộ phận thu ngân: <a href="mailto:Accounting.rk.hcm@rikkei.edu.vn" className="footer-link">Accounting.rk.hcm@rikkei.edu.vn</a></span>
-                  </div>
-                </div>
-              </div>
-              <div className="footer-contact-row">
-                <Phone size={16} className="footer-contact-icon" style={{ color: '#f37021' }} />
-                <div>
-                  <span className="footer-contact-label">Hotline:</span>
-                  <span>028 730 99 679</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column - English */}
-          <div className="footer-column">
-            <p className="footer-headline">
-              For more information or any queries, please contact: RIKKEI International in Ho Chi Minh Cao đẳng RIKKEI
-            </p>
-            <div className="footer-contact-list">
-              <div className="footer-contact-row">
-                <MapPin size={16} className="footer-contact-icon" style={{ color: '#f37021' }} />
-                <div>
-                  <span className="footer-contact-label">Address:</span>
-                  <span>Genpacific Building, Quang Trung Software City, Trung My Tay Ward, Ho Chi Minh City.</span>
-                </div>
-              </div>
-              <div className="footer-contact-row">
-                <Mail size={16} className="footer-contact-icon" style={{ color: '#f37021' }} />
-                <div>
-                  <span className="footer-contact-label">Email:</span>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                    <span>• Academic Department: <a href="mailto:Academic.rk.hcm@rikkei.edu.vn" className="footer-link">Academic.rk.hcm@rikkei.edu.vn</a></span>
-                    <span>• SRO Department: <a href="mailto:Sro.rk.hcm@rikkei.edu.vn" className="footer-link">Sro.rk.hcm@rikkei.edu.vn</a></span>
-                    <span>• Finance Department: <a href="mailto:Accounting.rk.hcm@rikkei.edu.vn" className="footer-link">Accounting.rk.hcm@rikkei.edu.vn</a></span>
-                  </div>
-                </div>
-              </div>
-              <div className="footer-contact-row">
-                <Phone size={16} className="footer-contact-icon" style={{ color: '#f37021' }} />
-                <div>
-                  <span className="footer-contact-label">Hotline:</span>
-                  <span>028 730 99 679</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      {/* Reusable Rikkei Edu Footer */}
+      <Footer lang={lang} />
     </div>
   );
 };

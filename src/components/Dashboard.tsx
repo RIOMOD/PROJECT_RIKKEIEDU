@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { LearningIllustration } from './LearningIllustration';
 import { Search } from 'lucide-react';
+import { Footer } from './Footer';
 
 interface DashboardProps {
   lang: 'vi' | 'en';
@@ -159,6 +160,7 @@ export const Dashboard = ({ lang }: DashboardProps) => {
 
         </div>
       </main>
+      <Footer lang={lang} />
     </div>
   );
 };
