@@ -35,13 +35,7 @@ function App() {
     'bc-mark': { vi: 'Home / Mark Report', en: 'Home / Mark Report' },
     'bang-diem-ht': { vi: 'Home / Academic Transcript', en: 'Home / Academic Transcript' },
     'chuong-trinh-gd': { vi: 'Chương trình giảng dạy', en: 'Curriculum' },
-    'ls-hoc-phi': { vi: 'Lịch sử học phí', en: 'Tuition Fees History' },
-    'ds-cho-hoc-lai': { vi: 'Danh sách chờ cho các lớp học lại', en: 'Waiting List for Retake Classes' },
-    'hoi-dap': { vi: 'Hỏi & Đáp', en: 'Q&A' },
-    'so-tay-sv': { vi: 'Sổ tay sinh viên', en: 'Student Handbook' },
-    'so-du-no': { vi: 'Số dư tài khoản - Danh sách nợ', en: 'Account Balance - DebtList' },
-    'trang-thai-tt': { vi: 'Trạng thái đăng ký thanh toán', en: 'View List The Status of Payment Registrations' },
-    'xem-ung-dung': { vi: 'Xem ứng dụng', en: 'View application' }
+    'so-tay-sv': { vi: 'Sổ tay sinh viên', en: 'Student Handbook' }
   };
 
   // Helper to render page content based on selected sidebar item

@@ -14,10 +14,7 @@ import {
   GraduationCap, 
   Users,
   Sparkles,
-  HelpCircle,
   BookOpen,
-  Eye,
-  DollarSign,
   FileSpreadsheet,
   X
 } from 'lucide-react';
@@ -310,42 +307,9 @@ export const Sidebar = ({
                   <span>{t('Chương trình giảng dạy', 'Curriculum')}</span>
                 </span>
               </div>
-
-              {/* Lịch sử học phí */}
-              <div 
-                onClick={() => handleLinkClick('ls-hoc-phi')}
-                className={`sidebar-link ${activeItem === 'ls-hoc-phi' ? 'active' : ''}`}
-              >
-                <span className="sidebar-link-content">
-                  <CreditCard size={16} className="text-orange-500" />
-                  <span>{t('Lịch sử học phí', 'Tuition Fees History')}</span>
-                </span>
-              </div>
-
-              {/* Danh sách chờ học lại */}
-              <div 
-                onClick={() => handleLinkClick('ds-cho-hoc-lai')}
-                className={`sidebar-link ${activeItem === 'ds-cho-hoc-lai' ? 'active' : ''}`}
-              >
-                <span className="sidebar-link-content">
-                  <Users size={16} className="text-orange-500" />
-                  <span>{t('Danh sách chờ cho các lớp học lại', 'Waiting List for Retake Classes')}</span>
-                </span>
-              </div>
             </div>
           </div>
 
-          {/* HỎI & ĐÁP SECTION */}
-          <div 
-            onClick={() => handleLinkClick('hoi-dap')}
-            className={`sidebar-link`}
-            style={{ fontWeight: '700', paddingLeft: '16px', margin: '8px 10px 4px 10px' }}
-          >
-            <span className="sidebar-link-content">
-              <HelpCircle size={16} className="text-orange-500" />
-              <span>{t('? Hỏi & Đáp', '? Q&A')}</span>
-            </span>
-          </div>
 
           {/* SỔ TAY SINH VIÊN SECTION */}
           <div 
@@ -359,55 +323,6 @@ export const Sidebar = ({
             </span>
           </div>
 
-          {/* NGƯỜI KHÁC SECTION */}
-          <div>
-            <div 
-              className="sidebar-heading cursor-pointer"
-              onClick={() => toggleSubmenu('nguoiKhac')}
-              style={{ cursor: 'pointer' }}
-            >
-              <div className="sidebar-heading-left">
-                <Sparkles size={13} className="text-slate-400" />
-                <span>{t('Người khác', 'Others')}</span>
-              </div>
-              {openSubmenus.nguoiKhac ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-            </div>
-
-            <div className={`submenu-container ${openSubmenus.nguoiKhac ? 'open' : ''}`}>
-              {/* Số dư tài khoản */}
-              <div 
-                onClick={() => handleLinkClick('so-du-no')}
-                className={`sidebar-link ${activeItem === 'so-du-no' ? 'active' : ''}`}
-              >
-                <span className="sidebar-link-content">
-                  <DollarSign size={16} className="text-orange-500" />
-                  <span>{t('Số dư tài khoản - Danh sách nợ', 'Account Balance - DebtList')}</span>
-                </span>
-              </div>
-
-              {/* Trạng thái thanh toán */}
-              <div 
-                onClick={() => handleLinkClick('trang-thai-tt')}
-                className={`sidebar-link ${activeItem === 'trang-thai-tt' ? 'active' : ''}`}
-              >
-                <span className="sidebar-link-content">
-                  <FileText size={16} className="text-orange-500" />
-                  <span>{t('Xem danh sách Trạng thái đăng ký thanh toán', 'View List The Status of Payment Registrations')}</span>
-                </span>
-              </div>
-
-              {/* Xem ứng dụng */}
-              <div 
-                onClick={() => handleLinkClick('xem-ung-dung')}
-                className={`sidebar-link ${activeItem === 'xem-ung-dung' ? 'active' : ''}`}
-              >
-                <span className="sidebar-link-content">
-                  <Eye size={16} className="text-orange-500" />
-                  <span>{t('Xem ứng dụng', 'View application')}</span>
-                </span>
-              </div>
-            </div>
-          </div>
 
         </div>
       </aside>
