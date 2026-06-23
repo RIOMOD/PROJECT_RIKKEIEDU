@@ -2929,3 +2929,50 @@ body {
 .mark-link:hover {
   color: #004499;
 }
+
+/* Sidebar Collapsed Styles (Desktop only) */
+@media (min-width: 1024px) {
+  .app-container.sidebar-collapsed .sidebar {
+    width: 80px;
+  }
+  
+  .app-container.sidebar-collapsed .main-content-wrapper {
+    margin-left: 80px;
+  }
+  
+  .app-container.sidebar-collapsed .sidebar-brand-logo {
+    display: none !important;
+  }
+  
+  .app-container.sidebar-collapsed .sidebar-brand {
+    justify-content: center !important;
+    padding: 16px 0 !important;
+  }
+  
+  .app-container.sidebar-collapsed .sidebar-heading {
+    display: none !important;
+  }
+  
+  .app-container.sidebar-collapsed .sidebar-link {
+    justify-content: center !important;
+    padding: 12px 0 !important;
+    margin: 4px 12px !important;
+  }
+  
+  .app-container.sidebar-collapsed .sidebar-link-content {
+    justify-content: center !important;
+    width: 100% !important;
+  }
+  
+  .app-container.sidebar-collapsed .sidebar-link-content span {
+    display: none !important;
+  }
+  
+  .app-container.sidebar-collapsed .sidebar-link > svg {
+    display: none !important;
+  }
+  
+  .app-container.sidebar-collapsed .submenu-container {
+    display: none !important;
+  }
+}

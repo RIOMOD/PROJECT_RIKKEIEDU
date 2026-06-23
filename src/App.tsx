@@ -20,6 +20,7 @@ import { Construction, ArrowLeft } from 'lucide-react';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeItem, setActiveItem] = useState('trang-chu');
   const [lang, setLang] = useState<'vi' | 'en'>('vi');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -144,7 +145,7 @@ function App() {
   }
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       {/* Navigation Drawer Sidebar */}
       <Sidebar 
         isOpen={sidebarOpen} 
@@ -153,6 +154,8 @@ function App() {
         setActiveItem={setActiveItem}
         lang={lang}
         role={userRole}
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
 
       {/* Main Content Area */}

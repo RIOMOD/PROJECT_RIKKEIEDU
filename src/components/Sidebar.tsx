@@ -4,6 +4,7 @@ import {
   Home, 
   ChevronDown, 
   ChevronRight, 
+  ChevronLeft,
   ClipboardList, 
   UserCheck, 
   MessageSquare, 
@@ -12,8 +13,7 @@ import {
   FileText, 
   Sparkles,
   BookOpen,
-  FileSpreadsheet,
-  X
+  FileSpreadsheet
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -23,6 +23,8 @@ interface SidebarProps {
   setActiveItem: (item: string) => void;
   lang: 'vi' | 'en';
   role?: 'student' | 'parent';
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 export const Sidebar = ({ 
@@ -31,7 +33,9 @@ export const Sidebar = ({
   activeItem, 
   setActiveItem,
   lang,
-  role = 'student'
+  role = 'student',
+  isCollapsed = false,
+  onToggleCollapse
 }: SidebarProps) => {
   // Submenu states - default open as shown in mockup
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({
@@ -86,7 +90,7 @@ export const Sidebar = ({
       )}
 
       {/* Sidebar Container */}
-      <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+      <aside className={`sidebar ${isOpen ? 'open' : ''} ${isCollapsed ? 'collapsed' : ''}`}>
         
         {/* Sidebar Header with Rikkei Logo */}
         <div 
@@ -100,12 +104,16 @@ export const Sidebar = ({
           <button 
             onClick={(e) => {
               e.stopPropagation();
-              onClose();
+              if (window.innerWidth >= 1024 && onToggleCollapse) {
+                onToggleCollapse();
+              } else {
+                onClose();
+              }
             }} 
             className="sidebar-close-btn" 
-            aria-label="Close sidebar"
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <X size={18} />
+            {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
           </button>
         </div>
 
