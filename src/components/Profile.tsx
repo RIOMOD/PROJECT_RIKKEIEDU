@@ -12,7 +12,6 @@ import {
   DollarSign, 
   Users
 } from 'lucide-react';
-import { Footer } from './Footer';
 
 interface ProfileProps {
   lang: 'vi' | 'en';
@@ -227,8 +226,8 @@ export const Profile = ({ lang }: ProfileProps) => {
                   <div style={{ width: '60%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center' }}>BC_V6_01</div>
                 </div>
                 <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0' }}>
-                  <div style={{ width: '40%', backgroundColor: '#f8fafc', padding: '10px 16px', fontWeight: 'bold', fontSize: '12px', color: '#475569', display: 'flex', alignItems: 'center' }}>INITAL MAJOR</div>
-                  <div style={{ width: '60%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center' }}>{t('Kỹ thuật phần mềm', 'Software Engineering')}</div>
+                  <div style={{ width: '40%', backgroundColor: '#f8fafc', padding: '10px 16px', fontWeight: 'bold', fontSize: '12px', color: '#475569', display: 'flex', alignItems: 'center' }}>INITIAL MAJOR</div>
+                  <div style={{ width: '60%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center' }}>{t('Lập trình máy tính', 'Computer Programming')}</div>
                 </div>
 
                 <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0', borderRight: '1px solid #e2e8f0' }}>
@@ -361,9 +360,6 @@ export const Profile = ({ lang }: ProfileProps) => {
         </div>
 
       </main>
-
-      {/* Reusable Rikkei Edu Footer */}
-      <Footer lang={lang} />
     </div>
   );
 };

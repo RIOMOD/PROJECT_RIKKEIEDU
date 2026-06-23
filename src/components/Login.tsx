@@ -6,7 +6,7 @@ import imglogin2 from '../assets/imglogin2.png';
 import imglogin3 from '../assets/imglogin3.png';
 
 interface LoginProps {
-  onLogin: (lang: 'vi' | 'en') => void;
+  onLogin: (lang: 'vi' | 'en', role: 'student' | 'parent') => void;
   currentLang: 'vi' | 'en';
   onLangChange: (lang: 'vi' | 'en') => void;
 }
@@ -64,7 +64,7 @@ export const Login = ({ onLogin, currentLang, onLangChange }: LoginProps) => {
     }
     setErrorMsg('');
     // Successful login callback
-    onLogin(currentLang);
+    onLogin(currentLang, activeTab);
   };
 
   return (

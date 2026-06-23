@@ -14,6 +14,8 @@ import { AcademicTranscript } from './components/AcademicTranscript';
 import { Curriculum } from './components/Curriculum';
 import { Profile } from './components/Profile';
 import { Login } from './components/Login';
+import { TuitionReport } from './components/TuitionReport';
+import { Footer } from './components/Footer';
 import { Construction, ArrowLeft } from 'lucide-react';
 
 function App() {
@@ -21,6 +23,7 @@ function App() {
   const [activeItem, setActiveItem] = useState('trang-chu');
   const [lang, setLang] = useState<'vi' | 'en'>('vi');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState<'student' | 'parent'>('student');
 
   // Human-readable title mapping for breadcrumbs & page headers (Bilingual)
   const menuTitles: Record<string, { vi: string; en: string }> = {
@@ -36,13 +39,14 @@ function App() {
     'bang-diem-ht': { vi: 'Home / Academic Transcript', en: 'Home / Academic Transcript' },
     'chuong-trinh-gd': { vi: 'Home / Curriculum', en: 'Home / Curriculum' },
     'so-tay-sv': { vi: 'Sổ tay sinh viên', en: 'Student Handbook' },
-    'profile': { vi: 'Home / RIKKEI Academic Portal', en: 'Home / RIKKEI Academic Portal' }
+    'profile': { vi: 'Home / RIKKEI Academic Portal', en: 'Home / RIKKEI Academic Portal' },
+    'hoc-phi': { vi: 'Trang chủ / Báo cáo đóng học phí', en: 'Home / Tuition Payment Report' }
   };
 
   // Helper to render page content based on selected sidebar item
   const renderContent = () => {
     if (activeItem === 'trang-chu') {
-      return <Dashboard lang={lang} />;
+      return <Dashboard lang={lang} role={userRole} setActiveItem={setActiveItem} />;
     }
     
     if (activeItem === 'dv-truc-tuyen') {
@@ -89,6 +93,10 @@ function App() {
       return <Profile lang={lang} />;
     }
 
+    if (activeItem === 'hoc-phi') {
+      return <TuitionReport lang={lang} />;
+    }
+
     const currentTitle = menuTitles[activeItem]?.[lang] || 'Cổng thông tin';
 
     // Interactive Placeholder for sub-features
@@ -124,8 +132,9 @@ function App() {
   if (!isLoggedIn) {
     return (
       <Login 
-        onLogin={(userLang) => {
+        onLogin={(userLang, role) => {
           setLang(userLang);
+          setUserRole(role);
           setIsLoggedIn(true);
         }}
         currentLang={lang}
@@ -143,6 +152,7 @@ function App() {
         activeItem={activeItem}
         setActiveItem={setActiveItem}
         lang={lang}
+        role={userRole}
       />
 
       {/* Main Content Area */}
@@ -160,6 +170,7 @@ function App() {
         {/* Dynamic Inner Page Content */}
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflowY: 'auto' }}>
           {renderContent()}
+          <Footer lang={lang} />
         </div>
       </div>
     </div>

@@ -212,7 +212,7 @@ export const Header = ({ onMenuToggle, title, lang, onLangChange, setActiveItem,
                       {lang === 'en' ? 'Major' : 'Chuyên ngành'}
                     </span>
                     <span className="profile-detail-val">
-                      {lang === 'en' ? 'Software Engineering' : 'Kỹ thuật phần mềm'}
+                      {lang === 'en' ? 'Computer Programming' : 'Lập trình máy tính'}
                     </span>
                   </div>
                 </div>

@@ -22,6 +22,7 @@ interface SidebarProps {
   activeItem: string;
   setActiveItem: (item: string) => void;
   lang: 'vi' | 'en';
+  role?: 'student' | 'parent';
 }
 
 export const Sidebar = ({ 
@@ -29,7 +30,8 @@ export const Sidebar = ({
   onClose, 
   activeItem, 
   setActiveItem,
-  lang
+  lang,
+  role = 'student'
 }: SidebarProps) => {
   // Submenu states - default open as shown in mockup
   const [openSubmenus, setOpenSubmenus] = useState<Record<string, boolean>>({
@@ -83,25 +85,100 @@ export const Sidebar = ({
 
         {/* Scrollable Navigation Menu */}
         <div className="sidebar-menu">
-          
-          {/* TRANG CHỦ heading & link */}
-          <div className="sidebar-heading">
-            <div className="sidebar-heading-left">
-              <Sparkles size={13} className="text-slate-400" />
-              <span>{t('Trang chủ', 'Home')}</span>
-            </div>
-          </div>
-          <div 
-            onClick={() => handleLinkClick('trang-chu')}
-            className={`sidebar-link ${activeItem === 'trang-chu' ? 'active' : ''}`}
-          >
-            <span className="sidebar-link-content">
-              <Home size={16} className="text-orange-500" />
-              <span>{t('Trang chủ', 'Home')}</span>
-            </span>
-          </div>
+          {role === 'parent' ? (
+            <>
+              {/* TRANG CHỦ link */}
+              <div 
+                onClick={() => handleLinkClick('trang-chu')}
+                className={`sidebar-link ${activeItem === 'trang-chu' ? 'active' : ''}`}
+                style={{ margin: '4px 10px' }}
+              >
+                <span className="sidebar-link-content">
+                  <Home size={16} className="text-orange-500" />
+                  <span>{t('Trang chủ', 'Home')}</span>
+                </span>
+              </div>
 
-          {/* ĐĂNG KÝ / PHẢN HỒI SECTION */}
+              {/* TKB HẰNG TUẦN */}
+              <div 
+                onClick={() => handleLinkClick('tkb-hang-tuan')}
+                className={`sidebar-link ${activeItem === 'tkb-hang-tuan' ? 'active' : ''}`}
+                style={{ margin: '4px 10px' }}
+              >
+                <span className="sidebar-link-content">
+                  <Clock size={16} className="text-orange-500" />
+                  <span>{t('Thời khóa biểu hàng tuần', 'Weekly Timetable')}</span>
+                </span>
+              </div>
+
+              {/* BÁO CÁO ĐIỂM DANH */}
+              <div 
+                onClick={() => handleLinkClick('bc-diem-danh')}
+                className={`sidebar-link ${activeItem === 'bc-diem-danh' ? 'active' : ''}`}
+                style={{ margin: '4px 10px' }}
+              >
+                <span className="sidebar-link-content">
+                  <UserCheck size={16} className="text-orange-500" />
+                  <span>{t('Báo cáo điểm danh', 'Attendance Report')}</span>
+                </span>
+              </div>
+
+              {/* BÁO CÁO MARK */}
+              <div 
+                onClick={() => handleLinkClick('bc-mark')}
+                className={`sidebar-link ${activeItem === 'bc-mark' ? 'active' : ''}`}
+                style={{ margin: '4px 10px' }}
+              >
+                <span className="sidebar-link-content">
+                  <FileSpreadsheet size={16} className="text-orange-500" />
+                  <span>{t('Báo cáo Mark', 'Mark Report')}</span>
+                </span>
+              </div>
+
+              {/* BẢNG ĐIỂM HỌC TẬP */}
+              <div 
+                onClick={() => handleLinkClick('bang-diem-ht')}
+                className={`sidebar-link ${activeItem === 'bang-diem-ht' ? 'active' : ''}`}
+                style={{ margin: '4px 10px' }}
+              >
+                <span className="sidebar-link-content">
+                  <FileText size={16} className="text-orange-500" />
+                  <span>{t('Bảng điểm học tập', 'Academic Transcript')}</span>
+                </span>
+              </div>
+
+              {/* TIẾN ĐỘ ĐÓNG HỌC PHÍ */}
+              <div 
+                onClick={() => handleLinkClick('hoc-phi')}
+                className={`sidebar-link ${activeItem === 'hoc-phi' ? 'active' : ''}`}
+                style={{ margin: '4px 10px' }}
+              >
+                <span className="sidebar-link-content">
+                  <BookOpen size={16} className="text-orange-500" />
+                  <span>{t('Báo cáo học phí', 'Tuition Report')}</span>
+                </span>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* TRANG CHỦ heading & link */}
+              <div className="sidebar-heading">
+                <div className="sidebar-heading-left">
+                  <Sparkles size={13} className="text-slate-400" />
+                  <span>{t('Trang chủ', 'Home')}</span>
+                </div>
+              </div>
+              <div 
+                onClick={() => handleLinkClick('trang-chu')}
+                className={`sidebar-link ${activeItem === 'trang-chu' ? 'active' : ''}`}
+              >
+                <span className="sidebar-link-content">
+                  <Home size={16} className="text-orange-500" />
+                  <span>{t('Trang chủ', 'Home')}</span>
+                </span>
+              </div>
+
+              {/* ĐĂNG KÝ / PHẢN HỒI SECTION */}
           <div>
             <div 
               className="sidebar-heading cursor-pointer"
@@ -285,6 +362,8 @@ export const Sidebar = ({
           </div>
 
 
+            </>
+          )}
         </div>
       </aside>
     </>

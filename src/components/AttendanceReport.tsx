@@ -14,12 +14,14 @@ interface AttendanceSession {
   statusVi: string;
   statusEn: string;
   isPresent: boolean;
+  commentVi?: string;
+  commentEn?: string;
 }
 
 export const AttendanceReport = ({ lang }: AttendanceReportProps) => {
   const [selectedCampus, setSelectedCampus] = useState('RK');
-  const [selectedTerm, setSelectedTerm] = useState('MÙA THU NĂM 2025');
-  const [selectedCourse, setSelectedCourse] = useState('SE07203 - PHÁT TRIỂN ỨNG DỤNG (7436)');
+  const [selectedTerm, setSelectedTerm] = useState('MÙA HÈ 2025');
+  const [selectedCourse, setSelectedCourse] = useState('SE07202 - Business Process Support (7408)');
 
   // Translation helper
   const t = (viText: string, enText: string) => {
@@ -33,150 +35,162 @@ export const AttendanceReport = ({ lang }: AttendanceReportProps) => {
   ];
 
   const terms = [
-    { value: 'MÙA THU NĂM 2025', label: t('MÙA THU NĂM 2025', 'MÙA THU NĂM 2025') },
     { value: 'MÙA HÈ 2025', label: t('MÙA HÈ 2025', 'SUMMER 2025') },
+    { value: 'MÙA THU NĂM 2025', label: t('MÙA THU NĂM 2025', 'MÙA THU NĂM 2025') },
     { value: 'MÙA XUÂN 2025', label: t('MÙA XUÂN 2025', 'SPRING 2025') }
   ];
 
   const courses = [
+    { value: 'SE07202 - Business Process Support (7408)', label: 'SE07202 - Business Process Support (7408)' },
     { value: 'SE07203 - PHÁT TRIỂN ỨNG DỤNG (7436)', label: 'SE07203 - ' + t('PHÁT TRIỂN ỨNG DỤNG (7436)', 'APPLICATION DEVELOPMENT (7436)') },
-    { value: 'SE07101 - DỰ ÁN NGHIÊN CỨU MÁY TÍNH', label: 'SE07101 - ' + t('DỰ ÁN NGHIÊN CỨU MÁY TÍNH', 'COMPUTER RESEARCH PROJECT') },
-    { value: 'SE08202 - PHÁT TRIỂN ỨNG DỤNG WEB JAVA', label: 'SE08202 - ' + t('PHÁT TRIỂN ỨNG DỤNG WEB JAVA', 'JAVA WEB APPLICATION DEVELOPMENT') }
+    { value: 'SE07101 - DỰ ÁN NGHIÊN CỨU MÁY TÍNH', label: 'SE07101 - ' + t('DỰ ÁN NGHIÊN CỨU MÁY TÍNH', 'COMPUTER RESEARCH PROJECT') }
   ];
 
-  // Mock sessions from screenshot (sessions 8 to 19)
+  // Mock sessions from screenshot (sessions 7 to 18)
   const sessions: AttendanceSession[] = [
     {
-      index: 8,
-      dateVi: 'Thứ Bảy (04/10)',
-      dateEn: 'Saturday (04/10)',
-      slot: 4,
+      index: 7,
+      dateVi: 'Thứ Bảy (31/05)',
+      dateEn: 'Saturday (31/05)',
+      slot: 3,
       teacher: 'VuNV35',
-      subjectCode: 'SE07203',
-      statusVi: 'Vắng mặt',
-      statusEn: 'Absent',
-      isPresent: false
+      subjectCode: 'SE07202',
+      statusVi: 'Hiện tại',
+      statusEn: 'Present',
+      isPresent: true
+    },
+    {
+      index: 8,
+      dateVi: 'Thứ Bảy (31/05)',
+      dateEn: 'Saturday (31/05)',
+      slot: 7,
+      teacher: 'VF_HCM_04',
+      subjectCode: 'SE07202',
+      statusVi: 'Hiện tại',
+      statusEn: 'Present',
+      isPresent: true,
+      commentVi: 'Hệ thống tự động điểm danh, slot Online',
+      commentEn: 'Automatic check-in, Online slot'
     },
     {
       index: 9,
-      dateVi: 'Thứ Bảy (11/10)',
-      dateEn: 'Saturday (11/10)',
+      dateVi: 'Thứ Bảy (07/06)',
+      dateEn: 'Saturday (07/06)',
       slot: 3,
       teacher: 'VuNV35',
-      subjectCode: 'SE07203',
+      subjectCode: 'SE07202',
       statusVi: 'Hiện tại',
       statusEn: 'Present',
       isPresent: true
     },
     {
       index: 10,
-      dateVi: 'Thứ Bảy (11/10)',
-      dateEn: 'Saturday (11/10)',
-      slot: 4,
-      teacher: 'VuNV35',
-      subjectCode: 'SE07203',
+      dateVi: 'Thứ Bảy (07/06)',
+      dateEn: 'Saturday (07/06)',
+      slot: 7,
+      teacher: 'VF_HCM_04',
+      subjectCode: 'SE07202',
       statusVi: 'Hiện tại',
       statusEn: 'Present',
-      isPresent: true
+      isPresent: true,
+      commentVi: 'Hệ thống tự động điểm danh, slot Online',
+      commentEn: 'Automatic check-in, Online slot'
     },
     {
       index: 11,
-      dateVi: 'Thứ Bảy (18/10)',
-      dateEn: 'Saturday (18/10)',
+      dateVi: 'Thứ Bảy (14/06)',
+      dateEn: 'Saturday (14/06)',
       slot: 3,
       teacher: 'VuNV35',
-      subjectCode: 'SE07203',
-      statusVi: 'Vắng mặt',
-      statusEn: 'Absent',
-      isPresent: false
+      subjectCode: 'SE07202',
+      statusVi: 'Hiện tại',
+      statusEn: 'Present',
+      isPresent: true
     },
     {
       index: 12,
-      dateVi: 'Thứ Bảy (18/10)',
-      dateEn: 'Saturday (18/10)',
-      slot: 4,
-      teacher: 'VuNV35',
-      subjectCode: 'SE07203',
-      statusVi: 'Vắng mặt',
-      statusEn: 'Absent',
-      isPresent: false
+      dateVi: 'Thứ Bảy (14/06)',
+      dateEn: 'Saturday (14/06)',
+      slot: 7,
+      teacher: 'VF_HCM_04',
+      subjectCode: 'SE07202',
+      statusVi: 'Hiện tại',
+      statusEn: 'Present',
+      isPresent: true,
+      commentVi: 'Hệ thống tự động điểm danh, slot Online',
+      commentEn: 'Automatic check-in, Online slot'
     },
     {
       index: 13,
-      dateVi: 'Thứ Bảy (25/10)',
-      dateEn: 'Saturday (25/10)',
+      dateVi: 'Thứ Bảy (21/06)',
+      dateEn: 'Saturday (21/06)',
       slot: 3,
       teacher: 'VuNV35',
-      subjectCode: 'SE07203',
-      statusVi: 'Vắng mặt',
-      statusEn: 'Absent',
-      isPresent: false
+      subjectCode: 'SE07202',
+      statusVi: 'Hiện tại',
+      statusEn: 'Present',
+      isPresent: true
     },
     {
       index: 14,
-      dateVi: 'Thứ Bảy (25/10)',
-      dateEn: 'Saturday (25/10)',
-      slot: 4,
+      dateVi: 'Thứ Bảy (21/06)',
+      dateEn: 'Saturday (21/06)',
+      slot: 7,
+      teacher: 'VF_HCM_04',
+      subjectCode: 'SE07202',
+      statusVi: 'Hiện tại',
+      statusEn: 'Present',
+      isPresent: true,
+      commentVi: 'Hệ thống tự động điểm danh, slot Online',
+      commentEn: 'Automatic check-in, Online slot'
+    },
+    {
+      index: 15,
+      dateVi: 'Thứ Bảy (28/06)',
+      dateEn: 'Saturday (28/06)',
+      slot: 3,
       teacher: 'VuNV35',
-      subjectCode: 'SE07203',
+      subjectCode: 'SE07202',
       statusVi: 'Vắng mặt',
       statusEn: 'Absent',
       isPresent: false
     },
     {
-      index: 15,
-      dateVi: 'Thứ Bảy (01/11)',
-      dateEn: 'Saturday (01/11)',
-      slot: 3,
-      teacher: 'VuNV35',
-      subjectCode: 'SE07203',
-      statusVi: 'Hiện tại',
-      statusEn: 'Present',
-      isPresent: true
-    },
-    {
       index: 16,
-      dateVi: 'Thứ Bảy (01/11)',
-      dateEn: 'Saturday (01/11)',
-      slot: 4,
-      teacher: 'VuNV35',
-      subjectCode: 'SE07203',
+      dateVi: 'Thứ Bảy (28/06)',
+      dateEn: 'Saturday (28/06)',
+      slot: 7,
+      teacher: 'VF_HCM_04',
+      subjectCode: 'SE07202',
       statusVi: 'Hiện tại',
       statusEn: 'Present',
-      isPresent: true
+      isPresent: true,
+      commentVi: 'Hệ thống tự động điểm danh, slot Online',
+      commentEn: 'Automatic check-in, Online slot'
     },
     {
       index: 17,
-      dateVi: 'Thứ Bảy (08/11)',
-      dateEn: 'Saturday (08/11)',
+      dateVi: 'Thứ Bảy (05/07)',
+      dateEn: 'Saturday (05/07)',
       slot: 3,
       teacher: 'VuNV35',
-      subjectCode: 'SE07203',
+      subjectCode: 'SE07202',
       statusVi: 'Hiện tại',
       statusEn: 'Present',
       isPresent: true
     },
     {
       index: 18,
-      dateVi: 'Thứ Bảy (08/11)',
-      dateEn: 'Saturday (08/11)',
-      slot: 4,
-      teacher: 'VuNV35',
-      subjectCode: 'SE07203',
+      dateVi: 'Thứ Bảy (05/07)',
+      dateEn: 'Saturday (05/07)',
+      slot: 7,
+      teacher: 'VF_HCM_04',
+      subjectCode: 'SE07202',
       statusVi: 'Hiện tại',
       statusEn: 'Present',
-      isPresent: true
-    },
-    {
-      index: 19,
-      dateVi: 'Thứ Bảy (15/11)',
-      dateEn: 'Saturday (15/11)',
-      slot: 3,
-      teacher: 'VuNV35',
-      subjectCode: 'SE07203',
-      statusVi: 'Hiện tại',
-      statusEn: 'Present',
-      isPresent: true
+      isPresent: true,
+      commentVi: 'Hệ thống tự động điểm danh, slot Online',
+      commentEn: 'Automatic check-in, Online slot'
     }
   ];
 
@@ -199,7 +213,7 @@ export const AttendanceReport = ({ lang }: AttendanceReportProps) => {
           {/* Campus Selector */}
           <div className="attendance-filter-group">
             <label className="attendance-filter-label">
-              🏛️ {t('KHUÔN VIÊN/CHƯƠNG TRÌNH', 'CAMPUS/PROGRAM')}
+              🏛️ {t('CƠ SỞ / CHƯƠNG TRÌNH', 'CAMPUS / PROGRAM')}
             </label>
             <select
               value={selectedCampus}
@@ -215,7 +229,7 @@ export const AttendanceReport = ({ lang }: AttendanceReportProps) => {
           {/* Term Selector */}
           <div className="attendance-filter-group">
             <label className="attendance-filter-label">
-              📅 {t('THUẬT NGỮ', 'TERM')}
+              📅 {t('HỌC KỲ', 'TERM')}
             </label>
             <select
               value={selectedTerm}
@@ -231,7 +245,7 @@ export const AttendanceReport = ({ lang }: AttendanceReportProps) => {
           {/* Course Selector */}
           <div className="attendance-filter-group">
             <label className="attendance-filter-label">
-              📖 {t('KHÓA HỌC', 'COURSE')}
+              📖 {t('MÔN HỌC', 'COURSE')}
             </label>
             <select
               value={selectedCourse}
@@ -251,11 +265,11 @@ export const AttendanceReport = ({ lang }: AttendanceReportProps) => {
           <span className="attendance-stats-text">
             {lang === 'en' ? (
               <>
-                ABSENT: <span className="highlight-red">20.00%</span> absent up to current time (6 absent out of 30 people).
+                ABSENT: <span className="highlight-red">20.00%</span> absent so far (3 absent on 15 total).
               </>
             ) : (
               <>
-                VẮNG MẶT: <span className="highlight-red">20,00%</span> vắng mặt tính đến thời điểm hiện tại (6 người vắng mặt trên tổng số 30).
+                VẮNG MẶT: <span className="highlight-red">20,00%</span> vắng mặt tính đến thời điểm hiện tại (3 vắng mặt trên tổng số 15).
               </>
             )}
           </span>
@@ -299,8 +313,10 @@ export const AttendanceReport = ({ lang }: AttendanceReportProps) => {
                     </span>
                   </td>
                   
-                  {/* Column 7: Empty cell for visual alignment */}
-                  <td className="attendance-td attendance-col-empty"></td>
+                  {/* Column 7: Comment / Description */}
+                  <td className="attendance-td attendance-col-empty" style={{ textAlign: 'left', fontStyle: 'italic', color: '#64748B', fontSize: '12px' }}>
+                    {session.commentVi || session.commentEn ? t(session.commentVi || '', session.commentEn || '') : ''}
+                  </td>
                 </tr>
               ))}
             </tbody>

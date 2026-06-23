@@ -23,14 +23,14 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
   };
 
   const headers = [
-    t('No', 'No'),
-    t('Term', 'Term'),
-    t('Semester', 'Semester'),
-    t('Subject Code', 'Subject Code'),
-    t('Replaced Subject', 'Replaced Subject'),
-    t('Subject Name', 'Subject Name'),
-    t('Credit', 'Credit'),
-    t('Grade (Number)', 'Grade (Number)')
+    t('STT', 'No'),
+    t('Học kỳ học thuật', 'Term'),
+    t('Học kỳ', 'Semester'),
+    t('Mã môn học', 'Subject Code'),
+    t('Môn thay thế', 'Replaced Subject'),
+    t('Tên môn học', 'Subject Name'),
+    t('Tín chỉ', 'Credit'),
+    t('Điểm (Số)', 'Grade (Number)')
   ];
 
   // 24 transcript rows matching mockup
@@ -307,7 +307,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
         
         {/* Page Title */}
         <h2 className="transcript-title">
-          {t('GRADE TRANSCRIPT', 'GRADE TRANSCRIPT')}
+          {t('BẢNG ĐIỂM HỌC TẬP', 'GRADE TRANSCRIPT')}
         </h2>
 
         {/* Student Information & Export Row */}
@@ -316,19 +316,19 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
             <div className="transcript-info-item" style={{ gap: '6px' }}>
               <GraduationCap size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
               <span className="transcript-info-label" style={{ color: '#334155', fontWeight: 'bold' }}>
-                STUDENT:{' '}
+                {t('SINH VIÊN', 'STUDENT')}:{' '}
               </span>
               <span className="transcript-info-val" style={{ color: '#334155', fontWeight: 'bold' }}>Nguyễn Văn Hùng - BS00679</span>
             </div>
             <div className="transcript-info-item" style={{ gap: '6px' }}>
               <BookOpen size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
-              <span className="transcript-info-label" style={{ color: '#334155', fontWeight: 'bold' }}>Syllabus:BC_V6_01</span>
+              <span className="transcript-info-label" style={{ color: '#334155', fontWeight: 'bold' }}>{t('Khung chương trình', 'Syllabus')}: BC_V6_01</span>
             </div>
           </div>
           <div className="transcript-info-right">
             <button className="export-excel-btn" style={{ backgroundColor: 'var(--primary)' }}>
               <FileSpreadsheet size={16} />
-              <span>{t('Export to Excel', 'Export to Excel')}</span>
+              <span>{t('Xuất file Excel', 'Export to Excel')}</span>
             </button>
           </div>
         </div>
@@ -406,7 +406,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
         <div className="transcript-obsolete-header" style={{ borderBottom: 'none', marginBottom: '10px' }}>
           <BookOpen size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
           <span className="transcript-obsolete-text" style={{ fontWeight: 'bold', color: '#334155' }}>
-            {t('ENGLISH PREPARATORY & OBSOLETE COURSES', 'ENGLISH PREPARATORY & OBSOLETE COURSES')}
+            {t('CÁC KHÓA HỌC DỰ BỊ TIẾNG ANH & KHÓA HỌC CŨ', 'ENGLISH PREPARATORY & OBSOLETE COURSES')}
           </span>
         </div>
 
