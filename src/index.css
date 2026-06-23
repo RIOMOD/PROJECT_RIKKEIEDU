@@ -62,8 +62,8 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  overflow-x: hidden;
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* Sidebar Styles */
@@ -89,9 +89,10 @@ body {
 
 @media (min-width: 1024px) {
   .sidebar {
-    position: static;
     transform: translateX(0);
-    z-index: auto;
+  }
+  .main-content-wrapper {
+    margin-left: 270px;
   }
 }
 

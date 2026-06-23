@@ -135,7 +135,7 @@ function App() {
         />
 
         {/* Dynamic Inner Page Content */}
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflowY: 'auto' }}>
           {renderContent()}
         </div>
       </div>
