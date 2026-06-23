@@ -28,7 +28,7 @@ function App() {
     'tkb-lop-hoc': { vi: 'Trang chủ / Thời khóa biểu lớp học', en: 'Home / Class Timetable' }, // Match screenshot breadcrumbs
     'xem-lich-thi': { vi: 'Home / View Exam Schedule', en: 'Home / View Exam Schedule' },
     'bc-diem-danh': { vi: 'Trang chủ / Báo cáo điểm danh', en: 'Home / Attendance Report' },
-    'bc-mark': { vi: 'Home / Mark Report', en: 'Home / Mark Report' },
+    'bc-mark': { vi: 'Trang chủ / Báo cáo Mark', en: 'Home / Mark Report' },
     'bang-diem-ht': { vi: 'Home / Academic Transcript', en: 'Home / Academic Transcript' },
     'chuong-trinh-gd': { vi: 'Chương trình giảng dạy', en: 'Curriculum' },
     'so-tay-sv': { vi: 'Sổ tay sinh viên', en: 'Student Handbook' }

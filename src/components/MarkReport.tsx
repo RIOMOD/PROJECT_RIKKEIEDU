@@ -1,10 +1,8 @@
-
 interface MarkReportProps {
   lang: 'vi' | 'en';
 }
 
 interface MarkRow {
-  subject: string;
   semesterVi: string;
   semesterEn: string;
   group: string;
@@ -24,7 +22,6 @@ export const MarkReport = ({ lang }: MarkReportProps) => {
   };
 
   const headers = [
-    t('TÊN MÔN HỌC', 'SUBJECT NAME'),
     t('HỌC KỲ', 'SEMESTER'),
     t('NHÓM', 'GROUP'),
     t('NGÀY BẮT ĐẦU', 'START DATE'),
@@ -34,174 +31,161 @@ export const MarkReport = ({ lang }: MarkReportProps) => {
     t('TRẠNG THÁI', 'STATUS')
   ];
 
-  // Grade list mock data
+  // Grade list mock data exactly matching the screenshot mockup
   const grades: MarkRow[] = [
     {
-      subject: 'English 5 - Summit 1',
-      semesterVi: 'HỌC KỲ HÈ 2023',
+      semesterVi: 'MÙA HÈ 2023',
       semesterEn: 'SUMMER 2023',
       group: 'ENT4011.13',
       startDate: '10/07/2023',
       endDate: '23/08/2023',
       gradeNum: '7.7',
       gradeLetter: '',
-      statusVi: 'Đạt',
+      statusVi: 'Đi qua',
       statusEn: 'Passed',
       statusType: 'passed'
     },
     {
-      subject: 'English 4 - Top Notch 3',
-      semesterVi: 'HỌC KỲ HÈ 2023',
+      semesterVi: 'MÙA HÈ 2023',
       semesterEn: 'SUMMER 2023',
       group: 'ENT103.13',
       startDate: '08/05/2023',
       endDate: '17/06/2023',
       gradeNum: '7.3',
       gradeLetter: '',
-      statusVi: 'Đạt',
+      statusVi: 'Đi qua',
       statusEn: 'Passed',
       statusType: 'passed'
     },
     {
-      subject: 'English 1 - Topnotch Fundamentals',
-      semesterVi: 'HỌC KỲ THU 2022',
+      semesterVi: 'MÙA THU 2022',
       semesterEn: 'FALL 2022',
       group: 'ENT100.07',
       startDate: '24/10/2022',
       endDate: '28/12/2022',
       gradeNum: '8.2',
       gradeLetter: '',
-      statusVi: 'Đạt',
+      statusVi: 'Đi qua',
       statusEn: 'Passed',
       statusType: 'passed'
     },
     {
-      subject: 'English 2 - Topnotch 1',
-      semesterVi: 'HỌC KỲ XUÂN 2023',
+      semesterVi: 'MÙA XUÂN 2023',
       semesterEn: 'SPRING 2023',
       group: 'ENT101.13',
       startDate: '03/01/2023',
       endDate: '08/03/2023',
       gradeNum: '8.2',
       gradeLetter: '',
-      statusVi: 'Đạt',
+      statusVi: 'Đi qua',
       statusEn: 'Passed',
       statusType: 'passed'
     },
     {
-      subject: 'English 3 - Topnotch 2',
-      semesterVi: 'HỌC KỲ XUÂN 2023',
+      semesterVi: 'MÙA XUÂN 2023',
       semesterEn: 'SPRING 2023',
       group: 'ENT102.14',
       startDate: '20/03/2023',
       endDate: '28/04/2023',
       gradeNum: '7.0',
       gradeLetter: '',
-      statusVi: 'Đạt',
+      statusVi: 'Đi qua',
       statusEn: 'Passed',
       statusType: 'passed'
     },
     {
-      subject: 'Vovinam',
-      semesterVi: 'HỌC KỲ THU 2024',
+      semesterVi: 'MÙA THU NĂM 2024',
       semesterEn: 'FALL 2024',
-      group: 'Exempt',
+      group: 'Miễn trừ',
       startDate: '12/08/2024',
       endDate: '19/10/2024',
       gradeNum: '',
       gradeLetter: '',
-      statusVi: 'Được miễn',
-      statusEn: 'Is Exempt',
+      statusVi: 'Được miễn trừ',
+      statusEn: 'Exempted',
       statusType: 'exempt'
     },
     {
-      subject: 'Computing Fundamental',
-      semesterVi: 'HỌC KỲ XUÂN 2023',
+      semesterVi: 'MÙA XUÂN 2023',
       semesterEn: 'SPRING 2023',
       group: 'IT.CF02.064',
       startDate: '16/03/2023',
       endDate: '13/04/2023',
       gradeNum: '5.4',
       gradeLetter: '',
-      statusVi: 'Đạt',
+      statusVi: 'Đi qua',
       statusEn: 'Passed',
       statusType: 'passed'
     },
     {
-      subject: 'Personal Development',
-      semesterVi: 'HỌC KỲ XUÂN 2023',
+      semesterVi: 'MÙA XUÂN 2023',
       semesterEn: 'SPRING 2023',
       group: 'PDP1.0614',
       startDate: '02/02/2023',
       endDate: '09/03/2023',
       gradeNum: '7.9',
       gradeLetter: '',
-      statusVi: 'Đạt',
+      statusVi: 'Đi qua',
       statusEn: 'Passed',
       statusType: 'passed'
     },
     {
-      subject: 'Microsoft Offices',
-      semesterVi: 'HỌC KỲ THU 2022',
+      semesterVi: 'MÙA THU 2022',
       semesterEn: 'FALL 2022',
       group: 'CF01.061',
       startDate: '21/11/2022',
       endDate: '28/11/2022',
       gradeNum: '6.5',
       gradeLetter: '',
-      statusVi: 'Đạt',
+      statusVi: 'Đi qua',
       statusEn: 'Passed',
       statusType: 'passed'
     },
     {
-      subject: 'Programming',
-      semesterVi: 'HỌC KỲ XUÂN 2024',
+      semesterVi: 'MÙA XUÂN 2024',
       semesterEn: 'SPRING 2024',
       group: 'SE07101',
       startDate: '02/01/2024',
       endDate: '11/04/2024',
       gradeNum: '',
       gradeLetter: 'P',
-      statusVi: 'Đạt',
+      statusVi: 'Đi qua',
       statusEn: 'Passed',
       statusType: 'passed'
     },
     {
-      subject: 'Networking',
-      semesterVi: 'HỌC KỲ HÈ 2023',
+      semesterVi: 'MÙA HÈ 2023',
       semesterEn: 'SUMMER 2023',
       group: 'SE06201',
       startDate: '23/05/2023',
       endDate: '18/08/2023',
       gradeNum: '',
       gradeLetter: 'P',
-      statusVi: 'Đạt',
+      statusVi: 'Đi qua',
       statusEn: 'Passed',
       statusType: 'passed'
     },
     {
-      subject: 'Programming',
-      semesterVi: 'HỌC KỲ HÈ 2023',
+      semesterVi: 'MÙA HÈ 2023',
       semesterEn: 'SUMMER 2023',
       group: 'SE06201',
       startDate: '08/05/2023',
       endDate: '14/08/2023',
       gradeNum: '',
-      gradeLetter: 'F',
-      statusVi: 'Hủy chuyên cần',
-      statusEn: 'Attendance Fail',
+      gradeLetter: 'E',
+      statusVi: 'Không đạt yêu cầu chuyên cần',
+      statusEn: 'Failed attendance requirement',
       statusType: 'failed'
     },
     {
-      subject: 'Database Design & Development',
-      semesterVi: 'HỌC KỲ THU 2023',
+      semesterVi: 'MÙA THU 2023',
       semesterEn: 'FALL 2023',
       group: 'SE06201',
       startDate: '11/09/2023',
       endDate: '11/12/2023',
       gradeNum: '',
       gradeLetter: 'P',
-      statusVi: 'Đạt',
+      statusVi: 'Đi qua',
       statusEn: 'Passed',
       statusType: 'passed'
     }
@@ -213,7 +197,7 @@ export const MarkReport = ({ lang }: MarkReportProps) => {
         
         {/* Page Title */}
         <h2 className="mark-report-title">
-          {t('GRADE REPORT FOR NGUYỄN VĂN HÙNG (BS00679)', 'GRADE REPORT FOR NGUYỄN VĂN HÙNG (BS00679)')}
+          {t('PHIẾU ĐIỂM CỦA NGUYỄN VĂN HÙNG (BS00679)', 'GRADE REPORT FOR NGUYỄN VĂN HÙNG (BS00679)')}
         </h2>
 
         {/* Grade Table */}
@@ -231,50 +215,53 @@ export const MarkReport = ({ lang }: MarkReportProps) => {
             <tbody>
               {grades.map((row, index) => (
                 <tr key={index} className="mark-tr">
-                  {/* Subject Name */}
-                  <td className="mark-td subject-name-col">
-                    {row.subject}
-                  </td>
-                  
                   {/* Semester */}
-                  <td className="mark-td text-center">
+                  <td className="mark-td">
                     {t(row.semesterVi, row.semesterEn)}
                   </td>
                   
                   {/* Group */}
-                  <td className="mark-td text-center font-mono">
+                  <td className="mark-td font-mono">
                     {row.group}
                   </td>
                   
                   {/* Start Date */}
-                  <td className="mark-td text-center font-mono">
+                  <td className="mark-td font-mono">
                     {row.startDate}
                   </td>
                   
                   {/* End Date */}
-                  <td className="mark-td text-center font-mono">
+                  <td className="mark-td font-mono">
                     {row.endDate}
                   </td>
                   
                   {/* Grade Num */}
-                  <td className="mark-td text-center font-bold">
-                    {row.gradeNum || <span className="text-slate-300">—</span>}
+                  <td className="mark-td font-bold">
+                    {row.gradeNum || <span style={{ color: '#cbd5e1' }}>—</span>}
                   </td>
                   
                   {/* Grade Letter */}
-                  <td className="mark-td text-center font-bold">
+                  <td className="mark-td font-bold">
                     {row.gradeLetter ? (
-                      <span className="underlined-link">{row.gradeLetter}</span>
+                      row.gradeLetter === 'E' ? (
+                        row.gradeLetter
+                      ) : (
+                        <span className="mark-link">{row.gradeLetter}</span>
+                      )
                     ) : (
-                      <span className="text-slate-300">—</span>
+                      <span style={{ color: '#cbd5e1' }}>—</span>
                     )}
                   </td>
                   
                   {/* Status */}
-                  <td className="mark-td text-center font-semibold">
-                    <span className={`underlined-link status-link ${row.statusType}`}>
-                      {t(row.statusVi, row.statusEn)}
-                    </span>
+                  <td className="mark-td font-semibold">
+                    {row.statusType === 'failed' ? (
+                      row.statusVi
+                    ) : (
+                      <span className="mark-link">
+                        {t(row.statusVi, row.statusEn)}
+                      </span>
+                    )}
                   </td>
                 </tr>
               ))}

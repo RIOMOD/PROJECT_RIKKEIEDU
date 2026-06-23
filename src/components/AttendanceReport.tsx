@@ -19,7 +19,7 @@ interface AttendanceSession {
 export const AttendanceReport = ({ lang }: AttendanceReportProps) => {
   const [selectedCampus, setSelectedCampus] = useState('BTEC');
   const [selectedTerm, setSelectedTerm] = useState('MÙA THU NĂM 2025');
-  const [selectedCourse, setSelectedCourse] = useState('SE07101 - DỰ ÁN NGHIÊN CỨU MÁY TÍNH');
+  const [selectedCourse, setSelectedCourse] = useState('SE07203 - PHÁT TRIỂN ỨNG DỤNG (7436)');
 
   // Translation helper
   const t = (viText: string, enText: string) => {
@@ -33,138 +33,150 @@ export const AttendanceReport = ({ lang }: AttendanceReportProps) => {
   ];
 
   const terms = [
-    { value: 'MÙA THU NĂM 2025', label: t('MÙA THU NĂM 2025', 'FALL 2025') },
+    { value: 'MÙA THU NĂM 2025', label: t('MÙA THU NĂM 2025', 'MÙA THU NĂM 2025') },
     { value: 'MÙA HÈ 2025', label: t('MÙA HÈ 2025', 'SUMMER 2025') },
     { value: 'MÙA XUÂN 2025', label: t('MÙA XUÂN 2025', 'SPRING 2025') }
   ];
 
   const courses = [
+    { value: 'SE07203 - PHÁT TRIỂN ỨNG DỤNG (7436)', label: 'SE07203 - ' + t('PHÁT TRIỂN ỨNG DỤNG (7436)', 'APPLICATION DEVELOPMENT (7436)') },
     { value: 'SE07101 - DỰ ÁN NGHIÊN CỨU MÁY TÍNH', label: 'SE07101 - ' + t('DỰ ÁN NGHIÊN CỨU MÁY TÍNH', 'COMPUTER RESEARCH PROJECT') },
     { value: 'SE08202 - PHÁT TRIỂN ỨNG DỤNG WEB JAVA', label: 'SE08202 - ' + t('PHÁT TRIỂN ỨNG DỤNG WEB JAVA', 'JAVA WEB APPLICATION DEVELOPMENT') }
   ];
 
-  // Mock sessions from screenshot (sessions 16 to 26)
+  // Mock sessions from screenshot (sessions 8 to 19)
   const sessions: AttendanceSession[] = [
     {
-      index: 16,
-      dateVi: 'Thứ Sáu (03/10)',
-      dateEn: 'Friday (03/10)',
+      index: 8,
+      dateVi: 'Thứ Bảy (04/10)',
+      dateEn: 'Saturday (04/10)',
       slot: 4,
-      teacher: 'QuangNV78',
-      subjectCode: 'SE07101',
+      teacher: 'VuNV35',
+      subjectCode: 'SE07203',
+      statusVi: 'Vắng mặt',
+      statusEn: 'Absent',
+      isPresent: false
+    },
+    {
+      index: 9,
+      dateVi: 'Thứ Bảy (11/10)',
+      dateEn: 'Saturday (11/10)',
+      slot: 3,
+      teacher: 'VuNV35',
+      subjectCode: 'SE07203',
+      statusVi: 'Hiện tại',
+      statusEn: 'Present',
+      isPresent: true
+    },
+    {
+      index: 10,
+      dateVi: 'Thứ Bảy (11/10)',
+      dateEn: 'Saturday (11/10)',
+      slot: 4,
+      teacher: 'VuNV35',
+      subjectCode: 'SE07203',
+      statusVi: 'Hiện tại',
+      statusEn: 'Present',
+      isPresent: true
+    },
+    {
+      index: 11,
+      dateVi: 'Thứ Bảy (18/10)',
+      dateEn: 'Saturday (18/10)',
+      slot: 3,
+      teacher: 'VuNV35',
+      subjectCode: 'SE07203',
+      statusVi: 'Vắng mặt',
+      statusEn: 'Absent',
+      isPresent: false
+    },
+    {
+      index: 12,
+      dateVi: 'Thứ Bảy (18/10)',
+      dateEn: 'Saturday (18/10)',
+      slot: 4,
+      teacher: 'VuNV35',
+      subjectCode: 'SE07203',
+      statusVi: 'Vắng mặt',
+      statusEn: 'Absent',
+      isPresent: false
+    },
+    {
+      index: 13,
+      dateVi: 'Thứ Bảy (25/10)',
+      dateEn: 'Saturday (25/10)',
+      slot: 3,
+      teacher: 'VuNV35',
+      subjectCode: 'SE07203',
+      statusVi: 'Vắng mặt',
+      statusEn: 'Absent',
+      isPresent: false
+    },
+    {
+      index: 14,
+      dateVi: 'Thứ Bảy (25/10)',
+      dateEn: 'Saturday (25/10)',
+      slot: 4,
+      teacher: 'VuNV35',
+      subjectCode: 'SE07203',
+      statusVi: 'Vắng mặt',
+      statusEn: 'Absent',
+      isPresent: false
+    },
+    {
+      index: 15,
+      dateVi: 'Thứ Bảy (01/11)',
+      dateEn: 'Saturday (01/11)',
+      slot: 3,
+      teacher: 'VuNV35',
+      subjectCode: 'SE07203',
+      statusVi: 'Hiện tại',
+      statusEn: 'Present',
+      isPresent: true
+    },
+    {
+      index: 16,
+      dateVi: 'Thứ Bảy (01/11)',
+      dateEn: 'Saturday (01/11)',
+      slot: 4,
+      teacher: 'VuNV35',
+      subjectCode: 'SE07203',
       statusVi: 'Hiện tại',
       statusEn: 'Present',
       isPresent: true
     },
     {
       index: 17,
-      dateVi: 'Thứ Hai (06/10)',
-      dateEn: 'Monday (06/10)',
-      slot: 1,
-      teacher: 'QuangNV78',
-      subjectCode: 'SE07101',
+      dateVi: 'Thứ Bảy (08/11)',
+      dateEn: 'Saturday (08/11)',
+      slot: 3,
+      teacher: 'VuNV35',
+      subjectCode: 'SE07203',
       statusVi: 'Hiện tại',
       statusEn: 'Present',
       isPresent: true
     },
     {
       index: 18,
-      dateVi: 'Thứ Hai (06/10)',
-      dateEn: 'Monday (06/10)',
-      slot: 2,
-      teacher: 'QuangNV78',
-      subjectCode: 'SE07101',
+      dateVi: 'Thứ Bảy (08/11)',
+      dateEn: 'Saturday (08/11)',
+      slot: 4,
+      teacher: 'VuNV35',
+      subjectCode: 'SE07203',
       statusVi: 'Hiện tại',
       statusEn: 'Present',
       isPresent: true
     },
     {
       index: 19,
-      dateVi: 'Thứ Sáu (10/10)',
-      dateEn: 'Friday (10/10)',
+      dateVi: 'Thứ Bảy (15/11)',
+      dateEn: 'Saturday (15/11)',
       slot: 3,
-      teacher: 'QuangNV78',
-      subjectCode: 'SE07101',
+      teacher: 'VuNV35',
+      subjectCode: 'SE07203',
       statusVi: 'Hiện tại',
       statusEn: 'Present',
       isPresent: true
-    },
-    {
-      index: 20,
-      dateVi: 'Thứ Sáu (10/10)',
-      dateEn: 'Friday (10/10)',
-      slot: 4,
-      teacher: 'QuangNV78',
-      subjectCode: 'SE07101',
-      statusVi: 'Hiện tại',
-      statusEn: 'Present',
-      isPresent: true
-    },
-    {
-      index: 21,
-      dateVi: 'Thứ Hai (13/10)',
-      dateEn: 'Monday (13/10)',
-      slot: 1,
-      teacher: 'QuangNV78',
-      subjectCode: 'SE07101',
-      statusVi: 'Vắng mặt',
-      statusEn: 'Absent',
-      isPresent: false
-    },
-    {
-      index: 22,
-      dateVi: 'Thứ Hai (13/10)',
-      dateEn: 'Monday (13/10)',
-      slot: 2,
-      teacher: 'QuangNV78',
-      subjectCode: 'SE07101',
-      statusVi: 'Vắng mặt',
-      statusEn: 'Absent',
-      isPresent: false
-    },
-    {
-      index: 23,
-      dateVi: 'Thứ Sáu (17/10)',
-      dateEn: 'Friday (17/10)',
-      slot: 3,
-      teacher: 'QuangNV78',
-      subjectCode: 'SE07101',
-      statusVi: 'Vắng mặt',
-      statusEn: 'Absent',
-      isPresent: false
-    },
-    {
-      index: 24,
-      dateVi: 'Thứ Sáu (17/10)',
-      dateEn: 'Friday (17/10)',
-      slot: 4,
-      teacher: 'QuangNV78',
-      subjectCode: 'SE07101',
-      statusVi: 'Vắng mặt',
-      statusEn: 'Absent',
-      isPresent: false
-    },
-    {
-      index: 25,
-      dateVi: 'Thứ Hai (20/10)',
-      dateEn: 'Monday (20/10)',
-      slot: 1,
-      teacher: 'QuangNV78',
-      subjectCode: 'SE07101',
-      statusVi: 'Vắng mặt',
-      statusEn: 'Absent',
-      isPresent: false
-    },
-    {
-      index: 26,
-      dateVi: 'Thứ Hai (20/10)',
-      dateEn: 'Monday (20/10)',
-      slot: 2,
-      teacher: 'QuangNV78',
-      subjectCode: 'SE07101',
-      statusVi: 'Vắng mặt',
-      statusEn: 'Absent',
-      isPresent: false
     }
   ];
 
@@ -179,7 +191,7 @@ export const AttendanceReport = ({ lang }: AttendanceReportProps) => {
 
         {/* Guideline line */}
         <div className="attendance-guideline">
-          <span>👉</span> {t('CHỌN CƠ SỞ/CHƯƠNG TRÌNH, HỌC KỲ, MÔN HỌC... RỒI XEM BÁO CÁO.', 'SELECT CAMPUS/PROGRAM, TERM, COURSE... TO VIEW REPORT.')}
+          <span>✏️</span> {t('CHỌN CƠ SỞ/CHƯƠNG TRÌNH, HỌC KỲ, MÔN HỌC... RỒI XEM BÁO CÁO.', 'SELECT CAMPUS/PROGRAM, TERM, COURSE... TO VIEW REPORT.')}
         </div>
 
         {/* Orange filter selectors row */}
@@ -239,11 +251,11 @@ export const AttendanceReport = ({ lang }: AttendanceReportProps) => {
           <span className="attendance-stats-text">
             {lang === 'en' ? (
               <>
-                ABSENT: <span className="highlight-red">38.33%</span> absent up to current time (23 absent out of 60 people).
+                ABSENT: <span className="highlight-red">20.00%</span> absent up to current time (6 absent out of 30 people).
               </>
             ) : (
               <>
-                VẮNG MẶT: <span className="highlight-red">38,33%</span> vắng mặt tính đến thời điểm hiện tại (23 người vắng mặt trên tổng số 60 người).
+                VẮNG MẶT: <span className="highlight-red">20,00%</span> vắng mặt tính đến thời điểm hiện tại (6 người vắng mặt trên tổng số 30).
               </>
             )}
           </span>
