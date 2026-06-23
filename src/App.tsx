@@ -12,6 +12,7 @@ import { AttendanceReport } from './components/AttendanceReport';
 import { MarkReport } from './components/MarkReport';
 import { AcademicTranscript } from './components/AcademicTranscript';
 import { Curriculum } from './components/Curriculum';
+import { Profile } from './components/Profile';
 import { Construction, ArrowLeft } from 'lucide-react';
 
 function App() {
@@ -32,7 +33,8 @@ function App() {
     'bc-mark': { vi: 'Trang chủ / Báo cáo Mark', en: 'Home / Mark Report' },
     'bang-diem-ht': { vi: 'Home / Academic Transcript', en: 'Home / Academic Transcript' },
     'chuong-trinh-gd': { vi: 'Home / Curriculum', en: 'Home / Curriculum' },
-    'so-tay-sv': { vi: 'Sổ tay sinh viên', en: 'Student Handbook' }
+    'so-tay-sv': { vi: 'Sổ tay sinh viên', en: 'Student Handbook' },
+    'profile': { vi: 'Home / RIKKEI Academic Portal', en: 'Home / RIKKEI Academic Portal' }
   };
 
   // Helper to render page content based on selected sidebar item
@@ -79,6 +81,10 @@ function App() {
 
     if (activeItem === 'chuong-trinh-gd') {
       return <Curriculum lang={lang} />;
+    }
+
+    if (activeItem === 'profile') {
+      return <Profile />;
     }
 
     const currentTitle = menuTitles[activeItem]?.[lang] || 'Cổng thông tin';
@@ -132,6 +138,7 @@ function App() {
           title={getPageTitle()} 
           lang={lang}
           onLangChange={setLang}
+          setActiveItem={setActiveItem}
         />
 
         {/* Dynamic Inner Page Content */}
