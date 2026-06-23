@@ -197,7 +197,14 @@ export const Header = ({ onMenuToggle, title, lang, onLangChange, setActiveItem 
               </div>
               
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <div className="profile-detail-item">
+                <div 
+                  className="profile-detail-item"
+                  onClick={() => {
+                    setActiveItem('profile');
+                    setShowProfile(false);
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
                   <GraduationCap size={16} style={{ color: '#94A3B8' }} />
                   <div>
                     <span className="profile-detail-label" style={{ display: 'block' }}>
