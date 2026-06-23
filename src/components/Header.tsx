@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Bell, Menu, BookOpen, GraduationCap, LogOut, Globe } from 'lucide-react';
 
 interface HeaderProps {
@@ -13,6 +13,25 @@ interface HeaderProps {
 export const Header = ({ onMenuToggle, title, lang, onLangChange, setActiveItem, onLogout }: HeaderProps) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+
+  const notificationRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setShowProfile(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Mock student info
   const student = {
@@ -71,7 +90,7 @@ export const Header = ({ onMenuToggle, title, lang, onLangChange, setActiveItem,
 
         {/* Bell Notifications */}
         {/* Bell Notifications */}
-        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+        <div ref={notificationRef} style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
           <button 
             onClick={() => {
               setShowNotifications(!showNotifications);
@@ -161,7 +180,7 @@ export const Header = ({ onMenuToggle, title, lang, onLangChange, setActiveItem,
         </div>
 
         {/* User Profile Info */}
-        <div style={{ position: 'relative' }}>
+        <div ref={profileRef} style={{ position: 'relative' }}>
           <button 
             onClick={() => {
               setShowProfile(!showProfile);
