@@ -1184,100 +1184,99 @@ body {
   border-color: var(--primary);
 }
 
+.timetable-table-wrapper {
+  background-color: #FFFFFF;
+  border: 1px solid #cbd5e1;
+  overflow-x: auto;
+  width: 100%;
+  box-shadow: var(--shadow-sm);
+  border-radius: 4px;
+}
+
 .timetable-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
+  border: 1px solid #cbd5e1;
 }
 
 .timetable-table th {
-  background-color: var(--primary);
-  color: #FFFFFF;
+  background-color: #f37021 !important; /* Solid BTEC Orange */
+  color: #FFFFFF !important;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 13px;
   text-align: center;
-  padding: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  font-family: 'Outfit', sans-serif;
-  height: 48px;
-}
-
-.timetable-table th .day-num {
-  display: block;
-  font-size: 13.5px;
-  font-weight: 800;
-  margin-top: 2px;
+  padding: 10px;
+  border: 1px solid #cbd5e1 !important;
+  font-family: 'Segoe UI', Arial, sans-serif;
 }
 
 .timetable-table td {
-  border: 1px solid var(--border-color);
+  border: 1px solid #cbd5e1 !important;
   padding: 8px;
-  vertical-align: top;
+  vertical-align: middle;
   background-color: #FFFFFF;
-  min-height: 90px;
+  text-align: center;
+  font-size: 12.5px;
 }
 
 .timetable-slot-cell {
-  background-color: #F8FAFC !important;
+  background-color: #FFFFFF !important;
   font-weight: 700;
-  color: #475569;
-  font-size: 12.5px;
+  color: #1e293b;
+  font-size: 13px;
   text-align: center;
   vertical-align: middle !important;
   width: 120px;
   line-height: 1.4;
+  border: 1px solid #cbd5e1 !important;
 }
 
-.timetable-card {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 8px;
-  border-radius: 6px;
-  font-size: 11.5px;
-  line-height: 1.35;
-  border: 1.5px dashed var(--border-color);
-  transition: var(--transition-smooth);
-  background-color: #FFFFFF;
-  text-align: left;
+.timetable-cell-content {
+  display: inline-block;
+  text-align: center;
+  font-size: 12.5px;
+  line-height: 1.4;
 }
 
-.timetable-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
-  border-color: var(--primary);
-}
-
-.timetable-card-link {
-  color: #2563EB;
+.timetable-link {
+  color: #0066cc;
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 500;
   cursor: pointer;
 }
-.timetable-card-link:hover {
+.timetable-link:hover {
   text-decoration: underline;
 }
 
-.attendance-badge-success {
+.attendance-attended {
   color: #009F4D;
-  font-weight: 700;
-  font-size: 10.5px;
-  margin-top: 2px;
+  font-weight: 500;
+  font-size: 12.5px;
 }
 
-.attendance-badge-pending {
-  color: #EF4444;
-  font-weight: 700;
-  font-size: 10.5px;
-  margin-top: 2px;
+.attendance-not-yet {
+  color: #0066cc;
+  font-weight: 500;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+.attendance-not-yet:hover {
+  text-decoration: underline;
+}
+
+.attendance-absent {
+  color: #dc2626;
+  font-weight: 500;
+  font-size: 12.5px;
 }
 
 .timetable-notes {
   margin-top: 24px;
   background-color: #FFFFFF;
   padding: 16px;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
 }
 
 .timetable-notes-title {
@@ -1285,7 +1284,7 @@ body {
   font-weight: 700;
   color: #1E293B;
   margin-bottom: 8px;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Segoe UI', Arial, sans-serif;
   text-transform: uppercase;
 }
 
@@ -1294,17 +1293,9 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 12px;
+  font-size: 13px;
   color: #475569;
-}
-
-.timetable-notes-list li::before {
-  content: "•";
-  color: var(--primary);
-  font-weight: bold;
-  display: inline-block; 
-  width: 1em;
-  margin-left: -1em;
+  padding-left: 0;
 }
 
 /* Accordion and View Toggles for Class Timetable */

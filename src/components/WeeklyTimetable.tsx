@@ -46,7 +46,7 @@ export const WeeklyTimetable = () => {
     { key: 'Sun', label: 'Sun', date: '28/06' }
   ];
 
-  // Mock sessions list for week "22/06 To 28/06"
+  // Mock sessions list for week "22/06 To 28/06" exactly matching the screenshot mockup
   const sessions: ClassSession[] = [
     // Monday
     {
@@ -54,8 +54,8 @@ export const WeeklyTimetable = () => {
       subjectName: 'Java Web Application Development',
       type: '7428 (Offline)',
       roomName: 'Sydney 6',
-      teacherCode: 'QuangNV78',
-      teacherName: 'Nguyễn Văn Quang',
+      teacherCode: '',
+      teacherName: '',
       status: 'Attended',
       dayIndex: 0,
       slotIndex: 3
@@ -64,10 +64,10 @@ export const WeeklyTimetable = () => {
       subjectCode: 'SE08202',
       subjectName: 'Java Web Application Development',
       type: '7428 (Online)',
-      roomName: 'Online 1 - VF HCM 01',
-      teacherCode: 'QuangNV78',
-      teacherName: 'Nguyễn Văn Quang',
-      status: 'Not yet',
+      roomName: 'Online 1',
+      teacherCode: '',
+      teacherName: '',
+      status: 'Attended',
       dayIndex: 0,
       slotIndex: 6
     },
@@ -154,13 +154,11 @@ export const WeeklyTimetable = () => {
       {/* Main Container */}
       <main className="dashboard-container">
         
-        {/* Page Titles */}
-        <div>
-          <h2 className="services-section-title" style={{ textAlign: 'left', marginBottom: '8px' }}>
+        {/* Page Titles           <h2 className="services-section-title" style={{ textAlign: 'left', marginBottom: '8px' }}>
             ACTIVITIES FOR HUNGNVBS00679 (NGUYỄN VĂN HÙNG)
           </h2>
-          <p style={{ color: '#F97316', fontSize: '12px', fontWeight: '700', letterSpacing: '0.2px' }}>
-            ⚠️ THESE ACTIVITIES DO NOT INCLUDE EXTRA-CURRICULUM ACTIVITIES, SUCH AS CLUB ACTIVITIES ...
+          <p style={{ color: '#F97316', fontSize: '12px', fontWeight: '700', letterSpacing: '0.2px', marginBottom: '20px' }}>
+            ✏️ THESE ACTIVITIES DO NOT INCLUDE EXTRA-CURRICULUM ACTIVITIES, SUCH AS CLUB ACTIVITIES ...
           </p>
         </div>
 
@@ -194,15 +192,21 @@ export const WeeklyTimetable = () => {
         </div>
 
         {/* Timetable Table Grid */}
-        <div className="services-table-wrapper" style={{ overflowX: 'auto' }}>
+        <div className="timetable-table-wrapper" style={{ overflowX: 'auto' }}>
           <table className="timetable-table">
             <thead>
               <tr>
-                <th style={{ width: '120px' }}></th>
+                <th rowSpan={2} style={{ width: '120px' }}></th>
                 {days.map((d) => (
                   <th key={d.key}>
                     {d.label}
-                    <span className="day-num">{d.date}</span>
+                  </th>
+                ))}
+              </tr>
+              <tr>
+                {days.map((d) => (
+                  <th key={`${d.key}-date`}>
+                    {d.date}
                   </th>
                 ))}
               </tr>
@@ -212,10 +216,7 @@ export const WeeklyTimetable = () => {
                 <tr key={slot.name}>
                   {/* Slot Left Cell */}
                   <td className="timetable-slot-cell">
-                    <strong>{slot.name}</strong>
-                    <div style={{ fontSize: '11px', color: '#64748B', marginTop: '2px', fontWeight: 'normal' }}>
-                      ({slot.time})
-                    </div>
+                    <strong>{slot.name} ({slot.time})</strong>
                   </td>
                   
                   {/* Week Days cells */}
@@ -224,26 +225,45 @@ export const WeeklyTimetable = () => {
                     return (
                       <td key={day.key}>
                         {session ? (
-                          <div className="timetable-card">
+                          <div className="timetable-cell-content">
                             <span 
                               onClick={() => setDetailSession(session)}
-                              className="timetable-card-link"
+                              className="timetable-link"
                             >
                               {session.subjectCode}
                             </span>
-                            <div style={{ color: '#64748B' }}>
+                            <br />
+                            <span 
+                              onClick={() => setDetailSession(session)}
+                              className="timetable-link"
+                            >
                               ({session.type})
-                            </div>
-                            <div style={{ color: '#334155', fontWeight: '500', marginTop: '2px' }}>
-                              at <span style={{ color: '#2563EB', cursor: 'pointer' }} className="hover:underline">{session.roomName}</span> - <span style={{ color: '#2563EB', cursor: 'pointer' }} className="hover:underline">{session.teacherCode}</span>
-                            </div>
-                            
-                            {/* Attendance status */}
-                            {session.status === 'Attended' ? (
-                              <div className="attendance-badge-success">(Attended)</div>
-                            ) : (
-                              <div className="attendance-badge-pending">(Not yet)</div>
+                            </span>
+                            <br />
+                            <span 
+                              onClick={() => setDetailSession(session)}
+                              className="timetable-link"
+                            >
+                              at {session.roomName} {session.teacherCode ? '-' : ''}
+                            </span>
+                            {session.teacherCode && (
+                              <>
+                                <br />
+                                <span 
+                                  onClick={() => setDetailSession(session)}
+                                  className="timetable-link"
+                                >
+                                  {session.teacherCode}
+                                </span>
+                              </>
                             )}
+                            <br />
+                            <span 
+                              onClick={() => setDetailSession(session)}
+                              className={session.status === 'Attended' ? 'attendance-attended' : session.status === 'Absent' ? 'attendance-absent' : 'attendance-not-yet'}
+                            >
+                              ({session.status})
+                            </span>
                           </div>
                         ) : null}
                       </td>
@@ -257,19 +277,18 @@ export const WeeklyTimetable = () => {
 
         {/* Notes list */}
         <div className="timetable-notes">
-          <h4 className="timetable-notes-title">More Note:</h4>
+          <h4 className="timetable-notes-title">✏️ MORE NOTE:</h4>
           <ul className="timetable-notes-list">
             <li>
-              <span className="attendance-badge-success" style={{ fontSize: '12px', marginRight: '6px' }}>(Attended)</span>: 
+              • <span className="attendance-attended" style={{ marginRight: '4px' }}>(Attended)</span>: 
               hungnvbs00679 had attended this activity / Nguyễn Văn Hùng đã tham gia hoạt động này
             </li>
             <li>
-              <span className="attendance-badge-pending" style={{ fontSize: '12px', marginRight: '6px' }}>(Absent)</span>: 
+              • <span className="attendance-absent" style={{ marginRight: '4px' }}>(Absent)</span>: 
               hungnvbs00679 had NOT attended this activity / Nguyễn Văn Hùng đã vắng mặt buổi này
             </li>
           </ul>
         </div>
-
       </main>
 
       {/* Class Session Details Modal */}
