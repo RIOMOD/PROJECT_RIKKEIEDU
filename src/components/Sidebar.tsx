@@ -73,7 +73,7 @@ export const Sidebar = ({
       {/* Sidebar Container */}
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         
-        {/* Sidebar Header with BTEC Logo */}
+        {/* Sidebar Header with Rikkei Logo */}
         <div className="sidebar-brand">
           <BtecLogo height={46} className="sidebar-brand-logo" />
           <button onClick={onClose} className="sidebar-close-btn" aria-label="Close sidebar">

@@ -19,7 +19,7 @@ export const Dashboard = () => {
       date: '29/05/26',
       time: '11:11',
       type: 'Quyết định',
-      content: 'Vv công nhận kết quả rèn luyện của sinh viên thuộc Chương trình đào tạo liên kết với nước ngoài (BTEC) học bất kỳ Mùa xuân năm 2026'
+      content: 'Vv công nhận kết quả rèn luyện của sinh viên thuộc Chương trình đào tạo liên kết với nước ngoài (RK) học bất kỳ Mùa xuân năm 2026'
     },
     {
       id: 3,

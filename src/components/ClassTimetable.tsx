@@ -25,7 +25,7 @@ export const ClassTimetable = ({ lang }: ClassTimetableProps) => {
   const [activeView, setActiveView] = useState<'group' | 'week'>('group'); // Default to TIMETABLE BY GROUPS as in screenshot
   
   // Filter States
-  const [selectedCampus, setSelectedCampus] = useState('BTEC');
+  const [selectedCampus, setSelectedCampus] = useState('RK');
   const [selectedTerm, setSelectedTerm] = useState('SUMMER 2025');
   const [selectedGroup, setSelectedGroup] = useState('SE07203');
   
@@ -53,7 +53,7 @@ export const ClassTimetable = ({ lang }: ClassTimetableProps) => {
   };
 
   // Dropdown Options
-  const campuses = ['BTEC', 'FPT APTECH', 'FPT ARENA'];
+  const campuses = ['RK', 'RIKKEI APTECH', 'RIKKEI ARENA'];
   const terms = ['SUMMER 2025', 'SPRING 2025', 'FALL 2025'];
   const groups = ['SE07203', 'SE08202', 'SE08201'];
 

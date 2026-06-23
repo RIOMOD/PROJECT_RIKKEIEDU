@@ -3,8 +3,8 @@
 :root {
   --primary: #0D226B;
   --primary-hover: #07154B;
-  --fpt-blue: #005C9E;
-  --fpt-green: #009F4D;
+  --rikkei-blue: #005C9E;
+  --rikkei-green: #009F4D;
   --bg-cream: #F2F7FF;
   --bg-sidebar: #FFFFFF;
   --sidebar-header: #EDEDED;
@@ -784,7 +784,7 @@ body {
 }
 
 .action-card-icon.blue-bg {
-  background-color: var(--fpt-blue);
+  background-color: var(--rikkei-blue);
 }
 
 /* Quote and Info Section styling */
@@ -957,7 +957,7 @@ body {
 }
 
 .footer-link {
-  color: var(--fpt-blue);
+  color: var(--rikkei-blue);
   text-decoration: none;
 }
 .footer-link:hover {

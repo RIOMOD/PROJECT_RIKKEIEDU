@@ -17,7 +17,7 @@ interface AttendanceSession {
 }
 
 export const AttendanceReport = ({ lang }: AttendanceReportProps) => {
-  const [selectedCampus, setSelectedCampus] = useState('BTEC');
+  const [selectedCampus, setSelectedCampus] = useState('RK');
   const [selectedTerm, setSelectedTerm] = useState('MÙA THU NĂM 2025');
   const [selectedCourse, setSelectedCourse] = useState('SE07203 - PHÁT TRIỂN ỨNG DỤNG (7436)');
 
@@ -27,9 +27,9 @@ export const AttendanceReport = ({ lang }: AttendanceReportProps) => {
   };
 
   const campuses = [
-    { value: 'BTEC', label: 'BTEC' },
-    { value: 'APTECH', label: 'FPT APTECH' },
-    { value: 'ARENA', label: 'FPT ARENA' }
+    { value: 'RK', label: 'RK' },
+    { value: 'APTECH', label: 'RIKKEI APTECH' },
+    { value: 'ARENA', label: 'RIKKEI ARENA' }
   ];
 
   const terms = [

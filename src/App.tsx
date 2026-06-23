@@ -22,8 +22,8 @@ function App() {
   // Human-readable title mapping for breadcrumbs & page headers (Bilingual)
   const menuTitles: Record<string, { vi: string; en: string }> = {
     'trang-chu': { vi: 'Trang chủ', en: 'Home' },
-    'dv-truc-tuyen': { vi: 'Trang chủ / Cổng thông tin học thuật FPT', en: 'Home / Academic Portal FPT' },
-    'lich-su-dk': { vi: 'Trang chủ / Cổng thông tin học thuật FPT', en: 'Home / Academic Portal FPT' },
+    'dv-truc-tuyen': { vi: 'Trang chủ / Cổng thông tin học thuật RIKKEI', en: 'Home / Academic Portal RIKKEI' },
+    'lich-su-dk': { vi: 'Trang chủ / Cổng thông tin học thuật RIKKEI', en: 'Home / Academic Portal RIKKEI' },
     'phan-hoi-clgd': { vi: 'Trang chủ / Nhận xét', en: 'Home / Feedback' },
     'tkb-hang-tuan': { vi: 'Trang chủ / Thời khóa biểu hàng tuần', en: 'Home / Weekly Timetable' },
     'tkb-lop-hoc': { vi: 'Trang chủ / Thời khóa biểu lớp học', en: 'Home / Class Timetable' }, // Match screenshot breadcrumbs
@@ -93,8 +93,8 @@ function App() {
           <h2 className="placeholder-title">{currentTitle}</h2>
           <p className="placeholder-desc">
             {lang === 'en' 
-              ? 'This feature is currently under development according to BTEC FPT student portal roadmaps. Return to home to view recent announcements.'
-              : 'Tính năng này đang được phát triển theo lộ trình của cổng thông tin sinh viên BTEC. Quay lại trang chủ để xem thông báo mới nhất.'
+              ? 'This feature is currently under development according to RK RIKKEI student portal roadmaps. Return to home to view recent announcements.'
+              : 'Tính năng này đang được phát triển theo lộ trình của cổng thông tin sinh viên RK. Quay lại trang chủ để xem thông báo mới nhất.'
             }
           </p>
         </div>

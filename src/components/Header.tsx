@@ -16,7 +16,7 @@ export const Header = ({ onMenuToggle, title, lang, onLangChange }: HeaderProps)
   const student = {
     name: 'Nguyễn Văn Hùng',
     id: 'BH00256',
-    class: 'BTEC-IT-K15',
+    class: 'RK-IT-K15',
     major: 'Software Engineering',
     avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=120'
   };

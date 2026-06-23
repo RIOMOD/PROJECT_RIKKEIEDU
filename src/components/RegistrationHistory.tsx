@@ -231,7 +231,7 @@ export const RegistrationHistory = () => {
                     </td>
                     
                     {/* Thông báo */}
-                    <td className="services-td" style={{ fontWeight: '600', fontSize: '11px', color: 'var(--fpt-blue)' }}>
+                    <td className="services-td" style={{ fontWeight: '600', fontSize: '11px', color: 'var(--rikkei-blue)' }}>
                       {item.notice || <span style={{ color: '#CBD5E1' }}>—</span>}
                     </td>
                     

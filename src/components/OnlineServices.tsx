@@ -1934,7 +1934,7 @@ export const OnlineServices = () => {
                 </div>
                 <h3 className="modal-title">Xác nhận đăng ký</h3>
                 <p className="modal-desc">
-                  Bạn có chắc chắn muốn đăng ký dịch vụ <strong>{selectedService.task}</strong> không? Đơn đăng ký của bạn sẽ được gửi tới Ban Đào Tạo BTEC để phê duyệt.
+                  Bạn có chắc chắn muốn đăng ký dịch vụ <strong>{selectedService.task}</strong> không? Đơn đăng ký của bạn sẽ được gửi tới Ban Đào Tạo RK để phê duyệt.
                 </p>
                 <div className="modal-actions">
                   <button onClick={handleConfirmModalRegistration} className="modal-btn-confirm">
