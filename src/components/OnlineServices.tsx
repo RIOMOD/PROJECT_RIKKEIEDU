@@ -35,11 +35,11 @@ const SLOTS = [
 const DATES = ['2026-06-23', '2026-06-22', '2026-06-21', '2026-06-20', '2026-06-19'];
 
 export const OnlineServices = () => {
-  const [view, setView] = useState<'list' | 'attendance-recovery'>('list');
+  const [view, setView] = useState<'list' | 'attendance-recovery' | 'student-card-reissue'>('list');
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  // Form States
+  // --- Attendance Recovery Form States ---
   const [subject, setSubject] = useState('');
   const [classCode, setClassCode] = useState('');
   const [date, setDate] = useState('');
@@ -50,7 +50,15 @@ export const OnlineServices = () => {
   const [reason, setReason] = useState('');
   const [fileName, setFileName] = useState('');
   
-  // Validation State
+  // --- Student Card Reissue Form States ---
+  const [cardReason, setCardReason] = useState('');
+  const [cardPhone, setCardPhone] = useState('');
+  const [cardUnit, setCardUnit] = useState('đồng');
+  const [cardResult, setCardResult] = useState('Nhận trực tiếp tại ĐVSV phòng');
+  const [cardFee] = useState('100000');
+  const [cardPhotoName, setCardPhotoName] = useState('');
+
+  // Validation & Submit State
   const [validationError, setValidationError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
@@ -68,59 +76,68 @@ export const OnlineServices = () => {
     },
     {
       stt: 3,
+      task: 'ĐĂNG KÝ CẤP LẠI THẺ SINH VIÊN',
+      desc: 'ĐĂNG KÝ CẤP LẠI THẺ SINH VIÊN BỊ MẤT HOẶC HỎNG'
+    },
+    {
+      stt: 4,
       task: 'ĐĂNG KÝ KÝ TÊN LẠI',
       desc: 'ÁP DỤNG CHO TRƯỜNG THỂ SV BỊ MẤT/HỎNG. BÀI HỌC MỚI SV KHÔNG ĐĂNG NHẬP ĐƯỢC DỊCH VỤ NÀY'
     },
     {
-      stt: 4,
+      stt: 5,
       task: 'ĐĂNG KÝ PHẦN GIẢM HỌC',
       desc: ''
     },
     {
-      stt: 5,
+      stt: 6,
       task: 'ĐĂNG KÝ THAY ĐỔI THÔNG TIN',
       desc: ''
     },
     {
-      stt: 6,
+      stt: 7,
       task: 'ĐĂNG KÝ THÔI HỌC',
       desc: ''
     },
     {
-      stt: 7,
+      stt: 8,
       task: 'ĐĂNG KÝ NGƯỜI NHẬN XÁC THỰC',
       desc: 'SINH VIÊN DOWNLOAD MẪU XÁC NHẬN, ĐIỀN ĐẦY ĐỦ THÔNG TIN VÀ UPLOAD LÊN ĐĂNG KÝ'
     },
     {
-      stt: 8,
+      stt: 9,
       task: 'ĐĂNG KÝ HỌC LẠI',
       desc: 'ĐĂNG KÝ HỌC LẠI CHO SINH VIÊN TRƯỢT MÔN HỌC'
     },
     {
-      stt: 9,
+      stt: 10,
       task: 'ĐĂNG KÝ TẠM THỜI HỌC',
       desc: 'DỊCH VỤ ÁP DỤNG CHO TRƯỜP HỢP SV CẦN TẠM DỪNG HỌC KHI LỚP HỌC CHƯA KẾT THÚC'
     },
     {
-      stt: 10,
+      stt: 11,
       task: 'ĐĂNG KÝ VÀ DỊCH VỤ KHÁC',
       desc: 'SỬ DỤNG CHUNG CHO CÁC DỊCH VỤ KHÔNG BỊ MẤT PHÍ NHƯ: THẮC MẮC, KHIẾU NẠI,...'
     }
   ];
 
   const handleRegisterClick = (service: ServiceItem) => {
+    setValidationError('');
+    setSubmitSuccess(false);
+    
     if (service.stt === 1) {
       setView('attendance-recovery');
-      setValidationError('');
-      setSubmitSuccess(false);
-      resetForm();
+      resetAttendanceForm();
+    } else if (service.stt === 3) {
+      setView('student-card-reissue');
+      resetCardForm();
     } else {
       setSelectedService(service);
       setShowSuccessModal(false);
     }
   };
 
-  const resetForm = () => {
+  const resetAttendanceForm = () => {
     setSubject('');
     setClassCode('');
     setDate('');
@@ -130,6 +147,14 @@ export const OnlineServices = () => {
     setPhone('');
     setReason('');
     setFileName('');
+  };
+
+  const resetCardForm = () => {
+    setCardReason('');
+    setCardPhone('');
+    setCardUnit('đồng');
+    setCardResult('Nhận trực tiếp tại ĐVSV phòng');
+    setCardPhotoName('');
   };
 
   const handleTeacherChange = (email: string) => {
@@ -143,10 +168,26 @@ export const OnlineServices = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleCardFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setCardPhotoName(e.target.files[0].name);
+    }
+  };
+
+  const handleAttendanceSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!subject || !classCode || !date || !slot || !teacherAccount || !phone || !reason) {
       setValidationError('Vui lòng điền đầy đủ các thông tin bắt buộc (*)');
+      return;
+    }
+    setValidationError('');
+    setSubmitSuccess(true);
+  };
+
+  const handleCardSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!cardReason || !cardPhone || !cardUnit || !cardResult || !cardPhotoName) {
+      setValidationError('Vui lòng điền đầy đủ thông tin vào các ô trống bắt buộc (*)');
       return;
     }
     setValidationError('');
@@ -167,7 +208,7 @@ export const OnlineServices = () => {
       {/* Main Content Area */}
       <main className="dashboard-container">
         
-        {view === 'list' ? (
+        {view === 'list' && (
           <>
             {/* Page Title */}
             <h2 className="services-section-title">Danh sách các dịch vụ trực tuyến</h2>
@@ -213,7 +254,9 @@ export const OnlineServices = () => {
               </div>
             </div>
           </>
-        ) : (
+        )}
+
+        {view === 'attendance-recovery' && (
           /* Attendance Recovery Form View */
           <div className="recovery-form-wrapper">
             
@@ -248,7 +291,7 @@ export const OnlineServices = () => {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="recovery-form-element">
+              <form onSubmit={handleAttendanceSubmit} className="recovery-form-element">
                 
                 {/* Error Banner */}
                 {validationError && (
@@ -486,6 +529,206 @@ export const OnlineServices = () => {
                 <div className="recovery-form-actions">
                   <button type="submit" className="recovery-btn-submit">
                     SUBMIT
+                  </button>
+                </div>
+
+              </form>
+            )}
+
+          </div>
+        )}
+
+        {view === 'student-card-reissue' && (
+          /* Student Card Reissue Form View */
+          <div className="recovery-form-wrapper">
+            
+            {/* Navigation back */}
+            <button onClick={() => setView('list')} className="recovery-back-btn">
+              <ArrowLeft size={16} />
+              <span>Quay lại danh sách</span>
+            </button>
+
+            {/* Title Section */}
+            <div className="recovery-title-section">
+              <h2 className="recovery-form-title">HỌC KỲ XUÂN 2026 (1/2026 - 6/2026)</h2>
+              <p className="recovery-form-subtitle">
+                BẠN CẦN ĐIỀN ĐẦY ĐỦ THÔNG TIN VÀO CÁC Ô TRỐNG BÊN DƯỚI ĐỂ HOÀN TẤT YÊU CẦU VÀ ĐÍNH KÈM CÁC TÀI LIỆU HỖ TRỢ (NẾU CÓ) TRƯỚC KHI GỬI BIỂU MẪU NÀY.
+              </p>
+            </div>
+
+            {submitSuccess ? (
+              <div className="recovery-success-box">
+                <div className="recovery-success-icon-wrapper">
+                  <CheckCircle2 size={48} className="text-emerald-500" />
+                </div>
+                <h3 className="recovery-success-title">Nộp yêu cầu thành công!</h3>
+                <p className="recovery-success-desc">
+                  Yêu cầu cấp lại thẻ Sinh viên của bạn đã được tiếp nhận. Phí dịch vụ: <strong>{Number(cardFee).toLocaleString()} đ</strong>.
+                </p>
+                <p className="recovery-success-notice">
+                  ⚠️ Lưu ý: Kết quả xử lý thẻ sinh viên sẽ được phòng ĐVSV cập nhật. Vui lòng chuẩn bị lệ phí khi nhận thẻ.
+                </p>
+                <button onClick={() => setView('list')} className="recovery-success-back-btn">
+                  Trở lại Dịch vụ trực tuyến
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleCardSubmit} className="recovery-form-element">
+                
+                {/* Error Banner */}
+                {validationError && (
+                  <div className="recovery-validation-banner">
+                    <AlertCircle size={18} />
+                    <span>{validationError}</span>
+                  </div>
+                )}
+
+                {/* Top Info Grid */}
+                <div className="recovery-summary-grid">
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">NHIỆM VỤ</div>
+                    <div className="recovery-summary-badge">Học kỳ Spring 2026 (1/2026 - 6</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">KỲ BẢO VỆ:</div>
+                    <div className="recovery-summary-value-box">SPRING 2026</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">TÌNH THÁI SINH VIÊN</div>
+                    <div className="recovery-summary-value-box">HL</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">SỐ DƯ</div>
+                    <div className="recovery-summary-value-box">VND 0 đ</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">NGÀNH HỌC</div>
+                    <div className="recovery-summary-value-box">Lập trình máy tính</div>
+                  </div>
+                </div>
+
+                {/* Main Form Fields Layout */}
+                <div className="recovery-fields-card">
+                  
+                  {/* Row 1: Lý do */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Lý do (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <textarea 
+                        value={cardReason} 
+                        onChange={(e) => setCardReason(e.target.value.slice(0, 500))} 
+                        placeholder="Vui lòng xác định yêu cầu cần xử lý"
+                        className="recovery-textarea-element"
+                      />
+                      <div className="recovery-char-counter">
+                        {cardReason.length} / 500 ký tự
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Row 2: Số điện thoại Sinh viên */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Số điện thoại Sinh viên(*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <input 
+                        type="tel" 
+                        value={cardPhone} 
+                        onChange={(e) => setCardPhone(e.target.value)} 
+                        placeholder="Nhập số điện thoại sinh viên"
+                        className="recovery-input-element"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 3: o (*) */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <select 
+                        value={cardUnit} 
+                        onChange={(e) => setCardUnit(e.target.value)} 
+                        className="recovery-select-element"
+                      >
+                        <option value="đồng">đồng</option>
+                        <option value="USD">USD</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 4: Kết quả nhận được biểu thức */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Kết quả nhận được biểu thức (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <select 
+                        value={cardResult} 
+                        onChange={(e) => setCardResult(e.target.value)} 
+                        className="recovery-select-element"
+                      >
+                        <option value="Nhận trực tiếp tại ĐVSV phòng">Nhận trực tiếp tại ĐVSV phòng</option>
+                        <option value="Gửi bưu điện về địa chỉ nhà">Gửi bưu điện về địa chỉ nhà</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 5: Phí dịch vụ */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> phí dịch vụ
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <input 
+                        type="text" 
+                        value={cardFee} 
+                        readOnly 
+                        className="recovery-input-element disabled-bg"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 6: Ảnh hướng kèm */}
+                  <div className="recovery-field-row" style={{ borderBottom: 'none' }}>
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Ảnh hướng kèm (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <div className="recovery-file-upload-container">
+                        <input 
+                          type="file" 
+                          id="card-photo-attachment" 
+                          onChange={handleCardFileChange}
+                          accept="image/*"
+                          style={{ display: 'none' }}
+                        />
+                        <div className="recovery-file-info-row">
+                          <span className="recovery-file-path-input">
+                            {cardPhotoName || 'Chọn tệp'}
+                          </span>
+                          <label htmlFor="card-photo-attachment" className="recovery-file-browse-btn">
+                            <Upload size={14} style={{ marginRight: 6 }} />
+                            Browse
+                          </label>
+                        </div>
+                        <div style={{ fontSize: '11px', color: '#64748B', marginTop: '6px', fontStyle: 'italic' }}>
+                          Sinh viên sử dụng thẻ ảnh 3x4, chụp trong 6 tháng gần nhất
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Action Buttons */}
+                <div className="recovery-form-actions">
+                  <button type="submit" className="recovery-btn-submit" style={{ padding: '10px 50px' }}>
+                    NỘP
                   </button>
                 </div>
 
