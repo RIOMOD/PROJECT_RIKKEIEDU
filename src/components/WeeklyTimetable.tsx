@@ -202,15 +202,15 @@ export const WeeklyTimetable = ({ lang }: WeeklyTimetableProps) => {
         </div>
 
         {/* Timetable Grid Table */}
-        <div className="timetable-wrapper">
-          <table className="timetable-grid">
+        <div className="timetable-table-wrapper">
+          <table className="timetable-table">
             <thead>
               <tr>
-                <th className="timetable-header-cell" style={{ width: '120px' }}>
+                <th style={{ width: '120px' }}>
                   {t('Ca học', 'Slot')}
                 </th>
                 {days.map((d, idx) => (
-                  <th key={idx} className="timetable-header-cell">
+                  <th key={idx}>
                     <div>{d.label}</div>
                     <div className="timetable-header-date">{d.date}</div>
                   </th>

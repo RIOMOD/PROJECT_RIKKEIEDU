@@ -1277,6 +1277,79 @@ body {
   font-size: 12.5px;
 }
 
+/* Weekly Timetable Session Card & Badge Styles */
+.timetable-session-card {
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-left: 4px solid #3B82F6; /* Left border highlight */
+  border-radius: 6px;
+  padding: 8px 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.timetable-session-card:hover {
+  background-color: #F1F5F9;
+  border-color: #CBD5E1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.session-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.session-subject {
+  font-weight: 700;
+  color: #1E293B;
+  font-size: 12px;
+}
+
+.session-room, .session-type {
+  font-size: 11px;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.session-room {
+  margin-bottom: 3px;
+  color: #475569;
+}
+
+.status-badge-success {
+  font-size: 10px;
+  font-weight: 700;
+  color: #16A34A;
+  background-color: #DCFCE7;
+  padding: 1px 5px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.status-badge-pending {
+  font-size: 10px;
+  font-weight: 700;
+  color: #D97706;
+  background-color: #FEF3C7;
+  padding: 1px 5px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.timetable-empty-cell {
+  color: #94A3B8;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 12px 0;
+}
+
 .timetable-notes {
   margin-top: 24px;
   background-color: #FFFFFF;
