@@ -5,7 +5,7 @@ interface ExamScheduleProps {
 }
 
 export const ExamSchedule = ({ lang }: ExamScheduleProps) => {
-  const [selectedTerm, setSelectedTerm] = useState('SUMMER 2026');
+  const [selectedTerm, setSelectedTerm] = useState('SUMMER 2024');
 
   // Translation helper
   const t = (viText: string, enText: string) => {
@@ -13,9 +13,9 @@ export const ExamSchedule = ({ lang }: ExamScheduleProps) => {
   };
 
   const terms = [
-    { value: 'SUMMER 2026', label: t('MÙA HÈ 2026', 'SUMMER 2026') },
-    { value: 'SPRING 2026', label: t('MÙA XUÂN 2026', 'SPRING 2026') },
-    { value: 'FALL 2026', label: t('MÙA THU 2026', 'FALL 2026') }
+    { value: 'SUMMER 2024', label: 'SUMMER 2024' },
+    { value: 'SPRING 2024', label: 'SPRING 2024' },
+    { value: 'FALL 2024', label: 'FALL 2024' }
   ];
 
   return (
@@ -123,10 +123,10 @@ export const ExamSchedule = ({ lang }: ExamScheduleProps) => {
               {/* Floating Green Speech Bubble with Pink X badge */}
               <g className="speech-bubble-group">
                 {/* Speech bubble tail */}
-                <path d="M192 120 L187 132 L198 128 Z" fill="#10B981" stroke="#1E293B" strokeWidth="3" strokeLinejoin="round" />
+                <path d="M192 120 L187 132 L198 128 Z" fill="#00cbd4" stroke="#1E293B" strokeWidth="3" strokeLinejoin="round" />
                 
-                {/* Speech bubble main body (teal/green) */}
-                <circle cx="200" cy="100" r="28" fill="#10B981" stroke="#1E293B" strokeWidth="3" />
+                {/* Speech bubble main body (turquoise/cyan) */}
+                <circle cx="200" cy="100" r="28" fill="#00cbd4" stroke="#1E293B" strokeWidth="3" />
                 
                 {/* Inside circle badge (pink) */}
                 <circle cx="200" cy="100" r="18" fill="#FDA4AF" stroke="#1E293B" strokeWidth="3" />
