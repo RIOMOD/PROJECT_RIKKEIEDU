@@ -10,9 +10,6 @@ import {
   Calendar, 
   Clock, 
   FileText, 
-  CreditCard, 
-  GraduationCap, 
-  Users,
   Sparkles,
   BookOpen,
   FileSpreadsheet,
@@ -148,16 +145,6 @@ export const Sidebar = ({
                 </div>
               </div>
 
-              {/* Thay đổi lớp */}
-              <div 
-                onClick={() => handleLinkClick('thay-doi-lop')}
-                className={`sidebar-link ${activeItem === 'thay-doi-lop' ? 'active' : ''}`}
-              >
-                <span className="sidebar-link-content">
-                  <Users size={16} className="text-orange-500" />
-                  <span>{t('Thay đổi lớp', 'Change Class')}</span>
-                </span>
-              </div>
 
               {/* Phản hồi về chất lượng giảng dạy */}
               <div 
@@ -187,15 +174,7 @@ export const Sidebar = ({
             </div>
 
             <div className={`submenu-container ${openSubmenus.truyCap ? 'open' : ''}`}>
-              <div 
-                onClick={() => handleLinkClick('xem-lich-trinh')}
-                className={`sidebar-link ${activeItem === 'xem-lich-trinh' ? 'active' : ''}`}
-              >
-                <span className="sidebar-link-content">
-                  <Calendar size={16} className="text-orange-500" />
-                  <span>{t('Xem lịch trình', 'View Schedule')}</span>
-                </span>
-              </div>
+
 
               <div 
                 onClick={() => handleLinkClick('tkb-hang-tuan')}
@@ -227,25 +206,7 @@ export const Sidebar = ({
                 </span>
               </div>
 
-              <div 
-                onClick={() => handleLinkClick('hoc-phi')}
-                className={`sidebar-link ${activeItem === 'hoc-phi' ? 'active' : ''}`}
-              >
-                <span className="sidebar-link-content">
-                  <CreditCard size={16} className="text-orange-500" />
-                  <span>{t('Học phí', 'Course Fee')}</span>
-                </span>
-              </div>
 
-              <div 
-                onClick={() => handleLinkClick('tot-nghiep')}
-                className={`sidebar-link ${activeItem === 'tot-nghiep' ? 'active' : ''}`}
-              >
-                <span className="sidebar-link-content">
-                  <GraduationCap size={16} className="text-orange-500" />
-                  <span>{t('Thời gian lấy bằng tốt nghiệp', 'Diploma period')}</span>
-                </span>
-              </div>
             </div>
           </div>
 
