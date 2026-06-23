@@ -14,11 +14,19 @@ import {
   Mail
 } from 'lucide-react';
 
-export const Profile = () => {
+interface ProfileProps {
+  lang: 'vi' | 'en';
+}
+
+export const Profile = ({ lang }: ProfileProps) => {
   const [academicOpen, setAcademicOpen] = useState(true);
   const [financeOpen, setFinanceOpen] = useState(true);
   const [parentsOpen, setParentsOpen] = useState(true);
 
+  // Translation helper
+  const t = (viText: string, enText: string) => {
+    return lang === 'en' ? enText : viText;
+  };
 
   const student = {
     name: 'Nguyễn Văn Hùng',
@@ -26,11 +34,11 @@ export const Profile = () => {
     avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=120',
     dob: '15/12/2004',
     identityNumber: '030204001944',
-    gender: 'Male',
+    gender: t('Nam', 'Male'),
     dateIssue: '10/06/2019',
-    oldAddress: 'Cẩm Vũ, Cẩm Giàng, Hải Dương',
-    placeIssue: 'Hải Dương',
-    newAddress: 'Thôn Phú Lộc, Xã Tuệ Tĩnh, Thành phố Hải Phòng',
+    oldAddress: t('Cẩm Vũ, Cẩm Giàng, Hải Dương', 'Cam Vu, Cam Giang, Hai Duong'),
+    placeIssue: t('Hải Dương', 'Hai Duong'),
+    newAddress: t('Thôn Phú Lộc, Xã Tuệ Tĩnh, Thành phố Hải Phòng', 'Phu Loc, Tue Tinh, Hai Phong City'),
     telephone: '0879378668'
   };
 
@@ -75,7 +83,7 @@ export const Profile = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <Calendar size={18} style={{ color: '#f37021', flexShrink: 0 }} />
               <div>
-                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>Date of birth</span>
+                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>{t('Ngày sinh', 'Date of birth')}</span>
                 <span style={{ fontSize: '13px', color: '#334155', fontWeight: '600' }}>{student.dob}</span>
               </div>
             </div>
@@ -83,7 +91,7 @@ export const Profile = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <CreditCard size={18} style={{ color: '#f37021', flexShrink: 0 }} />
               <div>
-                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>Identity Number</span>
+                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>{t('Số CMND/CCCD', 'Identity Number')}</span>
                 <span style={{ fontSize: '13px', color: '#334155', fontWeight: '600' }}>{student.identityNumber}</span>
               </div>
             </div>
@@ -91,7 +99,7 @@ export const Profile = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <User size={18} style={{ color: '#f37021', flexShrink: 0 }} />
               <div>
-                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>Gender</span>
+                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>{t('Giới tính', 'Gender')}</span>
                 <span style={{ fontSize: '13px', color: '#334155', fontWeight: '600' }}>{student.gender}</span>
               </div>
             </div>
@@ -99,7 +107,7 @@ export const Profile = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <Calendar size={18} style={{ color: '#f37021', flexShrink: 0 }} />
               <div>
-                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>Date issue</span>
+                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>{t('Ngày cấp', 'Date issue')}</span>
                 <span style={{ fontSize: '13px', color: '#334155', fontWeight: '600' }}>{student.dateIssue}</span>
               </div>
             </div>
@@ -107,7 +115,7 @@ export const Profile = () => {
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', gridColumn: 'span 1' }}>
               <MapPin size={18} style={{ color: '#f37021', flexShrink: 0, marginTop: '2px' }} />
               <div>
-                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>Old Address</span>
+                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>{t('Địa chỉ cũ', 'Old Address')}</span>
                 <span style={{ fontSize: '13px', color: '#334155', fontWeight: '600', lineHeight: '1.4' }}>{student.oldAddress}</span>
               </div>
             </div>
@@ -115,7 +123,7 @@ export const Profile = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <Search size={18} style={{ color: '#f37021', flexShrink: 0 }} />
               <div>
-                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>Place Issue</span>
+                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>{t('Nơi cấp', 'Place Issue')}</span>
                 <span style={{ fontSize: '13px', color: '#334155', fontWeight: '600' }}>{student.placeIssue}</span>
               </div>
             </div>
@@ -123,7 +131,7 @@ export const Profile = () => {
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', gridColumn: 'span 1' }}>
               <MapPin size={18} style={{ color: '#f37021', flexShrink: 0, marginTop: '2px' }} />
               <div>
-                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>New Address</span>
+                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>{t('Địa chỉ mới', 'New Address')}</span>
                 <span style={{ fontSize: '13px', color: '#334155', fontWeight: '600', lineHeight: '1.4' }}>{student.newAddress}</span>
               </div>
             </div>
@@ -131,7 +139,7 @@ export const Profile = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <Phone size={18} style={{ color: '#f37021', flexShrink: 0 }} />
               <div>
-                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>Telephone</span>
+                <span style={{ fontSize: '11.5px', color: '#94A3B8', display: 'block', fontWeight: 'bold', textTransform: 'uppercase' }}>{t('Số điện thoại', 'Telephone')}</span>
                 <span style={{ fontSize: '13px', color: '#334155', fontWeight: '600' }}>{student.telephone}</span>
               </div>
             </div>
@@ -151,7 +159,7 @@ export const Profile = () => {
             cursor: 'pointer',
             transition: 'all 0.2s ease'
           }}>
-            Related Decision
+            {t('Quyết định liên quan', 'Related Decision')}
           </button>
           <button style={{
             background: 'none',
@@ -164,7 +172,7 @@ export const Profile = () => {
             cursor: 'pointer',
             transition: 'all 0.2s ease'
           }}>
-            Profile Online
+            {t('Hồ sơ trực tuyến', 'Profile Online')}
           </button>
         </div>
 
@@ -189,7 +197,7 @@ export const Profile = () => {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <BookOpen size={16} />
-                <span style={{ textTransform: 'uppercase', letterSpacing: '0.5px' }}>ACADEMIC</span>
+                <span style={{ textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('HỌC TẬP', 'ACADEMIC')}</span>
               </div>
               {academicOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </div>
@@ -211,7 +219,7 @@ export const Profile = () => {
                 </div>
                 <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0' }}>
                   <div style={{ width: '40%', backgroundColor: '#f8fafc', padding: '10px 16px', fontWeight: 'bold', fontSize: '12px', color: '#475569', display: 'flex', alignItems: 'center' }}>MODE</div>
-                  <div style={{ width: '60%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center' }}>Chính quy</div>
+                  <div style={{ width: '60%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center' }}>{t('Chính quy', 'Regular')}</div>
                 </div>
 
                 <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0', borderRight: '1px solid #e2e8f0' }}>
@@ -220,7 +228,7 @@ export const Profile = () => {
                 </div>
                 <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0' }}>
                   <div style={{ width: '40%', backgroundColor: '#f8fafc', padding: '10px 16px', fontWeight: 'bold', fontSize: '12px', color: '#475569', display: 'flex', alignItems: 'center' }}>INITAL MAJOR</div>
-                  <div style={{ width: '60%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center' }}>Kỹ thuật phần mềm</div>
+                  <div style={{ width: '60%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center' }}>{t('Kỹ thuật phần mềm', 'Software Engineering')}</div>
                 </div>
 
                 <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0', borderRight: '1px solid #e2e8f0' }}>
@@ -234,7 +242,7 @@ export const Profile = () => {
 
                 <div style={{ display: 'flex', borderBottom: '1px solid #cbd5e1', borderRight: '1px solid #e2e8f0' }}>
                   <div style={{ width: '40%', backgroundColor: '#f8fafc', padding: '10px 16px', fontWeight: 'bold', fontSize: '12px', color: '#475569', display: 'flex', alignItems: 'center' }}>LEGAL ENTITY</div>
-                  <div style={{ width: '60%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center' }}>Trường</div>
+                  <div style={{ width: '60%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center' }}>{t('Trường', 'School')}</div>
                 </div>
                 <div style={{ display: 'flex', borderBottom: '1px solid #cbd5e1' }}>
                   <div style={{ width: '40%', backgroundColor: '#f8fafc', padding: '10px 16px', fontWeight: 'bold', fontSize: '12px', color: '#475569', display: 'flex', alignItems: 'center' }}>CAPSTONE PROJECT</div>
@@ -243,7 +251,7 @@ export const Profile = () => {
 
                 <div style={{ display: 'flex', gridColumn: 'span 2' }}>
                   <div style={{ width: '20%', backgroundColor: '#f8fafc', padding: '10px 16px', fontWeight: 'bold', fontSize: '12px', color: '#475569', display: 'flex', alignItems: 'center' }}>SCHOLARSHIP LEVEL</div>
-                  <div style={{ width: '80%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center' }}>Ưu đãi 10%</div>
+                  <div style={{ width: '80%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center' }}>{t('Ưu đãi 10%', '10% Discount')}</div>
                 </div>
               </div>
             )}
@@ -267,7 +275,7 @@ export const Profile = () => {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <DollarSign size={16} />
-                <span style={{ textTransform: 'uppercase', letterSpacing: '0.5px' }}>FINANCE</span>
+                <span style={{ textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('TÀI CHÍNH', 'FINANCE')}</span>
               </div>
               {financeOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </div>
@@ -284,12 +292,12 @@ export const Profile = () => {
                 </div>
 
                 <div style={{ display: 'flex', borderRight: '1px solid #e2e8f0' }}>
-                  <div style={{ width: '40%', backgroundColor: '#f8fafc', padding: '10px 16px', fontWeight: 'bold', fontSize: '12px', color: '#475569', display: 'flex', alignItems: 'center' }}>LOẠI TÀI CHÍNH</div>
+                  <div style={{ width: '40%', backgroundColor: '#f8fafc', padding: '10px 16px', fontWeight: 'bold', fontSize: '12px', color: '#475569', display: 'flex', alignItems: 'center' }}>{t('LOẠI TÀI CHÍNH', 'FINANCIAL TYPE')}</div>
                   <div style={{ width: '60%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center' }}></div>
                 </div>
                 <div style={{ display: 'flex' }}>
                   <div style={{ width: '40%', backgroundColor: '#f8fafc', padding: '10px 16px', fontWeight: 'bold', fontSize: '12px', color: '#475569', display: 'flex', alignItems: 'center' }}>WALLET BALANCE</div>
-                  <div style={{ width: '60%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center' }}>VND 0 đ</div>
+                  <div style={{ width: '60%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center' }}>{t('VND 0 đ', '0 VND')}</div>
                 </div>
               </div>
             )}
@@ -313,7 +321,7 @@ export const Profile = () => {
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Users size={16} />
-                <span style={{ textTransform: 'uppercase', letterSpacing: '0.5px' }}>PARENTS</span>
+                <span style={{ textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('PHỤ HUYNH', 'PARENTS')}</span>
               </div>
               {parentsOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </div>
@@ -331,7 +339,7 @@ export const Profile = () => {
 
                 <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0', borderRight: '1px solid #e2e8f0' }}>
                   <div style={{ width: '40%', backgroundColor: '#f8fafc', padding: '10px 16px', fontWeight: 'bold', fontSize: '12px', color: '#475569', display: 'flex', alignItems: 'center' }}>ADDRESS</div>
-                  <div style={{ width: '60%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center', lineHeight: '1.4' }}>Cẩm Vũ, Cẩm Giàng, Hải Dương</div>
+                  <div style={{ width: '60%', padding: '10px 16px', fontSize: '13px', color: '#1E293B', display: 'flex', alignItems: 'center', lineHeight: '1.4' }}>{t('Cẩm Vũ, Cẩm Giàng, Hải Dương', 'Cam Vu, Cam Giang, Hai Duong')}</div>
                 </div>
                 <div style={{ display: 'flex', borderBottom: '1px solid #e2e8f0' }}>
                   <div style={{ width: '40%', backgroundColor: '#f8fafc', padding: '10px 16px', fontWeight: 'bold', fontSize: '12px', color: '#475569', display: 'flex', alignItems: 'center' }}>EMAIL</div>

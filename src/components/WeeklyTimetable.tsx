@@ -13,10 +13,19 @@ interface ClassSession {
   slotIndex: number; // 0: Slot 1, 1: Slot 2, ... 6: Slot 7
 }
 
-export const WeeklyTimetable = () => {
+interface WeeklyTimetableProps {
+  lang: 'vi' | 'en';
+}
+
+export const WeeklyTimetable = ({ lang }: WeeklyTimetableProps) => {
   const [selectedYear, setSelectedYear] = useState('2026');
   const [selectedWeek, setSelectedWeek] = useState('22/06 To 28/06');
   const [detailSession, setDetailSession] = useState<ClassSession | null>(null);
+
+  // Translation helper
+  const t = (viText: string, enText: string) => {
+    return lang === 'en' ? enText : viText;
+  };
 
   // Dropdown list options
   const weeks = [
@@ -37,13 +46,13 @@ export const WeeklyTimetable = () => {
   ];
 
   const days = [
-    { key: 'Mon', label: 'Mon', date: '22/06' },
-    { key: 'Tue', label: 'Tue', date: '23/06' },
-    { key: 'Wed', label: 'Wed', date: '24/06' },
-    { key: 'Thu', label: 'Thu', date: '25/06' },
-    { key: 'Fri', label: 'Fri', date: '26/06' },
-    { key: 'Sat', label: 'Sat', date: '27/06' },
-    { key: 'Sun', label: 'Sun', date: '28/06' }
+    { key: 'Mon', label: t('Thứ 2', 'Mon'), date: '22/06' },
+    { key: 'Tue', label: t('Thứ 3', 'Tue'), date: '23/06' },
+    { key: 'Wed', label: t('Thứ 4', 'Wed'), date: '24/06' },
+    { key: 'Thu', label: t('Thứ 5', 'Thu'), date: '25/06' },
+    { key: 'Fri', label: t('Thứ 6', 'Fri'), date: '26/06' },
+    { key: 'Sat', label: t('Thứ 7', 'Sat'), date: '27/06' },
+    { key: 'Sun', label: t('Chủ nhật', 'Sun'), date: '28/06' }
   ];
 
   // Mock sessions list for week "22/06 To 28/06" exactly matching the screenshot mockup
@@ -154,18 +163,20 @@ export const WeeklyTimetable = () => {
       {/* Main Container */}
       <main className="dashboard-container">
         
-        {/* Page Titles           <h2 className="services-section-title" style={{ textAlign: 'left', marginBottom: '8px' }}>
-            ACTIVITIES FOR HUNGNVBS00679 (NGUYỄN VĂN HÙNG)
+        {/* Page Titles */}
+        <div>
+          <h2 className="services-section-title" style={{ textAlign: 'left', marginBottom: '8px' }}>
+            {t('HOẠT ĐỘNG CHO HUNGNVBS00679 (NGUYỄN VĂN HÙNG)', 'ACTIVITIES FOR HUNGNVBS00679 (NGUYỄN VĂN HÙNG)')}
           </h2>
           <p style={{ color: '#F97316', fontSize: '12px', fontWeight: '700', letterSpacing: '0.2px', marginBottom: '20px' }}>
-            ✏️ THESE ACTIVITIES DO NOT INCLUDE EXTRA-CURRICULUM ACTIVITIES, SUCH AS CLUB ACTIVITIES ...
+            {t('✏️ CÁC HOẠT ĐỘNG NÀY KHÔNG BAO GỒM HOẠT ĐỘNG NGOẠI KHÓA, HOẠT ĐỘNG CỦA CÂU LẠC BỘ...', '✏️ THESE ACTIVITIES DO NOT INCLUDE EXTRA-CURRICULUM ACTIVITIES, SUCH AS CLUB ACTIVITIES...')}
           </p>
         </div>
 
         {/* Dropdown Filters */}
         <div className="timetable-filters-row">
           <div className="timetable-filter-group">
-            <span className="timetable-filter-label">Year</span>
+            <span className="timetable-filter-label">{t('Năm học', 'Year')}</span>
             <select 
               value={selectedYear} 
               onChange={(e) => setSelectedYear(e.target.value)}
@@ -177,95 +188,72 @@ export const WeeklyTimetable = () => {
             </select>
           </div>
           <div className="timetable-filter-group">
-            <span className="timetable-filter-label">Week</span>
+            <span className="timetable-filter-label">{t('Tuần học', 'Week')}</span>
             <select 
               value={selectedWeek} 
               onChange={(e) => setSelectedWeek(e.target.value)}
               className="timetable-filter-select"
-              style={{ minWidth: '180px' }}
             >
-              {weeks.map(w => (
-                <option key={w} value={w}>{w}</option>
+              {weeks.map((w, idx) => (
+                <option key={idx} value={w}>{w}</option>
               ))}
             </select>
           </div>
         </div>
 
-        {/* Timetable Table Grid */}
-        <div className="timetable-table-wrapper" style={{ overflowX: 'auto' }}>
-          <table className="timetable-table">
+        {/* Timetable Grid Table */}
+        <div className="timetable-wrapper">
+          <table className="timetable-grid">
             <thead>
               <tr>
-                <th rowSpan={2} style={{ width: '120px' }}></th>
-                {days.map((d) => (
-                  <th key={d.key}>
-                    {d.label}
-                  </th>
-                ))}
-              </tr>
-              <tr>
-                {days.map((d) => (
-                  <th key={`${d.key}-date`}>
-                    {d.date}
+                <th className="timetable-header-cell" style={{ width: '120px' }}>
+                  {t('Ca học', 'Slot')}
+                </th>
+                {days.map((d, idx) => (
+                  <th key={idx} className="timetable-header-cell">
+                    <div>{d.label}</div>
+                    <div className="timetable-header-date">{d.date}</div>
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {slots.map((slot, slotIdx) => (
-                <tr key={slot.name}>
-                  {/* Slot Left Cell */}
+              {slots.map((s, slotIdx) => (
+                <tr key={slotIdx}>
+                  {/* Slot cell details */}
                   <td className="timetable-slot-cell">
-                    <strong>{slot.name} ({slot.time})</strong>
+                    <div className="timetable-slot-name">{s.name}</div>
+                    <div className="timetable-slot-time">{s.time}</div>
                   </td>
                   
-                  {/* Week Days cells */}
-                  {days.map((day, dayIdx) => {
+                  {/* Days columns cells */}
+                  {days.map((_, dayIdx) => {
                     const session = getSession(dayIdx, slotIdx);
                     return (
-                      <td key={day.key}>
+                      <td key={dayIdx} className="timetable-grid-cell">
                         {session ? (
-                          <div className="timetable-cell-content">
-                            <span 
-                              onClick={() => setDetailSession(session)}
-                              className="timetable-link"
-                            >
-                              {session.subjectCode}
-                            </span>
-                            <br />
-                            <span 
-                              onClick={() => setDetailSession(session)}
-                              className="timetable-link"
-                            >
-                              ({session.type})
-                            </span>
-                            <br />
-                            <span 
-                              onClick={() => setDetailSession(session)}
-                              className="timetable-link"
-                            >
-                              at {session.roomName} {session.teacherCode ? '-' : ''}
-                            </span>
-                            {session.teacherCode && (
-                              <>
-                                <br />
-                                <span 
-                                  onClick={() => setDetailSession(session)}
-                                  className="timetable-link"
-                                >
-                                  {session.teacherCode}
-                                </span>
-                              </>
-                            )}
-                            <br />
-                            <span 
-                              onClick={() => setDetailSession(session)}
-                              className={session.status === 'Attended' ? 'attendance-attended' : session.status === 'Absent' ? 'attendance-absent' : 'attendance-not-yet'}
-                            >
-                              ({session.status})
-                            </span>
+                          <div 
+                            onClick={() => setDetailSession(session)}
+                            className="timetable-session-card"
+                          >
+                            <div className="session-card-header">
+                              <span className="session-subject">{session.subjectCode}</span>
+                              <span 
+                                className={session.status === 'Attended' ? 'status-badge-success' : 'status-badge-pending'}
+                              >
+                                {session.status === 'Attended' ? t('(Đã điểm danh)', '(Attended)') : t('(Chưa)', '(Not yet)')}
+                              </span>
+                            </div>
+                            <div className="session-room">
+                              <span>🚪 {session.roomName}</span>
+                            </div>
+                            <div className="session-type">
+                              <span>🏷️ {session.type}</span>
+                            </div>
                           </div>
-                        ) : null}
+                        ) : (
+                          <div className="timetable-empty-cell">-</div>
+                        )}
                       </td>
                     );
                   })}
@@ -277,15 +265,15 @@ export const WeeklyTimetable = () => {
 
         {/* Notes list */}
         <div className="timetable-notes">
-          <h4 className="timetable-notes-title">✏️ MORE NOTE:</h4>
+          <h4 className="timetable-notes-title">{t('✏️ GHI CHÚ THÊM:', '✏️ MORE NOTE:')}</h4>
           <ul className="timetable-notes-list">
             <li>
               • <span className="attendance-attended" style={{ marginRight: '4px' }}>(Attended)</span>: 
-              hungnvbs00679 had attended this activity / Nguyễn Văn Hùng đã tham gia hoạt động này
+              {t('Nguyễn Văn Hùng đã tham gia hoạt động này', 'hungnvbs00679 had attended this activity')}
             </li>
             <li>
               • <span className="attendance-absent" style={{ marginRight: '4px' }}>(Absent)</span>: 
-              hungnvbs00679 had NOT attended this activity / Nguyễn Văn Hùng đã vắng mặt buổi này
+              {t('Nguyễn Văn Hùng đã vắng mặt buổi này', 'hungnvbs00679 had NOT attended this activity')}
             </li>
           </ul>
         </div>
@@ -300,14 +288,14 @@ export const WeeklyTimetable = () => {
             </div>
             
             <h3 className="modal-title" style={{ marginBottom: '16px', fontSize: '17px' }}>
-              Chi tiết ca học: {detailSession.subjectCode}
+              {t('Chi tiết ca học:', 'Class Session Details:')} {detailSession.subjectCode}
             </h3>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '13px', color: '#475569' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <BookOpen size={16} style={{ color: '#94A3B8' }} />
                 <div>
-                  <span style={{ fontSize: '11px', color: '#94A3B8', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>Môn học</span>
+                  <span style={{ fontSize: '11px', color: '#94A3B8', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>{t('Môn học', 'Subject')}</span>
                   <span style={{ fontWeight: '600', color: '#1E293B' }}>{detailSession.subjectName}</span>
                 </div>
               </div>
@@ -315,7 +303,7 @@ export const WeeklyTimetable = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <MapPin size={16} style={{ color: '#94A3B8' }} />
                 <div>
-                  <span style={{ fontSize: '11px', color: '#94A3B8', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>Phòng học / Link online</span>
+                  <span style={{ fontSize: '11px', color: '#94A3B8', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>{t('Phòng học / Link online', 'Room / Online Link')}</span>
                   <span style={{ fontWeight: '600', color: '#1E293B' }}>{detailSession.roomName}</span>
                 </div>
               </div>
@@ -323,15 +311,15 @@ export const WeeklyTimetable = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <User size={16} style={{ color: '#94A3B8' }} />
                 <div>
-                  <span style={{ fontSize: '11px', color: '#94A3B8', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>Giảng viên</span>
-                  <span style={{ fontWeight: '600', color: '#1E293B' }}>{detailSession.teacherName} ({detailSession.teacherCode})</span>
+                  <span style={{ fontSize: '11px', color: '#94A3B8', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>{t('Giảng viên', 'Lecturer')}</span>
+                  <span style={{ fontWeight: '600', color: '#1E293B' }}>{detailSession.teacherName || '-'} {detailSession.teacherCode ? `(${detailSession.teacherCode})` : ''}</span>
                 </div>
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <CalendarIcon size={16} style={{ color: '#94A3B8' }} />
                 <div>
-                  <span style={{ fontSize: '11px', color: '#94A3B8', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>Thời gian ca học</span>
+                  <span style={{ fontSize: '11px', color: '#94A3B8', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>{t('Thời gian ca học', 'Session Time')}</span>
                   <span style={{ fontWeight: '600', color: '#1E293B' }}>Monday, 22/06/2026 (Ca {detailSession.slotIndex + 1})</span>
                 </div>
               </div>
@@ -339,12 +327,12 @@ export const WeeklyTimetable = () => {
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <Clock size={16} style={{ color: '#94A3B8' }} />
                 <div>
-                  <span style={{ fontSize: '11px', color: '#94A3B8', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>Trạng thái điểm danh</span>
+                  <span style={{ fontSize: '11px', color: '#94A3B8', display: 'block', textTransform: 'uppercase', fontWeight: 'bold' }}>{t('Trạng thái điểm danh', 'Check-in Status')}</span>
                   <span 
                     style={{ fontWeight: '700' }} 
                     className={detailSession.status === 'Attended' ? 'attendance-badge-success' : 'attendance-badge-pending'}
                   >
-                    {detailSession.status === 'Attended' ? 'Đã tham gia (Attended)' : 'Chưa điểm danh (Not yet)'}
+                    {detailSession.status === 'Attended' ? t('Đã tham gia (Attended)', 'Attended') : t('Chưa điểm danh (Not yet)', 'Not yet check-in')}
                   </span>
                 </div>
               </div>
@@ -352,7 +340,7 @@ export const WeeklyTimetable = () => {
 
             <div className="modal-actions" style={{ marginTop: '24px', justifyContent: 'flex-end' }}>
               <button onClick={() => setDetailSession(null)} className="modal-btn-confirm" style={{ padding: '8px 24px' }}>
-                Đóng lại
+                {t('Đóng lại', 'Close')}
               </button>
             </div>
           </div>

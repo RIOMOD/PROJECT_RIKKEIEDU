@@ -62,7 +62,15 @@ const INFO_CATEGORIES = [
   'Số điện thoại phụ huynh'
 ];
 
-export const OnlineServices = () => {
+interface OnlineServicesProps {
+  lang: 'vi' | 'en';
+}
+
+export const OnlineServices = ({ lang }: OnlineServicesProps) => {
+  // Translation helper
+  const t = (viText: string, enText: string) => {
+    return lang === 'en' ? enText : viText;
+  };
   const [view, setView] = useState<'list' | 'attendance-recovery' | 'student-card-reissue' | 'change-info' | 'withdraw' | 'retake' | 'defer'>('list');
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -133,38 +141,38 @@ export const OnlineServices = () => {
   const services: ServiceItem[] = [
     {
       stt: 1,
-      task: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH',
+      task: t('ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH', 'ATTENDANCE RECOVERY REGISTRATION'),
       desc: ''
     },
     {
       stt: 2,
-      task: 'ĐĂNG KÝ CẤP LẠI THẺ SINH VIÊN',
-      desc: 'ĐĂNG KÝ CẤP LẠI THẺ SINH VIÊN BỊ MẤT HOẶC HỎNG'
+      task: t('ĐĂNG KÝ CẤP LẠI THẺ SINH VIÊN', 'STUDENT CARD RE-ISSUANCE REGISTRATION'),
+      desc: t('ĐĂNG KÝ CẤP LẠI THẺ SINH VIÊN BỊ MẤT HOẶC HỎNG', 'REGISTER TO REISSUE A LOST OR DAMAGED STUDENT CARD')
     },
     {
       stt: 3,
-      task: 'ĐĂNG KÝ THAY ĐỔI THÔNG TIN',
+      task: t('ĐĂNG KÝ THAY ĐỔI THÔNG TIN', 'INFORMATION CHANGE REGISTRATION'),
       desc: ''
     },
     {
       stt: 4,
-      task: 'ĐĂNG KÝ THÔI HỌC',
+      task: t('ĐĂNG KÝ THÔI HỌC', 'WITHDRAWAL REGISTRATION'),
       desc: ''
     },
     {
       stt: 5,
-      task: 'ĐĂNG KÝ HỌC LẠI',
-      desc: 'ĐĂNG KÝ HỌC LẠI CHO SINH VIÊN TRƯỢT MÔN HỌC'
+      task: t('ĐĂNG KÝ HỌC LẠI', 'RETAKE REGISTRATION'),
+      desc: t('ĐĂNG KÝ HỌC LẠI CHO SINH VIÊN TRƯỢT MÔN HỌC', 'RETAKE REGISTRATION FOR STUDENTS WHO FAILED A COURSE')
     },
     {
       stt: 6,
-      task: 'ĐĂNG KÝ TẠM THỜI NGHỈ HỌC DÀI HẠN',
-      desc: 'DỊCH VỤ ÁP DỤNG CHO TRƯỜP HỢP SV CẦN TẠM DỪNG HỌC KHI LỚP HỌC CHƯA KẾT THÚC'
+      task: t('ĐĂNG KÝ TẠM THỜI NGHỈ HỌC DÀI HẠN', 'TEMPORARY LONG-TERM LEAVE REGISTRATION'),
+      desc: t('DỊCH VỤ ÁP DỤNG CHO TRƯỜNG HỢP SV CẦN TẠM DỪNG HỌC KHI LỚP HỌC CHƯA KẾT THÚC', 'SERVICE FOR STUDENTS WHO NEED TO SUSPEND THEIR STUDIES TEMPORARILY')
     },
     {
       stt: 7,
-      task: 'ĐĂNG KÝ VÀ DỊCH VỤ KHÁC',
-      desc: 'SỬ DỤNG CHUNG CHO CÁC DỊCH VỤ KHÔNG BỊ MẤT PHÍ NHƯ: THẮC MẮC, KHIẾU NẠI,...'
+      task: t('ĐĂNG KÝ VÀ DỊCH VỤ KHÁC', 'OTHER SERVICES & INQUIRIES'),
+      desc: t('SỬ DỤNG CHUNG CHO CÁC DỊCH VỤ KHÔNG BỊ MẤT PHÍ NHƯ: THẮC MẮC, KHIẾU NẠI,...', 'FOR COMPLAINTS, INQUIRIES, AND FREE GENERAL SERVICES')
     }
   ];
 
@@ -394,7 +402,7 @@ export const OnlineServices = () => {
         {view === 'list' && (
           <>
             {/* Page Title */}
-            <h2 className="services-section-title">Danh sách các dịch vụ trực tuyến</h2>
+            <h2 className="services-section-title">{t('Danh sách các dịch vụ trực tuyến', 'Online Service Registration List')}</h2>
 
             {/* Table Container */}
             <div className="services-table-wrapper">
@@ -402,9 +410,9 @@ export const OnlineServices = () => {
                 <thead className="services-thead">
                   <tr>
                     <th className="services-th center">STT</th>
-                    <th className="services-th">Nhiệm vụ</th>
-                    <th className="services-th">Mô tả</th>
-                    <th className="services-th center">Đăng ký</th>
+                    <th className="services-th">{t('Nhiệm vụ', 'Task')}</th>
+                    <th className="services-th">{t('Mô tả', 'Description')}</th>
+                    <th className="services-th center">{t('Đăng ký', 'Register')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -420,7 +428,7 @@ export const OnlineServices = () => {
                           onClick={() => handleRegisterClick(item)}
                           className="register-btn"
                         >
-                          Đăng ký
+                          {t('Đăng ký', 'Register')}
                         </button>
                       </td>
                     </tr>
@@ -430,10 +438,10 @@ export const OnlineServices = () => {
 
               {/* Pagination */}
               <div className="pagination-container">
-                <button className="pagination-btn">Trước</button>
+                <button className="pagination-btn">{t('Trước', 'Previous')}</button>
                 <span className="pagination-arrows">&lt;&lt;</span>
                 <span className="pagination-arrows">&gt;&gt;</span>
-                <button className="pagination-btn">Kế tiếp</button>
+                <button className="pagination-btn">{t('Kế tiếp', 'Next')}</button>
               </div>
             </div>
           </>

@@ -40,23 +40,23 @@ function App() {
   // Helper to render page content based on selected sidebar item
   const renderContent = () => {
     if (activeItem === 'trang-chu') {
-      return <Dashboard />;
+      return <Dashboard lang={lang} />;
     }
     
     if (activeItem === 'dv-truc-tuyen') {
-      return <OnlineServices />;
+      return <OnlineServices lang={lang} />;
     }
 
     if (activeItem === 'lich-su-dk') {
-      return <RegistrationHistory />;
+      return <RegistrationHistory lang={lang} />;
     }
 
     if (activeItem === 'phan-hoi-clgd') {
-      return <TeacherFeedback />;
+      return <TeacherFeedback lang={lang} />;
     }
 
     if (activeItem === 'tkb-hang-tuan') {
-      return <WeeklyTimetable />;
+      return <WeeklyTimetable lang={lang} />;
     }
 
     if (activeItem === 'tkb-lop-hoc') {
@@ -84,7 +84,7 @@ function App() {
     }
 
     if (activeItem === 'profile') {
-      return <Profile />;
+      return <Profile lang={lang} />;
     }
 
     const currentTitle = menuTitles[activeItem]?.[lang] || 'Cổng thông tin';

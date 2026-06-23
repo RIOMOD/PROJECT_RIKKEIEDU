@@ -3,126 +3,168 @@ import { Trash2, Star, CheckCircle2 } from 'lucide-react';
 
 interface HistoryItem {
   code: string;
-  service: string;
+  serviceVi: string;
+  serviceEn: string;
   regDate: string;
   compDate: string;
-  status: string;
+  statusVi: string;
+  statusEn: string;
   statusType: 'orange' | 'yellow';
-  notice: string;
+  noticeVi: string;
+  noticeEn: string;
   hasCancel: boolean;
   hasRate: boolean;
 }
 
-export const RegistrationHistory = () => {
+interface RegistrationHistoryProps {
+  lang: 'vi' | 'en';
+}
+
+export const RegistrationHistory = ({ lang }: RegistrationHistoryProps) => {
+  // Translation helper
+  const t = (viText: string, enText: string) => {
+    return lang === 'en' ? enText : viText;
+  };
+
   // Initialize mock history data exactly matching the screenshot mockup
   const [historyList, setHistoryList] = useState<HistoryItem[]>([
     {
       code: '#7008',
-      service: 'ĐĂNG KÝ HỌC LẠI',
+      serviceVi: 'ĐĂNG KÝ HỌC LẠI',
+      serviceEn: 'RETAKE REGISTRATION',
       regDate: '2026-05-04 08:42:44',
       compDate: '',
-      status: 'Chờ xếp lớp',
+      statusVi: 'Chờ xếp lớp',
+      statusEn: 'Pending Allocation',
       statusType: 'orange',
-      notice: '',
+      noticeVi: '',
+      noticeEn: '',
       hasCancel: true,
       hasRate: false
     },
     {
       code: '#7007',
-      service: 'ĐĂNG KÝ HỌC LẠI',
+      serviceVi: 'ĐĂNG KÝ HỌC LẠI',
+      serviceEn: 'RETAKE REGISTRATION',
       regDate: '2026-05-04 08:40:00',
       compDate: '2026-05-04 08:50:25',
-      status: 'Close (Đã xếp lớp)',
+      statusVi: 'Close (Đã xếp lớp)',
+      statusEn: 'Closed (Assigned)',
       statusType: 'yellow',
-      notice: '',
+      noticeVi: '',
+      noticeEn: '',
       hasCancel: false,
       hasRate: true
     },
     {
       code: '#7006',
-      service: 'ĐĂNG KÝ HỌC LẠI',
+      serviceVi: 'ĐĂNG KÝ HỌC LẠI',
+      serviceEn: 'RETAKE REGISTRATION',
       regDate: '2026-05-04 08:30:27',
       compDate: '2026-05-04 08:51:00',
-      status: 'Close (Đã xếp lớp)',
+      statusVi: 'Close (Đã xếp lớp)',
+      statusEn: 'Closed (Assigned)',
       statusType: 'yellow',
-      notice: '',
+      noticeVi: '',
+      noticeEn: '',
       hasCancel: false,
       hasRate: true
     },
     {
       code: '#6817',
-      service: 'ĐĂNG KÝ HỌC LẠI',
+      serviceVi: 'ĐĂNG KÝ HỌC LẠI',
+      serviceEn: 'RETAKE REGISTRATION',
       regDate: '2026-03-29 15:17:07',
       compDate: '2026-05-03 19:22:39',
-      status: 'Close (Đã xếp lớp)',
+      statusVi: 'Close (Đã xếp lớp)',
+      statusEn: 'Closed (Assigned)',
       statusType: 'yellow',
-      notice: '',
+      noticeVi: '',
+      noticeEn: '',
       hasCancel: false,
       hasRate: true
     },
     {
       code: '#6816',
-      service: 'ĐĂNG KÝ HỌC LẠI',
+      serviceVi: 'ĐĂNG KÝ HỌC LẠI',
+      serviceEn: 'RETAKE REGISTRATION',
       regDate: '2026-03-29 15:12:29',
       compDate: '',
-      status: 'Chờ xếp lớp',
+      statusVi: 'Chờ xếp lớp',
+      statusEn: 'Pending Allocation',
       statusType: 'orange',
-      notice: '',
+      noticeVi: '',
+      noticeEn: '',
       hasCancel: true,
       hasRate: false
     },
     {
       code: '#6815',
-      service: 'ĐĂNG KÝ HỌC LẠI',
+      serviceVi: 'ĐĂNG KÝ HỌC LẠI',
+      serviceEn: 'RETAKE REGISTRATION',
       regDate: '2026-03-29 15:06:21',
       compDate: '',
-      status: 'Chờ xếp lớp',
+      statusVi: 'Chờ xếp lớp',
+      statusEn: 'Pending Allocation',
       statusType: 'orange',
-      notice: '',
+      noticeVi: '',
+      noticeEn: '',
       hasCancel: true,
       hasRate: false
     },
     {
       code: '#6700',
-      service: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH',
+      serviceVi: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH',
+      serviceEn: 'ATTENDANCE RECOVERY REGISTRATION',
       regDate: '2026-03-16 07:59:59',
       compDate: '2026-03-16 08:10:24',
-      status: 'Close',
+      statusVi: 'Close',
+      statusEn: 'Closed',
       statusType: 'yellow',
-      notice: 'ĐÃ ĐỒNG Ý YÊU CẦU()',
+      noticeVi: 'ĐÃ ĐỒNG Ý YÊU CẦU()',
+      noticeEn: 'APPROVED REQUEST()',
       hasCancel: false,
       hasRate: true
     },
     {
       code: '#6663',
-      service: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH',
+      serviceVi: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH',
+      serviceEn: 'ATTENDANCE RECOVERY REGISTRATION',
       regDate: '2026-03-10 10:13:16',
       compDate: '2026-03-10 11:20:41',
-      status: 'Close',
+      statusVi: 'Close',
+      statusEn: 'Closed',
       statusType: 'yellow',
-      notice: 'ĐÃ ĐỒNG Ý YÊU CẦU()',
+      noticeVi: 'ĐÃ ĐỒNG Ý YÊU CẦU()',
+      noticeEn: 'APPROVED REQUEST()',
       hasCancel: false,
       hasRate: true
     },
     {
       code: '#6369',
-      service: 'ĐĂNG KÝ HỌC LẠI',
+      serviceVi: 'ĐĂNG KÝ HỌC LẠI',
+      serviceEn: 'RETAKE REGISTRATION',
       regDate: '2026-01-05 03:44:46',
       compDate: '2026-01-05 06:01:46',
-      status: 'Close (Đã xếp lớp)',
+      statusVi: 'Close (Đã xếp lớp)',
+      statusEn: 'Closed (Assigned)',
       statusType: 'yellow',
-      notice: '',
+      noticeVi: '',
+      noticeEn: '',
       hasCancel: false,
       hasRate: true
     },
     {
       code: '#6325',
-      service: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH',
+      serviceVi: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH',
+      serviceEn: 'ATTENDANCE RECOVERY REGISTRATION',
       regDate: '2025-12-20 14:33:12',
       compDate: '2025-12-20 14:34:35',
-      status: 'Close',
+      statusVi: 'Close',
+      statusEn: 'Closed',
       statusType: 'yellow',
-      notice: 'ĐÃ ĐỒNG Ý YÊU CẦU()',
+      noticeVi: 'ĐÃ ĐỒNG Ý YÊU CẦU()',
+      noticeEn: 'APPROVED REQUEST()',
       hasCancel: false,
       hasRate: true
     }
@@ -144,7 +186,7 @@ export const RegistrationHistory = () => {
 
     // Filter out or update cancelled item
     setHistoryList(prev => prev.filter(item => item.code !== cancelTarget.code));
-    setSuccessMsg(`Hủy đơn đăng ký ${cancelTarget.code} thành công.`);
+    setSuccessMsg(t(`Hủy đơn đăng ký ${cancelTarget.code} thành công.`, `Registration request ${cancelTarget.code} cancelled successfully.`));
     setShowSuccess(true);
     
     setTimeout(() => {
@@ -157,7 +199,7 @@ export const RegistrationHistory = () => {
     if (!rateTarget) return;
 
     // Mark as rated (disable action) or show alert
-    setSuccessMsg(`Cảm ơn bạn đã đánh giá dịch vụ ${rateTarget.code}!`);
+    setSuccessMsg(t(`Cảm ơn bạn đã đánh giá dịch vụ ${rateTarget.code}!`, `Thank you for rating service request ${rateTarget.code}!`));
     setShowSuccess(true);
 
     setTimeout(() => {
@@ -174,11 +216,11 @@ export const RegistrationHistory = () => {
       <main className="dashboard-container">
         
         {/* Title */}
-        <h2 className="services-section-title">Dịch vụ đã đăng ký</h2>
+        <h2 className="services-section-title">{t('Dịch vụ đã đăng ký', 'Registered Services')}</h2>
 
         {/* Warning Debt notice */}
         <div className="warning-banner">
-          Sinh viên vui lòng truy cập Debtlist để kiểm tra và thanh toán các công nợ dịch vụ trực tuyến ở trạng thái (Chờ thanh toán)
+          {t('Sinh viên vui lòng truy cập Debtlist để kiểm tra và thanh toán các công nợ dịch vụ trực tuyến ở trạng thái (Chờ thanh toán)', 'Please access the Debtlist to check and pay any online service debts in (Pending Payment) status')}
         </div>
 
         {/* History Table */}
@@ -186,14 +228,14 @@ export const RegistrationHistory = () => {
           <table className="services-table">
             <thead className="services-thead">
               <tr>
-                <th className="services-th">MÃ ĐƠN</th>
-                <th className="services-th">LOẠI DỊCH VỤ</th>
-                <th className="services-th">THỜI GIAN ĐĂNG KÝ</th>
-                <th className="services-th">THỜI GIAN HOÀN THÀNH</th>
-                <th className="services-th">TRẠNG THÁI VÀ THÔNG TIN</th>
-                <th className="services-th">THÔNG BÁO</th>
-                <th className="services-th center">HÀNH ĐỘNG</th>
-                <th className="services-th center">ĐÁNH GIÁ</th>
+                <th className="services-th">{t('MÃ ĐƠN', 'REQ CODE')}</th>
+                <th className="services-th">{t('LOẠI DỊCH VỤ', 'SERVICE TYPE')}</th>
+                <th className="services-th">{t('THỜI GIAN ĐĂNG KÝ', 'REGISTRATION TIME')}</th>
+                <th className="services-th">{t('THỜI GIAN HOÀN THÀNH', 'COMPLETION TIME')}</th>
+                <th className="services-th">{t('TRẠNG THÁI VÀ THÔNG TIN', 'STATUS & INFO')}</th>
+                <th className="services-th">{t('THÔNG BÁO', 'NOTICE')}</th>
+                <th className="services-th center">{t('HÀNH ĐỘNG', 'ACTION')}</th>
+                <th className="services-th center">{t('ĐÁNH GIÁ', 'RATING')}</th>
               </tr>
             </thead>
             <tbody>
@@ -210,7 +252,7 @@ export const RegistrationHistory = () => {
                     
                     {/* Bày dịch vụ */}
                     <td className="services-td" style={{ fontWeight: '600' }}>
-                      {item.service}
+                      {t(item.serviceVi, item.serviceEn)}
                     </td>
                     
                     {/* Thời gian đăng ký */}
@@ -226,13 +268,13 @@ export const RegistrationHistory = () => {
                     {/* Thái và thông tin */}
                     <td className="services-td">
                       <span className={`status-badge ${item.statusType === 'orange' ? 'orange-badge' : 'yellow-badge'}`}>
-                        {item.status}
+                        {t(item.statusVi, item.statusEn)}
                       </span>
                     </td>
                     
                     {/* Thông báo */}
                     <td className="services-td" style={{ fontWeight: '600', fontSize: '11px', color: 'var(--rikkei-blue)' }}>
-                      {item.notice || <span style={{ color: '#CBD5E1' }}>—</span>}
+                      {t(item.noticeVi, item.noticeEn) || <span style={{ color: '#CBD5E1' }}>—</span>}
                     </td>
                     
                     {/* Hành động */}
@@ -242,7 +284,7 @@ export const RegistrationHistory = () => {
                           onClick={() => setCancelTarget(item)}
                           className="cancel-btn"
                         >
-                          Hủy
+                          {t('Hủy', 'Cancel')}
                         </button>
                       ) : (
                         <span style={{ color: '#E2E8F0' }}>—</span>
@@ -259,7 +301,7 @@ export const RegistrationHistory = () => {
                           }}
                           className="rating-btn"
                         >
-                          Đánh giá
+                          {t('Đánh giá', 'Rate')}
                         </button>
                       ) : (
                         <span style={{ color: '#E2E8F0' }}>—</span>
@@ -273,7 +315,7 @@ export const RegistrationHistory = () => {
 
           {/* Pagination */}
           <div className="pagination-container">
-            <button className="pagination-btn">Trước</button>
+            <button className="pagination-btn">{t('Trước', 'Previous')}</button>
             <span className="pagination-arrows">&lt;&lt;</span>
             <span 
               onClick={() => setActivePage(1)} 
@@ -300,7 +342,7 @@ export const RegistrationHistory = () => {
               4
             </span>
             <span className="pagination-arrows">&gt;&gt;</span>
-            <button className="pagination-btn">Kế tiếp</button>
+            <button className="pagination-btn">{t('Kế tiếp', 'Next')}</button>
           </div>
         </div>
 
@@ -315,16 +357,16 @@ export const RegistrationHistory = () => {
                 <div className="modal-icon" style={{ backgroundColor: '#FEF2F2', color: '#EF4444' }}>
                   <Trash2 size={26} />
                 </div>
-                <h3 className="modal-title">Hủy đơn đăng ký</h3>
+                <h3 className="modal-title">{t('Hủy đơn đăng ký', 'Cancel Registration')}</h3>
                 <p className="modal-desc">
-                  Bạn có chắc chắn muốn hủy bỏ đơn đăng ký <strong>{cancelTarget.code} ({cancelTarget.service})</strong> không? Thao tác này không thể hoàn tác.
+                  {t('Bạn có chắc chắn muốn hủy bỏ đơn đăng ký', 'Are you sure you want to cancel the registration request')} <strong>{cancelTarget.code} ({t(cancelTarget.serviceVi, cancelTarget.serviceEn)})</strong> {t('không? Thao tác này không thể hoàn tác.', ' ? This action cannot be undone.')}
                 </p>
                 <div className="modal-actions">
                   <button onClick={handleCancelRequest} className="modal-btn-confirm" style={{ backgroundColor: '#E11D48' }}>
-                    Đồng ý hủy
+                    {t('Đồng ý hủy', 'Confirm Cancel')}
                   </button>
                   <button onClick={() => setCancelTarget(null)} className="modal-btn-cancel">
-                    Đóng lại
+                    {t('Đóng lại', 'Close')}
                   </button>
                 </div>
               </>
@@ -333,7 +375,7 @@ export const RegistrationHistory = () => {
                 <div className="modal-icon" style={{ backgroundColor: '#ECFDF5', color: '#10B981' }}>
                   <CheckCircle2 size={28} />
                 </div>
-                <h3 className="modal-title" style={{ color: '#065F46' }}>Đã hủy đơn!</h3>
+                <h3 className="modal-title" style={{ color: '#065F46' }}>{t('Đã hủy đơn!', 'Cancelled!')}</h3>
                 <p className="modal-desc" style={{ marginBottom: 0 }}>
                   {successMsg}
                 </p>
@@ -352,9 +394,9 @@ export const RegistrationHistory = () => {
                 <div className="modal-icon" style={{ backgroundColor: '#FEF3C7', color: '#D97706' }}>
                   <Star size={26} fill="currentColor" />
                 </div>
-                <h3 className="modal-title">Đánh giá chất lượng dịch vụ</h3>
+                <h3 className="modal-title">{t('Đánh giá chất lượng dịch vụ', 'Rate Service Quality')}</h3>
                 <p className="modal-desc">
-                  Vui lòng đánh giá mức độ hài lòng về dịch vụ <strong>{rateTarget.service} (Đơn {rateTarget.code})</strong>.
+                  {t('Vui lòng đánh giá mức độ hài lòng về dịch vụ', 'Please rate your satisfaction for service')} <strong>{t(rateTarget.serviceVi, rateTarget.serviceEn)} ({t('Đơn', 'Req')} {rateTarget.code})</strong>.
                 </p>
                 
                 {/* 5-Star Row */}
@@ -375,7 +417,7 @@ export const RegistrationHistory = () => {
                     rows={3}
                     value={ratingComment}
                     onChange={(e) => setRatingComment(e.target.value)}
-                    placeholder="Nhập ý kiến đóng góp của bạn tại đây..."
+                    placeholder={t('Nhập ý kiến đóng góp của bạn tại đây...', 'Enter your feedback here...')}
                     style={{
                       width: '100%',
                       padding: '10px',
@@ -390,10 +432,10 @@ export const RegistrationHistory = () => {
 
                 <div className="modal-actions">
                   <button onClick={handleRateSubmit} className="modal-btn-confirm">
-                    Gửi đánh giá
+                    {t('Gửi đánh giá', 'Submit Rating')}
                   </button>
                   <button onClick={() => setRateTarget(null)} className="modal-btn-cancel">
-                    Hủy bỏ
+                    {t('Hủy bỏ', 'Cancel')}
                   </button>
                 </div>
               </>
@@ -402,7 +444,7 @@ export const RegistrationHistory = () => {
                 <div className="modal-icon" style={{ backgroundColor: '#ECFDF5', color: '#10B981' }}>
                   <CheckCircle2 size={28} />
                 </div>
-                <h3 className="modal-title" style={{ color: '#065F46' }}>Gửi thành công!</h3>
+                <h3 className="modal-title" style={{ color: '#065F46' }}>{t('Gửi thành công!', 'Submitted!')}</h3>
                 <p className="modal-desc" style={{ marginBottom: 0 }}>
                   {successMsg}
                 </p>

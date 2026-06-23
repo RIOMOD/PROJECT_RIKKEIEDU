@@ -2,8 +2,17 @@ import { useState } from 'react';
 import { LearningIllustration } from './LearningIllustration';
 import { Search } from 'lucide-react';
 
-export const Dashboard = () => {
+interface DashboardProps {
+  lang: 'vi' | 'en';
+}
+
+export const Dashboard = ({ lang }: DashboardProps) => {
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Translation helper
+  const t = (viText: string, enText: string) => {
+    return lang === 'en' ? enText : viText;
+  };
 
   // Mock announcements from the screenshot
   const announcements = [
@@ -11,29 +20,29 @@ export const Dashboard = () => {
       id: 1,
       date: '05/06/26',
       time: '14:13',
-      type: '[THÔNG BÁO]',
-      content: 'MỞ ĐĂNG KÝ Thuốc 6 THÁNG CUỐI NĂM 2026'
+      type: t('[THÔNG BÁO]', '[ANNOUNCEMENT]'),
+      content: t('MỞ ĐĂNG KÝ BHYT 6 THÁNG CUỐI NĂM 2026', 'OPEN REGISTRATION FOR HEALTH INSURANCE IN THE LAST 6 MONTHS OF 2026')
     },
     {
       id: 2,
       date: '29/05/26',
       time: '11:11',
-      type: 'Quyết định',
-      content: 'Vv công nhận kết quả rèn luyện của sinh viên thuộc Chương trình đào tạo liên kết với nước ngoài (RK) học bất kỳ Mùa xuân năm 2026'
+      type: t('Quyết định', 'Decision'),
+      content: t('Vv công nhận kết quả rèn luyện của sinh viên thuộc Chương trình đào tạo liên kết với nước ngoài (RK) học bất kỳ Mùa xuân năm 2026', 'Regarding the recognition of student training results under the international partnership program (RK) for Spring Semester 2026')
     },
     {
       id: 3,
       date: '28/05/26',
       time: '14:07',
-      type: 'THÔNG BÁO',
-      content: 'THAY ĐỔI ĐỊA ĐIỂM HỌC TẬP'
+      type: t('THÔNG BÁO', 'ANNOUNCEMENT'),
+      content: t('THAY ĐỔI ĐỊA ĐIỂM HỌC TẬP', 'CHANGE OF STUDY LOCATION')
     },
     {
       id: 4,
       date: '23/04/26',
       time: '08:36',
-      type: '[KHẢO THÍ]_THÔNG BÁO',
-      content: 'DSSV KHÔNG ĐỦ ĐIỀU KIỆN THI CUỐI KỲ TIẾNG ANH BLOCK 2_SP26'
+      type: t('[KHẢO THÍ]_THÔNG BÁO', '[EXAMINATION]_ANNOUNCEMENT'),
+      content: t('DSSV KHÔNG ĐỦ ĐIỀU KIỆN THI CUỐI KỲ TIẾNG ANH BLOCK 2_SP26', 'LIST OF STUDENTS INELIGIBLE FOR ENGLISH BLOCK 2 FINAL EXAMINATIONS_SP26')
     }
   ];
 
@@ -54,7 +63,7 @@ export const Dashboard = () => {
             
             {/* Greeting */}
             <div>
-              <h2 className="greeting-title">Chào mừng trở lại,</h2>
+              <h2 className="greeting-title">{t('Chào mừng trở lại,', 'Welcome back,')}</h2>
               <h2 className="greeting-title">Nguyễn Văn Hùng</h2>
             </div>
 
@@ -119,20 +128,20 @@ export const Dashboard = () => {
                     border: '1.5px dashed var(--border-color)'
                   }}
                 >
-                  Không tìm thấy thông báo nào phù hợp.
+                  {t('Không tìm thấy thông báo nào phù hợp.', 'No matching announcements found.')}
                 </div>
               )}
             </div>
 
             {/* Search bar section */}
             <div className="search-section">
-              <label className="search-label">Hơn</label>
+              <label className="search-label">{t('Hơn', 'Search')}</label>
               <div className="search-bar-wrapper">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Tìm kiếm tin tức..."
+                  placeholder={t('Tìm kiếm tin tức...', 'Search announcements...')}
                   className="search-input"
                 />
                 <div className="search-icon">
