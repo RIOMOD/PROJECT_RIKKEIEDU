@@ -14,14 +14,14 @@ interface HistoryItem {
 }
 
 export const RegistrationHistory = () => {
-  // Initialize mock history data
+  // Initialize mock history data exactly matching the screenshot mockup
   const [historyList, setHistoryList] = useState<HistoryItem[]>([
     {
       code: '#7008',
       service: 'ĐĂNG KÝ HỌC LẠI',
       regDate: '2026-05-04 08:42:44',
       compDate: '',
-      status: 'sắp xếp lớp',
+      status: 'Chờ xếp lớp',
       statusType: 'orange',
       notice: '',
       hasCancel: true,
@@ -30,9 +30,9 @@ export const RegistrationHistory = () => {
     {
       code: '#7007',
       service: 'ĐĂNG KÝ HỌC LẠI',
-      regDate: '04/05/2026 08:40:00',
-      compDate: '04/05/2026 08:50:25',
-      status: 'Đóng (một lớp)',
+      regDate: '2026-05-04 08:40:00',
+      compDate: '2026-05-04 08:50:25',
+      status: 'Close (Đã xếp lớp)',
       statusType: 'yellow',
       notice: '',
       hasCancel: false,
@@ -41,9 +41,9 @@ export const RegistrationHistory = () => {
     {
       code: '#7006',
       service: 'ĐĂNG KÝ HỌC LẠI',
-      regDate: '04/05/2026 08:30:27',
-      compDate: '04/05/2026 08:51:00',
-      status: 'Đóng (một lớp)',
+      regDate: '2026-05-04 08:30:27',
+      compDate: '2026-05-04 08:51:00',
+      status: 'Close (Đã xếp lớp)',
       statusType: 'yellow',
       notice: '',
       hasCancel: false,
@@ -54,7 +54,7 @@ export const RegistrationHistory = () => {
       service: 'ĐĂNG KÝ HỌC LẠI',
       regDate: '2026-03-29 15:17:07',
       compDate: '2026-05-03 19:22:39',
-      status: 'Đóng (một lớp)',
+      status: 'Close (Đã xếp lớp)',
       statusType: 'yellow',
       notice: '',
       hasCancel: false,
@@ -65,7 +65,7 @@ export const RegistrationHistory = () => {
       service: 'ĐĂNG KÝ HỌC LẠI',
       regDate: '2026-03-29 15:12:29',
       compDate: '',
-      status: 'sắp xếp lớp',
+      status: 'Chờ xếp lớp',
       statusType: 'orange',
       notice: '',
       hasCancel: true,
@@ -76,7 +76,7 @@ export const RegistrationHistory = () => {
       service: 'ĐĂNG KÝ HỌC LẠI',
       regDate: '2026-03-29 15:06:21',
       compDate: '',
-      status: 'sắp xếp lớp',
+      status: 'Chờ xếp lớp',
       statusType: 'orange',
       notice: '',
       hasCancel: true,
@@ -84,10 +84,10 @@ export const RegistrationHistory = () => {
     },
     {
       code: '#6700',
-      service: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM',
+      service: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH',
       regDate: '2026-03-16 07:59:59',
       compDate: '2026-03-16 08:10:24',
-      status: 'Đóng',
+      status: 'Close',
       statusType: 'yellow',
       notice: 'ĐÃ ĐỒNG Ý YÊU CẦU()',
       hasCancel: false,
@@ -95,10 +95,10 @@ export const RegistrationHistory = () => {
     },
     {
       code: '#6663',
-      service: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM',
+      service: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH',
       regDate: '2026-03-10 10:13:16',
       compDate: '2026-03-10 11:20:41',
-      status: 'Đóng',
+      status: 'Close',
       statusType: 'yellow',
       notice: 'ĐÃ ĐỒNG Ý YÊU CẦU()',
       hasCancel: false,
@@ -109,7 +109,7 @@ export const RegistrationHistory = () => {
       service: 'ĐĂNG KÝ HỌC LẠI',
       regDate: '2026-01-05 03:44:46',
       compDate: '2026-01-05 06:01:46',
-      status: 'Đóng (một lớp)',
+      status: 'Close (Đã xếp lớp)',
       statusType: 'yellow',
       notice: '',
       hasCancel: false,
@@ -117,10 +117,10 @@ export const RegistrationHistory = () => {
     },
     {
       code: '#6325',
-      service: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM',
+      service: 'ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH',
       regDate: '2025-12-20 14:33:12',
       compDate: '2025-12-20 14:34:35',
-      status: 'Đóng',
+      status: 'Close',
       statusType: 'yellow',
       notice: 'ĐÃ ĐỒNG Ý YÊU CẦU()',
       hasCancel: false,
@@ -186,14 +186,14 @@ export const RegistrationHistory = () => {
           <table className="services-table">
             <thead className="services-thead">
               <tr>
-                <th className="services-th">Mã đơn</th>
-                <th className="services-th">Bày dịch vụ</th>
-                <th className="services-th">Thời gian đăng ký</th>
-                <th className="services-th">Thời gian hoàn thành</th>
-                <th className="services-th">Thái và thông tin</th>
-                <th className="services-th">Thông báo</th>
-                <th className="services-th center">Hành động</th>
-                <th className="services-th center">Đánh giá</th>
+                <th className="services-th">MÃ ĐƠN</th>
+                <th className="services-th">LOẠI DỊCH VỤ</th>
+                <th className="services-th">THỜI GIAN ĐĂNG KÝ</th>
+                <th className="services-th">THỜI GIAN HOÀN THÀNH</th>
+                <th className="services-th">TRẠNG THÁI VÀ THÔNG TIN</th>
+                <th className="services-th">THÔNG BÁO</th>
+                <th className="services-th center">HÀNH ĐỘNG</th>
+                <th className="services-th center">ĐÁNH GIÁ</th>
               </tr>
             </thead>
             <tbody>
@@ -242,7 +242,7 @@ export const RegistrationHistory = () => {
                           onClick={() => setCancelTarget(item)}
                           className="cancel-btn"
                         >
-                          Hủy bỏ
+                          Hủy
                         </button>
                       ) : (
                         <span style={{ color: '#E2E8F0' }}>—</span>
