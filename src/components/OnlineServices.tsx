@@ -63,7 +63,7 @@ const INFO_CATEGORIES = [
 ];
 
 export const OnlineServices = () => {
-  const [view, setView] = useState<'list' | 'attendance-recovery' | 'student-card-reissue' | 'change-info' | 'withdraw' | 'retake'>('list');
+  const [view, setView] = useState<'list' | 'attendance-recovery' | 'student-card-reissue' | 'change-info' | 'withdraw' | 'retake' | 'defer'>('list');
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -111,6 +111,19 @@ export const OnlineServices = () => {
   });
   const [retakeFallbackOption, setRetakeFallbackOption] = useState('');
   const [retakeFee] = useState('2.730.000 đ');
+
+  // --- Defer Form States ---
+  const [deferSubject, setDeferSubject] = useState('');
+  const [deferReturnDate, setDeferReturnDate] = useState('');
+  const [deferReason, setDeferReason] = useState('');
+  const [deferProposal, setDeferProposal] = useState('');
+  const [deferPhone, setDeferPhone] = useState('');
+  const [deferDocName, setDeferDocName] = useState('');
+  const [deferFileName, setDeferFileName] = useState('');
+  const [deferSendMethod, setDeferSendMethod] = useState('Nhận trực tiếp tại phòng ĐVSV');
+  const [deferReceiveMethod, setDeferReceiveMethod] = useState('Nhận trực tiếp tại phòng ĐVSV');
+  const [deferAddress, setDeferAddress] = useState('');
+  const [deferFee] = useState('0');
 
   // Validation & Submit State
   const [validationError, setValidationError] = useState('');
@@ -165,7 +178,7 @@ export const OnlineServices = () => {
     },
     {
       stt: 10,
-      task: 'ĐĂNG KÝ TẠM THỜI HỌC',
+      task: 'ĐĂNG KÝ TẠM HOÃN MÔN HỌC',
       desc: 'DỊCH VỤ ÁP DỤNG CHO TRƯỜP HỢP SV CẦN TẠM DỪNG HỌC KHI LỚP HỌC CHƯA KẾT THÚC'
     },
     {
@@ -194,6 +207,9 @@ export const OnlineServices = () => {
     } else if (service.stt === 9) {
       setView('retake');
       resetRetakeForm();
+    } else if (service.stt === 10) {
+      setView('defer');
+      resetDeferForm();
     } else {
       setSelectedService(service);
       setShowSuccessModal(false);
@@ -248,6 +264,19 @@ export const OnlineServices = () => {
     setRetakeFallbackOption('');
   };
 
+  const resetDeferForm = () => {
+    setDeferSubject('');
+    setDeferReturnDate('');
+    setDeferReason('');
+    setDeferProposal('');
+    setDeferPhone('');
+    setDeferDocName('');
+    setDeferFileName('');
+    setDeferSendMethod('Nhận trực tiếp tại phòng ĐVSV');
+    setDeferReceiveMethod('Nhận trực tiếp tại phòng ĐVSV');
+    setDeferAddress('');
+  };
+
   const handleTeacherChange = (email: string) => {
     setTeacherAccount(email);
     setTeacherName(TEACHERS[email] || '');
@@ -274,6 +303,12 @@ export const OnlineServices = () => {
   const handleWithdrawFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setWithdrawFileName(e.target.files[0].name);
+    }
+  };
+
+  const handleDeferFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setDeferFileName(e.target.files[0].name);
     }
   };
 
@@ -342,6 +377,20 @@ export const OnlineServices = () => {
     e.preventDefault();
     if (!retakeSubject || !retakeSlot || !retakeFallbackOption) {
       setValidationError('Vui lòng điền đầy đủ các thông tin bắt buộc (*)');
+      return;
+    }
+    setValidationError('');
+    setSubmitSuccess(true);
+  };
+
+  const handleDeferSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!deferReturnDate || !deferReason || !deferProposal || !deferPhone || !deferDocName || !deferFileName) {
+      setValidationError('Vui lòng điền đầy đủ các thông tin bắt buộc (*)');
+      return;
+    }
+    if (deferReceiveMethod === 'Gửi chuyển phát nhanh về địa chỉ nhà' && !deferAddress) {
+      setValidationError('Vui lòng nhập địa chỉ nhận hồ sơ');
       return;
     }
     setValidationError('');
@@ -1567,6 +1616,303 @@ export const OnlineServices = () => {
                   }}>
                     Trong trường hợp sinh viên đã thanh toán nhưng trạng thái đơn chưa đổi sang <span style={{ color: '#059669' }}>Đã thanh toán</span> sinh viên phải chủ động nhấn nút <span style={{ color: '#D97706', textDecoration: 'underline', cursor: 'pointer' }}>Kiểm tra thanh toán</span> tại trang Dịch vụ đã đăng ký để cập nhật trạng thái đơn
                   </div>
+                </div>
+
+              </form>
+            )}
+
+          </div>
+        )}
+
+        {view === 'defer' && (
+          /* Defer Form View */
+          <div className="recovery-form-wrapper">
+            
+            {/* Navigation back */}
+            <button onClick={() => setView('list')} className="recovery-back-btn">
+              <ArrowLeft size={16} />
+              <span>Quay lại danh sách</span>
+            </button>
+
+            {/* Title Section */}
+            <div className="recovery-title-section">
+              <h2 className="recovery-form-title">ĐĂNG KÝ TẠM HOÃN MÔN HỌC</h2>
+              <p className="recovery-form-subtitle">
+                YOU ARE REQUIRED TO FULFILL BLANK BOXES BELOW TO FINISH YOUR REQUEST AND ATTACH SUPPORTING DOCUMENTS (IF ANY) BEFORE SUBMITTING THIS FORM
+              </p>
+            </div>
+
+            {submitSuccess ? (
+              <div className="recovery-success-box">
+                <div className="recovery-success-icon-wrapper">
+                  <CheckCircle2 size={48} className="text-emerald-500" />
+                </div>
+                <h3 className="recovery-success-title">Nộp đơn thành công!</h3>
+                <p className="recovery-success-desc">
+                  Yêu cầu tạm hoãn môn học của bạn đã được tiếp nhận. Kỳ đợt xin hoãn: <strong>FALL 2025</strong>.
+                </p>
+                <p className="recovery-success-notice">
+                  ⚠️ Lưu ý: Hồ sơ bản cứng (sao y công chứng) cần phải nộp trực tiếp hoặc gửi qua bưu điện cho phòng ĐVSV trong vòng 72 giờ để hoàn tất yêu cầu.
+                </p>
+                <button onClick={() => setView('list')} className="recovery-success-back-btn">
+                  Trở lại Dịch vụ trực tuyến
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleDeferSubmit} className="recovery-form-element">
+                
+                {/* Error Banner */}
+                {validationError && (
+                  <div className="recovery-validation-banner">
+                    <AlertCircle size={18} />
+                    <span>{validationError}</span>
+                  </div>
+                )}
+
+                {/* Top Info Grid */}
+                <div className="recovery-summary-grid">
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">DỊCH VỤ</div>
+                    <div className="recovery-summary-badge">Đăng ký tạm hoãn môn học</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">KỲ ĐỢT DỊCH VỤ:</div>
+                    <div className="recovery-summary-value-box">FALL 2025</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">TRẠNG THÁI SINH VIÊN</div>
+                    <div className="recovery-summary-value-box">HL</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">SỐ DƯ</div>
+                    <div className="recovery-summary-value-box">VND 0 đ</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">NGÀNH HỌC</div>
+                    <div className="recovery-summary-value-box">Lập trình máy tính</div>
+                  </div>
+                </div>
+
+                {/* Main Form Fields Layout */}
+                <div className="recovery-fields-card">
+                  
+                  {/* Row 1: Môn xin học lại */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Môn xin học lại
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <select 
+                        value={deferSubject} 
+                        onChange={(e) => setDeferSubject(e.target.value)} 
+                        className="recovery-select-element"
+                      >
+                        <option value="">Vui lòng chọn mã môn</option>
+                        {SUBJECTS.map(subj => (
+                          <option key={subj} value={subj}>{subj}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 2: Thời gian mong muốn quay lại hoàn thành môn */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Thời gian mong muốn quay lại hoàn thành môn (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <input 
+                        type="text" 
+                        value={deferReturnDate} 
+                        onChange={(e) => setDeferReturnDate(e.target.value)} 
+                        placeholder="Ví dụ: Kỳ Spring 2026..."
+                        className="recovery-input-element"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 3: Lý do */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Lý do (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <textarea 
+                        value={deferReason} 
+                        onChange={(e) => setDeferReason(e.target.value.slice(0, 500))} 
+                        placeholder="Vui lòng ghi rõ yêu cầu cần xử lý"
+                        className="recovery-textarea-element"
+                      />
+                      <div className="recovery-char-counter">
+                        Tối đa 500 ký tự (Hiện tại: {deferReason.length})
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Row 4: Đề nghị */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Đề nghị (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <textarea 
+                        value={deferProposal} 
+                        onChange={(e) => setDeferProposal(e.target.value.slice(0, 500))} 
+                        placeholder="Vui lòng ghi rõ yêu cầu cần xử lý"
+                        className="recovery-textarea-element"
+                      />
+                      <div className="recovery-char-counter">
+                        Tối đa 500 ký tự (Hiện tại: {deferProposal.length})
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Row 5: Số điện thoại */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Số điện thoại (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <input 
+                        type="tel" 
+                        value={deferPhone} 
+                        onChange={(e) => setDeferPhone(e.target.value)} 
+                        placeholder="Nhập số điện thoại"
+                        className="recovery-input-element"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 6: Tên hồ sơ */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Tên hồ sơ (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <textarea 
+                        value={deferDocName} 
+                        onChange={(e) => setDeferDocName(e.target.value)} 
+                        placeholder="(Ví dụ: Hồ sơ bệnh án...)"
+                        className="recovery-textarea-element"
+                        style={{ minHeight: '60px' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 7: File đính kèm */}
+                  <div className="recovery-field-row" style={{ alignItems: 'flex-start' }}>
+                    <div className="recovery-field-label" style={{ paddingTop: '16px' }}>
+                      <span className="bullet-circle">o</span> File đính kèm (*định dạng PDF)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <div className="recovery-file-upload-container">
+                        <input 
+                          type="file" 
+                          id="defer-file" 
+                          accept=".pdf"
+                          onChange={handleDeferFileChange}
+                          style={{ display: 'none' }}
+                        />
+                        <div className="recovery-file-info-row">
+                          <span className="recovery-file-path-input">
+                            {deferFileName || 'Choose file'}
+                          </span>
+                          <label htmlFor="defer-file" className="recovery-file-browse-btn">
+                            <Upload size={14} style={{ marginRight: 6 }} />
+                            Browse
+                          </label>
+                        </div>
+                        <div style={{ 
+                          fontSize: '11.5px', 
+                          color: '#4B5563', 
+                          marginTop: '8px', 
+                          lineHeight: 1.4,
+                          backgroundColor: '#F8FAFC',
+                          padding: '10px 14px',
+                          border: '1px solid #E2E8F0',
+                          borderRadius: '6px'
+                        }}>
+                          <strong>Lưu ý:</strong><br />
+                          1. SV cần nộp 01 bản sao y công chứng hồ sơ cho phòng ĐVSV trong vòng 72 giờ (CPN sẽ tính thời gian theo dấu bưu điện).<br />
+                          2. Sinh viên nên nộp/nhận hồ sơ trực tiếp tại phòng ĐVSV, nếu SV chọn hình thức chuyển phát nhanh thì Phí CPN do sinh viên thanh toán.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Row 8: Hình thức gửi hồ sơ */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Hình thức gửi hồ sơ (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <select 
+                        value={deferSendMethod} 
+                        onChange={(e) => setDeferSendMethod(e.target.value)} 
+                        className="recovery-select-element"
+                      >
+                        <option value="Nhận trực tiếp tại phòng ĐVSV">Nhận trực tiếp tại phòng ĐVSV</option>
+                        <option value="Gửi chuyển phát nhanh">Gửi chuyển phát nhanh</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 9: Hình thức nhận kết quả */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Hình thức nhận kết quả (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <select 
+                        value={deferReceiveMethod} 
+                        onChange={(e) => setDeferReceiveMethod(e.target.value)} 
+                        className="recovery-select-element"
+                      >
+                        <option value="Nhận trực tiếp tại phòng ĐVSV">Nhận trực tiếp tại phòng ĐVSV</option>
+                        <option value="Gửi chuyển phát nhanh về địa chỉ nhà">Gửi chuyển phát nhanh về địa chỉ nhà</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 10: Địa chỉ nhận */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Địa chỉ nhận
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <textarea 
+                        value={deferAddress} 
+                        onChange={(e) => setDeferAddress(e.target.value)} 
+                        placeholder="Nhập địa chỉ nhận kết quả (Chỉ áp dụng nếu nhận qua Chuyển phát nhanh)"
+                        disabled={deferReceiveMethod === 'Nhận trực tiếp tại phòng ĐVSV'}
+                        className={`recovery-textarea-element ${deferReceiveMethod === 'Nhận trực tiếp tại phòng ĐVSV' ? 'disabled-bg' : ''}`}
+                        style={{ minHeight: '60px' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 11: Phí dịch vụ */}
+                  <div className="recovery-field-row" style={{ borderBottom: 'none' }}>
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Phí dịch vụ
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <input 
+                        type="text" 
+                        value={deferFee} 
+                        readOnly 
+                        className="recovery-input-element disabled-bg"
+                      />
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Action Buttons */}
+                <div className="recovery-form-actions">
+                  <button type="submit" className="recovery-btn-submit">
+                    SUBMIT
+                  </button>
                 </div>
 
               </form>
