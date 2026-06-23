@@ -143,7 +143,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Networking',
       credit: 0,
-      grade: ''
+      grade: '6.5'
     },
     {
       no: 11,
@@ -154,7 +154,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Programming',
       credit: 0,
-      grade: ''
+      grade: '6.5'
     },
     {
       no: 12,
@@ -165,7 +165,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Professional Practice',
       credit: 0,
-      grade: ''
+      grade: '6.5'
     },
     {
       no: 13,
@@ -176,7 +176,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Database Design & Development',
       credit: 0,
-      grade: ''
+      grade: '6.5'
     },
     {
       no: 14,
@@ -187,7 +187,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Planning a Computing Project',
       credit: 15,
-      grade: ''
+      grade: '6.5'
     },
     {
       no: 15,
@@ -198,7 +198,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Security',
       credit: 15,
-      grade: ''
+      grade: '10'
     },
     {
       no: 16,
@@ -209,7 +209,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Software Development Life Cycle',
       credit: 15,
-      grade: ''
+      grade: '0'
     },
     {
       no: 17,
@@ -220,7 +220,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Website Design & Development',
       credit: 0,
-      grade: ''
+      grade: '6.5'
     },
     {
       no: 18,
@@ -231,7 +231,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Discrete Maths',
       credit: 15,
-      grade: ''
+      grade: '8.5'
     },
     {
       no: 19,
@@ -242,7 +242,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Applied Programming and Design Principles',
       credit: 15,
-      grade: ''
+      grade: '1'
     },
     {
       no: 20,
@@ -253,7 +253,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Business Process Support',
       credit: 15,
-      grade: ''
+      grade: '0.1'
     },
     {
       no: 21,
@@ -264,7 +264,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Application Development',
       credit: 15,
-      grade: ''
+      grade: '6.5'
     },
     {
       no: 22,
@@ -275,7 +275,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Data Structures & Algorithms',
       credit: 15,
-      grade: ''
+      grade: '1'
     },
     {
       no: 23,
@@ -286,7 +286,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Internet of Things',
       credit: 15,
-      grade: ''
+      grade: '0'
     },
     {
       no: 24,
@@ -297,7 +297,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
       replacedSubject: '',
       subjectName: 'Computer Research Project (Pearson Set)',
       credit: 30,
-      grade: ''
+      grade: '0'
     }
   ];
 
