@@ -46,7 +46,7 @@ const INFO_CATEGORIES = [
 ];
 
 export const OnlineServices = () => {
-  const [view, setView] = useState<'list' | 'attendance-recovery' | 'student-card-reissue' | 'change-info'>('list');
+  const [view, setView] = useState<'list' | 'attendance-recovery' | 'student-card-reissue' | 'change-info' | 'withdraw'>('list');
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -74,6 +74,12 @@ export const OnlineServices = () => {
   const [addedCategories, setAddedCategories] = useState<string[]>(['Họ tên']);
   const [changeNotes, setChangeNotes] = useState('');
   const [changeFileName, setChangeFileName] = useState('');
+
+  // --- Withdraw Form States ---
+  const [withdrawReason, setWithdrawReason] = useState('');
+  const [withdrawStatus, setWithdrawStatus] = useState('Hoàn thành');
+  const [withdrawPhone, setWithdrawPhone] = useState('');
+  const [withdrawFileName, setWithdrawFileName] = useState('');
 
   // Validation & Submit State
   const [validationError, setValidationError] = useState('');
@@ -151,6 +157,9 @@ export const OnlineServices = () => {
     } else if (service.stt === 6) {
       setView('change-info');
       resetChangeInfoForm();
+    } else if (service.stt === 7) {
+      setView('withdraw');
+      resetWithdrawForm();
     } else {
       setSelectedService(service);
       setShowSuccessModal(false);
@@ -184,6 +193,13 @@ export const OnlineServices = () => {
     setChangeFileName('');
   };
 
+  const resetWithdrawForm = () => {
+    setWithdrawReason('');
+    setWithdrawStatus('Hoàn thành');
+    setWithdrawPhone('');
+    setWithdrawFileName('');
+  };
+
   const handleTeacherChange = (email: string) => {
     setTeacherAccount(email);
     setTeacherName(TEACHERS[email] || '');
@@ -204,6 +220,12 @@ export const OnlineServices = () => {
   const handleInfoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setChangeFileName(e.target.files[0].name);
+    }
+  };
+
+  const handleWithdrawFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setWithdrawFileName(e.target.files[0].name);
     }
   };
 
@@ -245,6 +267,16 @@ export const OnlineServices = () => {
     }
     if (!changeNotes) {
       setValidationError('Vui lòng điền đầy đủ thông tin vào các ô trống bắt buộc (*)');
+      return;
+    }
+    setValidationError('');
+    setSubmitSuccess(true);
+  };
+
+  const handleWithdrawSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!withdrawReason || !withdrawPhone) {
+      setValidationError('Vui lòng điền đầy đủ các thông tin bắt buộc (*)');
       return;
     }
     setValidationError('');
@@ -1011,6 +1043,186 @@ export const OnlineServices = () => {
                             {changeFileName || 'Choose file'}
                           </span>
                           <label htmlFor="change-info-file" className="recovery-file-browse-btn">
+                            <Upload size={14} style={{ marginRight: 6 }} />
+                            Browse
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Action Buttons */}
+                <div className="recovery-form-actions">
+                  <button type="submit" className="recovery-btn-submit">
+                    SUBMIT
+                  </button>
+                </div>
+
+              </form>
+            )}
+
+          </div>
+        )}
+
+        {view === 'withdraw' && (
+          /* Withdraw Form View */
+          <div className="recovery-form-wrapper">
+            
+            {/* Navigation back */}
+            <button onClick={() => setView('list')} className="recovery-back-btn">
+              <ArrowLeft size={16} />
+              <span>Quay lại danh sách</span>
+            </button>
+
+            {/* Title Section */}
+            <div className="recovery-title-section">
+              <h2 className="recovery-form-title">ĐĂNG KÝ THÔI HỌC</h2>
+              <p className="recovery-form-subtitle">
+                YOU ARE REQUIRED TO FULFILL BLANK BOXES BELOW TO FINISH YOUR REQUEST AND ATTACH SUPPORTING DOCUMENTS (IF ANY) BEFORE SUBMITTING THIS FORM
+              </p>
+            </div>
+
+            {submitSuccess ? (
+              <div className="recovery-success-box">
+                <div className="recovery-success-icon-wrapper">
+                  <CheckCircle2 size={48} className="text-emerald-500" />
+                </div>
+                <h3 className="recovery-success-title">Nộp đơn thôi học thành công!</h3>
+                <p className="recovery-success-desc">
+                  Yêu cầu thôi học của bạn đã được ghi nhận thành công và gửi tới Ban Đào Tạo/Phòng ĐVSV để phê duyệt chính thức.
+                </p>
+                <p className="recovery-success-notice">
+                  ⚠️ Lưu ý: Quá trình rút hồ sơ và thôi học có thể mất vài ngày làm việc. Phòng ĐVSV sẽ liên hệ trực tiếp với bạn và phụ huynh để xác nhận thông tin.
+                </p>
+                <button onClick={() => setView('list')} className="recovery-success-back-btn">
+                  Trở lại Dịch vụ trực tuyến
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleWithdrawSubmit} className="recovery-form-element">
+                
+                {/* Error Banner */}
+                {validationError && (
+                  <div className="recovery-validation-banner">
+                    <AlertCircle size={18} />
+                    <span>{validationError}</span>
+                  </div>
+                )}
+
+                {/* Top Info Grid */}
+                <div className="recovery-summary-grid">
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">DỊCH VỤ</div>
+                    <div className="recovery-summary-badge">Đăng ký thôi học</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">KỲ ĐỢT DỊCH VỤ:</div>
+                    <div className="recovery-summary-value-box">FALL 2023</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">TRẠNG THÁI SINH VIÊN</div>
+                    <div className="recovery-summary-value-box">HL</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">SỐ DƯ</div>
+                    <div className="recovery-summary-value-box">VND 0 đ</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">NGÀNH HỌC</div>
+                    <div className="recovery-summary-value-box">Lập trình máy tính</div>
+                  </div>
+                </div>
+
+                {/* Main Form Fields Layout */}
+                <div className="recovery-fields-card">
+                  
+                  {/* Row 1: Lý do */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Lý do (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <textarea 
+                        value={withdrawReason} 
+                        onChange={(e) => setWithdrawReason(e.target.value.slice(0, 500))} 
+                        placeholder="Lý do thôi học"
+                        className="recovery-textarea-element"
+                      />
+                      <div className="recovery-char-counter">
+                        {withdrawReason.length} / 500 ký tự
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Row 2: Trạng thái học phí kỳ tiếp theo */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Trạng thái học phí kỳ tiếp theo
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <select 
+                        value={withdrawStatus} 
+                        onChange={(e) => setWithdrawStatus(e.target.value)} 
+                        className="recovery-select-element"
+                      >
+                        <option value="Hoàn thành">Hoàn thành</option>
+                        <option value="Chưa hoàn thành">Chưa hoàn thành</option>
+                        <option value="Được miễn giảm">Được miễn giảm</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 3: Số điện thoại */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Số điện thoại (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <input 
+                        type="tel" 
+                        value={withdrawPhone} 
+                        onChange={(e) => setWithdrawPhone(e.target.value)} 
+                        placeholder="Nhập số điện thoại"
+                        className="recovery-input-element"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 4: Phí dịch vụ */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Phí dịch vụ
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <input 
+                        type="text" 
+                        value="0" 
+                        readOnly 
+                        className="recovery-input-element disabled-bg"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 5: Tài liệu đính kèm */}
+                  <div className="recovery-field-row" style={{ borderBottom: 'none' }}>
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Tài liệu đính kèm
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <div className="recovery-file-upload-container">
+                        <input 
+                          type="file" 
+                          id="withdraw-file" 
+                          onChange={handleWithdrawFileChange}
+                          style={{ display: 'none' }}
+                        />
+                        <div className="recovery-file-info-row">
+                          <span className="recovery-file-path-input">
+                            {withdrawFileName || 'Choose file'}
+                          </span>
+                          <label htmlFor="withdraw-file" className="recovery-file-browse-btn">
                             <Upload size={14} style={{ marginRight: 6 }} />
                             Browse
                           </label>
