@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Users, Calendar, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
+import { Users, Calendar, School, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface ClassTimetableProps {
   lang: 'vi' | 'en';
@@ -22,7 +22,12 @@ interface GroupSessionItem {
 }
 
 export const ClassTimetable = ({ lang }: ClassTimetableProps) => {
-  const [activeView, setActiveView] = useState<'group' | 'week'>('week'); // Default to Week as in first screenshot
+  const [activeView, setActiveView] = useState<'group' | 'week'>('group'); // Default to TIMETABLE BY GROUPS as in screenshot
+  
+  // Filter States
+  const [selectedCampus, setSelectedCampus] = useState('BTEC');
+  const [selectedTerm, setSelectedTerm] = useState('SUMMER 2025');
+  const [selectedGroup, setSelectedGroup] = useState('SE07203');
   
   // Accordion open/collapsed states
   const [expandedWeeks, setExpandedWeeks] = useState<Record<number, boolean>>({
@@ -30,7 +35,8 @@ export const ClassTimetable = ({ lang }: ClassTimetableProps) => {
   });
   
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
-    '7388': true // Default 7388 Lập trình is open
+    '7408': true, // Expanded by default
+    '7428': false // Collapsed by default
   });
 
   const toggleWeek = (weekNum: number) => {
@@ -46,10 +52,10 @@ export const ClassTimetable = ({ lang }: ClassTimetableProps) => {
     return lang === 'en' ? enText : viText;
   };
 
-  // Mock Dropdown Options
+  // Dropdown Options
   const campuses = ['BTEC', 'FPT APTECH', 'FPT ARENA'];
-  const terms = ['MÙA HÈ 2025', 'MÙA XUÂN 2025', 'MÙA THU 2025'];
-  const groups = ['SE08202', 'SE08201', 'SE08203'];
+  const terms = ['SUMMER 2025', 'SPRING 2025', 'FALL 2025'];
+  const groups = ['SE07203', 'SE08202', 'SE08201'];
 
   // Week 1 Timetable mock data (6 days: Mon-Sat)
   const week1Schedule: WeekScheduleItem[] = [
@@ -59,18 +65,18 @@ export const ClassTimetable = ({ lang }: ClassTimetableProps) => {
     { slot: 4, dayIndex: 3, text: '7388 - (F609) - QuangNV78' }  // Thu Slot 4
   ];
 
-  // Group 7388 Session mock data (10 sessions)
+  // Group sessions mock data matching the screenshot mockup exactly
   const sessions: GroupSessionItem[] = [
-    { sessionNum: 1, type: t('Ngoại tuyến', 'Offline'), date: t('Thứ năm, ngày 08/05/2025', 'Thursday, 08/05/2025'), slot: 3, room: 'F609', teacher: 'QuangNV78', attendance: t('Đã tham dự', 'Attended') },
-    { sessionNum: 2, type: t('Ngoại tuyến', 'Offline'), date: t('Thứ năm, ngày 08/05/2025', 'Thursday, 08/05/2025'), slot: 4, room: 'F609', teacher: 'QuangNV78', attendance: t('Đã tham dự', 'Attended') },
-    { sessionNum: 3, type: t('Ngoại tuyến', 'Offline'), date: t('Thứ tư, ngày 14/05/2025', 'Wednesday, 14/05/2025'), slot: 1, room: 'F609', teacher: 'QuangNV78', attendance: t('Đã tham dự', 'Attended') },
-    { sessionNum: 4, type: t('Ngoại tuyến', 'Offline'), date: t('Thứ tư, ngày 14/05/2025', 'Wednesday, 14/05/2025'), slot: 2, room: 'F609', teacher: 'QuangNV78', attendance: t('Đã tham dự', 'Attended') },
-    { sessionNum: 5, type: t('Ngoại tuyến', 'Offline'), date: t('Thứ năm, ngày 22/05/2025', 'Thursday, 22/05/2025'), slot: 3, room: 'F609', teacher: 'QuangNV78', attendance: t('Đã tham dự', 'Attended') },
-    { sessionNum: 6, type: t('Ngoại tuyến', 'Offline'), date: t('Thứ năm, ngày 22/05/2025', 'Thursday, 22/05/2025'), slot: 4, room: 'F609', teacher: 'QuangNV78', attendance: t('Đã tham dự', 'Attended') },
-    { sessionNum: 7, type: t('Ngoại tuyến', 'Offline'), date: t('Thứ năm, ngày 29/05/2025', 'Thursday, 29/05/2025'), slot: 3, room: 'F609', teacher: 'QuangNV78', attendance: t('Đã tham dự', 'Attended') },
-    { sessionNum: 8, type: t('Ngoại tuyến', 'Offline'), date: t('Thứ năm, ngày 29/05/2025', 'Thursday, 29/05/2025'), slot: 4, room: 'F609', teacher: 'QuangNV78', attendance: t('Đã tham dự', 'Attended') },
-    { sessionNum: 9, type: t('Ngoại tuyến', 'Offline'), date: t('Thứ năm, ngày 05/06/2025', 'Thursday, 05/06/2025'), slot: 3, room: 'F609', teacher: 'QuangNV78', attendance: t('Đã tham dự', 'Attended') },
-    { sessionNum: 10, type: t('Ngoại tuyến', 'Offline'), date: t('Thứ năm, ngày 05/06/2025', 'Thursday, 05/06/2025'), slot: 4, room: 'F609', teacher: 'QuangNV78', attendance: t('Đã tham dự', 'Attended') }
+    { sessionNum: 1, type: 'Offline', date: 'Monday 05/05/2025', slot: 1, room: 'F609', teacher: 'QuangNV78', attendance: 'Attended' },
+    { sessionNum: 2, type: 'Offline', date: 'Monday 05/05/2025', slot: 2, room: 'F609', teacher: 'QuangNV78', attendance: 'Attended' },
+    { sessionNum: 3, type: 'Offline', date: 'Monday 12/05/2025', slot: 1, room: 'F609', teacher: 'QuangNV78', attendance: 'Attended' },
+    { sessionNum: 4, type: 'Offline', date: 'Monday 12/05/2025', slot: 2, room: 'F609', teacher: 'QuangNV78', attendance: 'Attended' },
+    { sessionNum: 5, type: 'Offline', date: 'Monday 19/05/2025', slot: 1, room: 'F609', teacher: 'QuangNV78', attendance: 'Attended' },
+    { sessionNum: 6, type: 'Offline', date: 'Monday 19/05/2025', slot: 2, room: 'F609', teacher: 'QuangNV78', attendance: 'Attended' },
+    { sessionNum: 7, type: 'Offline', date: 'Monday 26/05/2025', slot: 1, room: 'F609', teacher: 'QuangNV78', attendance: 'Attended' },
+    { sessionNum: 8, type: 'Offline', date: 'Monday 26/05/2025', slot: 2, room: 'F609', teacher: 'QuangNV78', attendance: 'Attended' },
+    { sessionNum: 9, type: 'Offline', date: 'Monday 02/06/2025', slot: 1, room: 'F609', teacher: 'QuangNV78', attendance: 'Attended' },
+    { sessionNum: 10, type: 'Offline', date: 'Monday 02/06/2025', slot: 2, room: 'F609', teacher: 'QuangNV78', attendance: 'Attended' }
   ];
 
   // Helper to get week cell content
@@ -85,30 +91,42 @@ export const ClassTimetable = ({ lang }: ClassTimetableProps) => {
       <main className="dashboard-container">
         
         {/* Top Filters Row */}
-        <div className="timetable-filters-row" style={{ backgroundColor: 'white', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
-          <div className="timetable-filter-group">
-            <span className="timetable-filter-label" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <MapPin size={13} /> {t('KHUÔN VIÊN/CHƯƠNG TRÌNH', 'CAMPUS/PROGRAM')}
+        <div className="class-timetable-filters">
+          <div className="class-timetable-filter-group">
+            <span className="class-timetable-filter-label">
+              <School size={14} /> CAMPUS / PROGRAM
             </span>
-            <select className="timetable-filter-select">
+            <select 
+              value={selectedCampus}
+              onChange={(e) => setSelectedCampus(e.target.value)}
+              className="class-timetable-select"
+            >
               {campuses.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
 
-          <div className="timetable-filter-group">
-            <span className="timetable-filter-label" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <Calendar size={13} /> {t('THUẬT NGỮ', 'TERM')}
+          <div className="class-timetable-filter-group">
+            <span className="class-timetable-filter-label">
+              <Calendar size={14} /> TERM
             </span>
-            <select className="timetable-filter-select">
+            <select 
+              value={selectedTerm}
+              onChange={(e) => setSelectedTerm(e.target.value)}
+              className="class-timetable-select"
+            >
               {terms.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
 
-          <div className="timetable-filter-group">
-            <span className="timetable-filter-label" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <Users size={13} /> {t('NHÓM', 'GROUP')}
+          <div className="class-timetable-filter-group">
+            <span className="class-timetable-filter-label">
+              <Users size={14} /> GROUP
             </span>
-            <select className="timetable-filter-select">
+            <select 
+              value={selectedGroup}
+              onChange={(e) => setSelectedGroup(e.target.value)}
+              className="class-timetable-select"
+            >
               {groups.map(g => <option key={g} value={g}>{g}</option>)}
             </select>
           </div>
@@ -121,14 +139,14 @@ export const ClassTimetable = ({ lang }: ClassTimetableProps) => {
             className={`view-toggle-btn ${activeView === 'group' ? 'active' : ''}`}
           >
             <Users size={16} />
-            <span>{t('THỜI KHÓA BIỂU THEO NHÓM', 'TIMETABLE BY GROUP')}</span>
+            <span>TIMETABLE BY GROUPS</span>
           </button>
           <button 
             onClick={() => setActiveView('week')}
             className={`view-toggle-btn ${activeView === 'week' ? 'active' : ''}`}
           >
             <Calendar size={16} />
-            <span>{t('THỜI KHÓA BIỂU THEO TUẦN', 'TIMETABLE BY WEEK')}</span>
+            <span>TIMETABLE BY WEEK</span>
           </button>
         </div>
 
@@ -219,72 +237,88 @@ export const ClassTimetable = ({ lang }: ClassTimetableProps) => {
         {activeView === 'group' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             
-            {/* Accordion 1: 7388 (Lập trình) */}
+            {/* Accordion 1: 7408 (SOFTWARE DEVELOPMENT LIFE CYCLE) */}
             <div>
               <div 
-                onClick={() => toggleGroup('7388')}
-                className={`accordion-header ${expandedGroups['7388'] ? 'active' : ''}`}
+                onClick={() => toggleGroup('7408')}
+                className="timetable-accordion-header"
               >
-                <span>7388 {t('(LẬP TRÌNH)', '(PROGRAMMING)')}</span>
-                {expandedGroups['7388'] ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+                <span>7408 (SOFTWARE DEVELOPMENT LIFE CYCLE)</span>
+                {expandedGroups['7408'] ? (
+                  <ChevronDown size={18} className="chevron-icon" />
+                ) : (
+                  <ChevronUp size={18} className="chevron-icon" />
+                )}
               </div>
 
-              {expandedGroups['7388'] && (
-                <div className="accordion-body" style={{ padding: '0px' }}>
-                  <div className="services-table-wrapper" style={{ border: 'none', boxShadow: 'none' }}>
-                    <table className="services-table">
-                      <thead className="services-thead">
-                        <tr>
-                          <th className="services-th center" style={{ width: '80px' }}>{t('PHIÊN SỐ', 'SESSION NO')}</th>
-                          <th className="services-th">{t('SỰ MIÊU TẢ', 'DESCRIPTION')}</th>
-                          <th className="services-th">{t('NGÀY', 'DATE')}</th>
-                          <th className="services-th center" style={{ width: '80px' }}>{t('CHỖ', 'SLOT')}</th>
-                          <th className="services-th">{t('PHÒNG', 'ROOM')}</th>
-                          <th className="services-th">{t('GIÁO VIÊN', 'TEACHER')}</th>
-                          <th className="services-th">{t('SỰ THAM DỰ', 'ATTENDANCE')}</th>
+              {expandedGroups['7408'] && (
+                <div className="timetable-accordion-body">
+                  <table className="group-timetable-table">
+                    <thead className="group-timetable-thead">
+                      <tr>
+                        <th className="group-timetable-th" style={{ width: '120px' }}>SESSION NO</th>
+                        <th className="group-timetable-th">DESCRIPTION</th>
+                        <th className="group-timetable-th">DAY</th>
+                        <th className="group-timetable-th" style={{ width: '100px' }}>SLOT</th>
+                        <th className="group-timetable-th">ROOM</th>
+                        <th className="group-timetable-th">TEACHER</th>
+                        <th className="group-timetable-th">ATTENDANCE</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sessions.map((sess) => (
+                        <tr key={sess.sessionNum} className="group-timetable-tr">
+                          <td className="group-timetable-td" style={{ fontWeight: '600' }}>
+                            {sess.sessionNum}
+                          </td>
+                          <td className="group-timetable-td">
+                            {sess.type}
+                          </td>
+                          <td className="group-timetable-td">
+                            <span className="group-timetable-link">
+                              {sess.date}
+                            </span>
+                          </td>
+                          <td className="group-timetable-td">
+                            {sess.slot}
+                          </td>
+                          <td className="group-timetable-td">
+                            <span className="group-timetable-link">
+                              {sess.room}
+                            </span>
+                          </td>
+                          <td className="group-timetable-td">
+                            {sess.teacher}
+                          </td>
+                          <td className="group-timetable-td" style={{ fontWeight: '500' }}>
+                            {sess.attendance}
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {sessions.map((sess) => (
-                          <tr key={sess.sessionNum} className="services-tr">
-                            <td className="services-td center stt">{sess.sessionNum}</td>
-                            <td className="services-td">{sess.type}</td>
-                            <td className="services-td">
-                              <span style={{ color: '#2563EB', cursor: 'pointer' }} className="hover:underline">
-                                {sess.date}
-                              </span>
-                            </td>
-                            <td className="services-td center">{sess.slot}</td>
-                            <td className="services-td">
-                              <span style={{ color: '#2563EB', cursor: 'pointer' }} className="hover:underline">
-                                {sess.room}
-                              </span>
-                            </td>
-                            <td className="services-td">{sess.teacher}</td>
-                            <td className="services-td" style={{ fontWeight: '600', color: '#009F4D' }}>{sess.attendance}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               )}
             </div>
 
-            {/* Accordion 2: 7393 (Mạng máy tính) */}
+            {/* Accordion 2: 7428 (BUSINESS PROCESS SUPPORT) */}
             <div>
               <div 
-                onClick={() => toggleGroup('7393')}
-                className={`accordion-header ${expandedGroups['7393'] ? 'active' : ''}`}
+                onClick={() => toggleGroup('7428')}
+                className="timetable-accordion-header"
               >
-                <span>7393 {t('(MẠNG MÁY TÍNH)', '(COMPUTER NETWORK)')}</span>
-                {expandedGroups['7393'] ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+                <span>7428 (BUSINESS PROCESS SUPPORT)</span>
+                {expandedGroups['7428'] ? (
+                  <ChevronDown size={18} className="chevron-icon" />
+                ) : (
+                  <ChevronUp size={18} className="chevron-icon" />
+                )}
               </div>
 
-              {expandedGroups['7393'] && (
-                <div className="accordion-body">
-                  <div style={{ textAlign: 'center', padding: '16px', color: 'var(--text-muted)', fontSize: '13px' }}>
-                    {t('Không có phiên học nào được hiển thị.', 'No sessions scheduled for this module.')}
+              {expandedGroups['7428'] && (
+                <div className="timetable-accordion-body" style={{ padding: '24px', textAlign: 'center' }}>
+                  <div style={{ color: '#64748B', fontSize: '13px' }}>
+                    No sessions scheduled for this module.
                   </div>
                 </div>
               )}
