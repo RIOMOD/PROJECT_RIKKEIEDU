@@ -13,12 +13,14 @@ import { MarkReport } from './components/MarkReport';
 import { AcademicTranscript } from './components/AcademicTranscript';
 import { Curriculum } from './components/Curriculum';
 import { Profile } from './components/Profile';
+import { Login } from './components/Login';
 import { Construction, ArrowLeft } from 'lucide-react';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeItem, setActiveItem] = useState('trang-chu');
   const [lang, setLang] = useState<'vi' | 'en'>('vi');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Human-readable title mapping for breadcrumbs & page headers (Bilingual)
   const menuTitles: Record<string, { vi: string; en: string }> = {
@@ -119,6 +121,19 @@ function App() {
     return menuTitles[activeItem]?.[lang] || 'Portal';
   };
 
+  if (!isLoggedIn) {
+    return (
+      <Login 
+        onLogin={(userLang) => {
+          setLang(userLang);
+          setIsLoggedIn(true);
+        }}
+        currentLang={lang}
+        onLangChange={setLang}
+      />
+    );
+  }
+
   return (
     <div className="app-container">
       {/* Navigation Drawer Sidebar */}
@@ -139,6 +154,7 @@ function App() {
           lang={lang}
           onLangChange={setLang}
           setActiveItem={setActiveItem}
+          onLogout={() => setIsLoggedIn(false)}
         />
 
         {/* Dynamic Inner Page Content */}

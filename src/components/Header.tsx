@@ -7,9 +7,10 @@ interface HeaderProps {
   lang: 'vi' | 'en';
   onLangChange: (lang: 'vi' | 'en') => void;
   setActiveItem: (item: string) => void;
+  onLogout: () => void;
 }
 
-export const Header = ({ onMenuToggle, title, lang, onLangChange, setActiveItem }: HeaderProps) => {
+export const Header = ({ onMenuToggle, title, lang, onLangChange, setActiveItem, onLogout }: HeaderProps) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
@@ -226,7 +227,7 @@ export const Header = ({ onMenuToggle, title, lang, onLangChange, setActiveItem 
                   </div>
                 </div>
                 
-                <button className="profile-logout-btn">
+                <button className="profile-logout-btn" onClick={onLogout}>
                   <LogOut size={16} />
                   <span>{lang === 'en' ? 'Log out' : 'Đăng xuất'}</span>
                 </button>
