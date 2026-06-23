@@ -138,51 +138,31 @@ export const OnlineServices = () => {
     },
     {
       stt: 2,
-      task: 'ĐĂNG KÝ HỌC LẠI MIỄN PHÍ-V2',
-      desc: 'ĐĂNG KÝ HỌC LẠI MIỄN PHÍ CHO SINH VIÊN'
-    },
-    {
-      stt: 3,
       task: 'ĐĂNG KÝ CẤP LẠI THẺ SINH VIÊN',
       desc: 'ĐĂNG KÝ CẤP LẠI THẺ SINH VIÊN BỊ MẤT HOẶC HỎNG'
     },
     {
-      stt: 4,
-      task: 'ĐĂNG KÝ KÝ TÊN LẠI',
-      desc: 'ÁP DỤNG CHO TRƯỜNG THỂ SV BỊ MẤT/HỎNG. BÀI HỌC MỚI SV KHÔNG ĐĂNG NHẬP ĐƯỢC DỊCH VỤ NÀY'
-    },
-    {
-      stt: 5,
-      task: 'ĐĂNG KÝ PHẦN GIẢM HỌC',
-      desc: ''
-    },
-    {
-      stt: 6,
+      stt: 3,
       task: 'ĐĂNG KÝ THAY ĐỔI THÔNG TIN',
       desc: ''
     },
     {
-      stt: 7,
+      stt: 4,
       task: 'ĐĂNG KÝ THÔI HỌC',
       desc: ''
     },
     {
-      stt: 8,
-      task: 'ĐĂNG KÝ NGƯỜI NHẬN XÁC THỰC',
-      desc: 'SINH VIÊN DOWNLOAD MẪU XÁC NHẬN, ĐIỀN ĐẦY ĐỦ THÔNG TIN VÀ UPLOAD LÊN ĐĂNG KÝ'
-    },
-    {
-      stt: 9,
+      stt: 5,
       task: 'ĐĂNG KÝ HỌC LẠI',
       desc: 'ĐĂNG KÝ HỌC LẠI CHO SINH VIÊN TRƯỢT MÔN HỌC'
     },
     {
-      stt: 10,
-      task: 'ĐĂNG KÝ TẠM HOÃN MÔN HỌC',
+      stt: 6,
+      task: 'ĐĂNG KÝ TẠM THỜI NGHỈ HỌC DÀI HẠN',
       desc: 'DỊCH VỤ ÁP DỤNG CHO TRƯỜP HỢP SV CẦN TẠM DỪNG HỌC KHI LỚP HỌC CHƯA KẾT THÚC'
     },
     {
-      stt: 11,
+      stt: 7,
       task: 'ĐĂNG KÝ VÀ DỊCH VỤ KHÁC',
       desc: 'SỬ DỤNG CHUNG CHO CÁC DỊCH VỤ KHÔNG BỊ MẤT PHÍ NHƯ: THẮC MẮC, KHIẾU NẠI,...'
     }
@@ -195,19 +175,19 @@ export const OnlineServices = () => {
     if (service.stt === 1) {
       setView('attendance-recovery');
       resetAttendanceForm();
-    } else if (service.stt === 3) {
+    } else if (service.stt === 2) {
       setView('student-card-reissue');
       resetCardForm();
-    } else if (service.stt === 6) {
+    } else if (service.stt === 3) {
       setView('change-info');
       resetChangeInfoForm();
-    } else if (service.stt === 7) {
+    } else if (service.stt === 4) {
       setView('withdraw');
       resetWithdrawForm();
-    } else if (service.stt === 9) {
+    } else if (service.stt === 5) {
       setView('retake');
       resetRetakeForm();
-    } else if (service.stt === 10) {
+    } else if (service.stt === 6) {
       setView('defer');
       resetDeferForm();
     } else {
@@ -1636,7 +1616,7 @@ export const OnlineServices = () => {
 
             {/* Title Section */}
             <div className="recovery-title-section">
-              <h2 className="recovery-form-title">ĐĂNG KÝ TẠM HOÃN MÔN HỌC</h2>
+              <h2 className="recovery-form-title">ĐĂNG KÝ TẠM THỜI NGHỈ HỌC DÀI HẠN</h2>
               <p className="recovery-form-subtitle">
                 YOU ARE REQUIRED TO FULFILL BLANK BOXES BELOW TO FINISH YOUR REQUEST AND ATTACH SUPPORTING DOCUMENTS (IF ANY) BEFORE SUBMITTING THIS FORM
               </p>
@@ -1649,7 +1629,7 @@ export const OnlineServices = () => {
                 </div>
                 <h3 className="recovery-success-title">Nộp đơn thành công!</h3>
                 <p className="recovery-success-desc">
-                  Yêu cầu tạm hoãn môn học của bạn đã được tiếp nhận. Kỳ đợt xin hoãn: <strong>FALL 2025</strong>.
+                  Yêu cầu tạm thời nghỉ học dài hạn của bạn đã được tiếp nhận. Kỳ đợt xin nghỉ: <strong>FALL 2025</strong>.
                 </p>
                 <p className="recovery-success-notice">
                   ⚠️ Lưu ý: Hồ sơ bản cứng (sao y công chứng) cần phải nộp trực tiếp hoặc gửi qua bưu điện cho phòng ĐVSV trong vòng 72 giờ để hoàn tất yêu cầu.
@@ -1673,7 +1653,7 @@ export const OnlineServices = () => {
                 <div className="recovery-summary-grid">
                   <div className="recovery-summary-item">
                     <div className="recovery-summary-label">DỊCH VỤ</div>
-                    <div className="recovery-summary-badge">Đăng ký tạm hoãn môn học</div>
+                    <div className="recovery-summary-badge">Đăng ký tạm thời nghỉ học dài hạn</div>
                   </div>
                   <div className="recovery-summary-item">
                     <div className="recovery-summary-label">KỲ ĐỢT DỊCH VỤ:</div>
