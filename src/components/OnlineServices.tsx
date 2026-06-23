@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ClipboardList, CheckCircle2, ArrowLeft, Upload, AlertCircle } from 'lucide-react';
+import { ClipboardList, CheckCircle2, ArrowLeft, Upload, AlertCircle, Plus, X } from 'lucide-react';
 
 interface ServiceItem {
   stt: number;
@@ -34,8 +34,19 @@ const SLOTS = [
 
 const DATES = ['2026-06-23', '2026-06-22', '2026-06-21', '2026-06-20', '2026-06-19'];
 
+const INFO_CATEGORIES = [
+  'Họ tên',
+  'Ngày sinh',
+  'Số CMND/CCCD',
+  'Số điện thoại',
+  'Địa chỉ thường trú',
+  'Địa chỉ Email cá nhân',
+  'Họ tên phụ huynh',
+  'Số điện thoại phụ huynh'
+];
+
 export const OnlineServices = () => {
-  const [view, setView] = useState<'list' | 'attendance-recovery' | 'student-card-reissue'>('list');
+  const [view, setView] = useState<'list' | 'attendance-recovery' | 'student-card-reissue' | 'change-info'>('list');
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -57,6 +68,12 @@ export const OnlineServices = () => {
   const [cardResult, setCardResult] = useState('Nhận trực tiếp tại ĐVSV phòng');
   const [cardFee] = useState('100000');
   const [cardPhotoName, setCardPhotoName] = useState('');
+
+  // --- Change Info Form States ---
+  const [infoCategory, setInfoCategory] = useState('Họ tên');
+  const [addedCategories, setAddedCategories] = useState<string[]>(['Họ tên']);
+  const [changeNotes, setChangeNotes] = useState('');
+  const [changeFileName, setChangeFileName] = useState('');
 
   // Validation & Submit State
   const [validationError, setValidationError] = useState('');
@@ -131,6 +148,9 @@ export const OnlineServices = () => {
     } else if (service.stt === 3) {
       setView('student-card-reissue');
       resetCardForm();
+    } else if (service.stt === 6) {
+      setView('change-info');
+      resetChangeInfoForm();
     } else {
       setSelectedService(service);
       setShowSuccessModal(false);
@@ -157,6 +177,13 @@ export const OnlineServices = () => {
     setCardPhotoName('');
   };
 
+  const resetChangeInfoForm = () => {
+    setInfoCategory('Họ tên');
+    setAddedCategories(['Họ tên']);
+    setChangeNotes('');
+    setChangeFileName('');
+  };
+
   const handleTeacherChange = (email: string) => {
     setTeacherAccount(email);
     setTeacherName(TEACHERS[email] || '');
@@ -174,6 +201,22 @@ export const OnlineServices = () => {
     }
   };
 
+  const handleInfoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setChangeFileName(e.target.files[0].name);
+    }
+  };
+
+  const handleAddCategory = () => {
+    if (infoCategory && !addedCategories.includes(infoCategory)) {
+      setAddedCategories([...addedCategories, infoCategory]);
+    }
+  };
+
+  const handleRemoveCategory = (catToRemove: string) => {
+    setAddedCategories(addedCategories.filter(cat => cat !== catToRemove));
+  };
+
   const handleAttendanceSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!subject || !classCode || !date || !slot || !teacherAccount || !phone || !reason) {
@@ -187,6 +230,20 @@ export const OnlineServices = () => {
   const handleCardSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!cardReason || !cardPhone || !cardUnit || !cardResult || !cardPhotoName) {
+      setValidationError('Vui lòng điền đầy đủ thông tin vào các ô trống bắt buộc (*)');
+      return;
+    }
+    setValidationError('');
+    setSubmitSuccess(true);
+  };
+
+  const handleInfoSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (addedCategories.length === 0) {
+      setValidationError('Vui lòng lựa chọn ít nhất một thông tin cần thay đổi');
+      return;
+    }
+    if (!changeNotes) {
       setValidationError('Vui lòng điền đầy đủ thông tin vào các ô trống bắt buộc (*)');
       return;
     }
@@ -729,6 +786,245 @@ export const OnlineServices = () => {
                 <div className="recovery-form-actions">
                   <button type="submit" className="recovery-btn-submit" style={{ padding: '10px 50px' }}>
                     NỘP
+                  </button>
+                </div>
+
+              </form>
+            )}
+
+          </div>
+        )}
+
+        {view === 'change-info' && (
+          /* Change Info Form View */
+          <div className="recovery-form-wrapper">
+            
+            {/* Navigation back */}
+            <button onClick={() => setView('list')} className="recovery-back-btn">
+              <ArrowLeft size={16} />
+              <span>Quay lại danh sách</span>
+            </button>
+
+            {/* Title Section */}
+            <div className="recovery-title-section">
+              <h2 className="recovery-form-title">ĐĂNG KÝ THAY ĐỔI THÔNG TIN</h2>
+              <p className="recovery-form-subtitle">
+                YOU ARE REQUIRED TO FULFILL BLANK BOXES BELOW TO FINISH YOUR REQUEST AND ATTACH SUPPORTING DOCUMENTS (IF ANY) BEFORE SUBMITTING THIS FORM
+              </p>
+            </div>
+
+            {submitSuccess ? (
+              <div className="recovery-success-box">
+                <div className="recovery-success-icon-wrapper">
+                  <CheckCircle2 size={48} className="text-emerald-500" />
+                </div>
+                <h3 className="recovery-success-title">Nộp đơn thành công!</h3>
+                <p className="recovery-success-desc">
+                  Yêu cầu thay đổi thông tin: <strong>{addedCategories.join(', ')}</strong> của bạn đã được ghi nhận thành công và chuyển đến phòng đào tạo.
+                </p>
+                <p className="recovery-success-notice">
+                  ⚠️ Lưu ý: Ban đào tạo sẽ liên hệ với bạn qua email/điện thoại nếu cần đối chiếu tài liệu gốc.
+                </p>
+                <button onClick={() => setView('list')} className="recovery-success-back-btn">
+                  Trở lại Dịch vụ trực tuyến
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleInfoSubmit} className="recovery-form-element">
+                
+                {/* Error Banner */}
+                {validationError && (
+                  <div className="recovery-validation-banner">
+                    <AlertCircle size={18} />
+                    <span>{validationError}</span>
+                  </div>
+                )}
+
+                {/* Top Info Grid */}
+                <div className="recovery-summary-grid">
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">DỊCH VỤ</div>
+                    <div className="recovery-summary-badge">Đăng ký thay đổi thông tin</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">KỲ ĐỢT DỊCH VỤ:</div>
+                    <div className="recovery-summary-value-box">FALL 2023</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">TRẠNG THÁI SINH VIÊN</div>
+                    <div className="recovery-summary-value-box">HL</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">SỐ DƯ</div>
+                    <div className="recovery-summary-value-box">VND 0 đ</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">NGÀNH HỌC</div>
+                    <div className="recovery-summary-value-box">Lập trình máy tính</div>
+                  </div>
+                </div>
+
+                {/* Categories Selector */}
+                <div style={{ 
+                  backgroundColor: '#FFFFFF', 
+                  border: '1px solid var(--border-color)', 
+                  borderRadius: '10px', 
+                  padding: '20px', 
+                  marginBottom: '20px',
+                  boxShadow: 'var(--shadow-sm)'
+                }}>
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#334155', marginBottom: '12px' }}>
+                    Lựa chọn thông tin cần thay đổi:
+                  </div>
+                  <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <select 
+                      value={infoCategory} 
+                      onChange={(e) => setInfoCategory(e.target.value)} 
+                      style={{ 
+                        padding: '8px 12px', 
+                        fontSize: '13px', 
+                        border: '1px solid #CBD5E1', 
+                        borderRadius: '4px',
+                        minWidth: '240px'
+                      }}
+                    >
+                      {INFO_CATEGORIES.map(cat => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                    <button 
+                      type="button" 
+                      onClick={handleAddCategory} 
+                      style={{ 
+                        backgroundColor: 'var(--primary)', 
+                        color: '#FFFFFF', 
+                        border: 'none', 
+                        padding: '8px 24px', 
+                        borderRadius: '4px', 
+                        fontWeight: 700, 
+                        fontSize: '13px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        transition: 'var(--transition-smooth)'
+                      }}
+                      className="register-btn"
+                    >
+                      <Plus size={14} />
+                      ADD
+                    </button>
+                  </div>
+
+                  {/* Active Tags */}
+                  {addedCategories.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '16px' }}>
+                      {addedCategories.map(cat => (
+                        <span 
+                          key={cat} 
+                          style={{ 
+                            backgroundColor: '#EFF6FF', 
+                            color: '#1E40AF', 
+                            border: '1px solid #BFDBFE', 
+                            borderRadius: '20px', 
+                            padding: '4px 12px', 
+                            fontSize: '12px', 
+                            fontWeight: 600,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px'
+                          }}
+                        >
+                          {cat}
+                          <button 
+                            type="button" 
+                            onClick={() => handleRemoveCategory(cat)}
+                            style={{ 
+                              background: 'none', 
+                              border: 'none', 
+                              color: '#1E40AF', 
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              padding: 0
+                            }}
+                          >
+                            <X size={12} />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Main Form Fields Layout */}
+                <div className="recovery-fields-card">
+                  
+                  {/* Row 1: Ghi chú */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Ghi chú (*)
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <textarea 
+                        value={changeNotes} 
+                        onChange={(e) => setChangeNotes(e.target.value.slice(0, 500))} 
+                        placeholder="Vui lòng ghi rõ yêu cầu cần xử lý"
+                        className="recovery-textarea-element"
+                      />
+                      <div className="recovery-char-counter">
+                        {changeNotes.length} / 500 ký tự
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Row 2: Phí dịch vụ */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Phí dịch vụ
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <input 
+                        type="text" 
+                        value="0" 
+                        readOnly 
+                        className="recovery-input-element disabled-bg"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 3: Tài liệu đính kèm */}
+                  <div className="recovery-field-row" style={{ borderBottom: 'none' }}>
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> Tài liệu đính kèm
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <div className="recovery-file-upload-container">
+                        <input 
+                          type="file" 
+                          id="change-info-file" 
+                          onChange={handleInfoFileChange}
+                          style={{ display: 'none' }}
+                        />
+                        <div className="recovery-file-info-row">
+                          <span className="recovery-file-path-input">
+                            {changeFileName || 'Choose file'}
+                          </span>
+                          <label htmlFor="change-info-file" className="recovery-file-browse-btn">
+                            <Upload size={14} style={{ marginRight: 6 }} />
+                            Browse
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Action Buttons */}
+                <div className="recovery-form-actions">
+                  <button type="submit" className="recovery-btn-submit">
+                    SUBMIT
                   </button>
                 </div>
 
