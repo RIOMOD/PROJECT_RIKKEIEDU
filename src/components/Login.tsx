@@ -19,6 +19,27 @@ export const Login = ({ onLogin, currentLang, onLangChange }: LoginProps) => {
 
   const images = [imglogin1, imglogin2, imglogin3];
 
+  const slideTexts = [
+    {
+      titleVi: 'Hình thức E-learning',
+      titleEn: 'E-learning Mode',
+      descVi: 'Học mọi lúc, mọi nơi với hệ thống các video, bài giảng trực tuyến đa dạng và linh hoạt',
+      descEn: 'Learn anytime, anywhere with a diverse and flexible system of online videos and lectures'
+    },
+    {
+      titleVi: 'Kho học liệu miễn phí',
+      titleEn: 'Free Learning Resources',
+      descVi: 'Miễn phí truy cập kho tài liệu khổng lồ, bao gồm bài giảng, video và tài liệu đọc phù hợp với mọi đối tượng.',
+      descEn: 'Free access to a massive repository, including lectures, videos, and reading materials suitable for all learners.'
+    },
+    {
+      titleVi: 'Bài tập vận dụng mô phỏng',
+      titleEn: 'Simulation Practice Exercises',
+      descVi: 'Áp dụng kiến thức thông qua các bài tập mô phỏng tình huống thực tế',
+      descEn: 'Apply knowledge through practical situational simulation exercises'
+    }
+  ];
+
   // Auto-slideshow for the marketing banner
   useEffect(() => {
     const interval = setInterval(() => {
@@ -421,6 +442,58 @@ export const Login = ({ onLogin, currentLang, onLangChange }: LoginProps) => {
                 pointerEvents: 'none'
               }}
             />
+          ))}
+        </div>
+
+        {/* SLIDE TEXT CONTENT WITH TRANSITION */}
+        <div style={{
+          marginTop: '24px',
+          textAlign: 'center',
+          minHeight: '75px',
+          maxWidth: '380px',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 2,
+          position: 'relative'
+        }}>
+          {slideTexts.map((st, idx) => (
+            <div
+              key={idx}
+              style={{
+                position: idx === currentImageIdx ? 'relative' : 'absolute',
+                opacity: idx === currentImageIdx ? 1 : 0,
+                transition: 'opacity 0.6s ease-in-out',
+                pointerEvents: idx === currentImageIdx ? 'auto' : 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                width: '100%'
+              }}
+            >
+              <h3 style={{
+                color: '#ffffff',
+                fontSize: '18px',
+                fontWeight: '800',
+                margin: '0 0 8px 0',
+                fontFamily: "'Inter', sans-serif",
+                letterSpacing: '0.2px'
+              }}>
+                {t(st.titleVi, st.titleEn)}
+              </h3>
+              <p style={{
+                color: '#cbd5e1',
+                fontSize: '13.5px',
+                lineHeight: '1.5',
+                margin: 0,
+                textAlign: 'center',
+                fontWeight: '400'
+              }}>
+                {t(st.descVi, st.descEn)}
+              </p>
+            </div>
           ))}
         </div>
 
