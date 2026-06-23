@@ -181,18 +181,6 @@ export const Sidebar = ({
                   <span>{t('Bảng điểm học tập', 'Academic Transcript')}</span>
                 </span>
               </div>
-
-              {/* TIẾN ĐỘ ĐÓNG HỌC PHÍ */}
-              <div 
-                onClick={() => handleLinkClick('hoc-phi')}
-                className={`sidebar-link ${activeItem === 'hoc-phi' ? 'active' : ''}`}
-                style={{ margin: '4px 10px' }}
-              >
-                <span className="sidebar-link-content">
-                  <BookOpen size={16} className="text-orange-500" />
-                  <span>{t('Báo cáo học phí', 'Tuition Report')}</span>
-                </span>
-              </div>
             </>
           ) : isCollapsed ? (
             <>
