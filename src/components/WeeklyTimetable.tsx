@@ -27,6 +27,21 @@ export const WeeklyTimetable = ({ lang }: WeeklyTimetableProps) => {
     return lang === 'en' ? enText : viText;
   };
 
+  const studentProfile = (() => {
+    const saved = localStorage.getItem('student_profile');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.name && parsed.id) return parsed;
+      } catch (e) {}
+    }
+    return {
+      name: 'Nguyễn Công Trứ',
+      id: 'N24DTCN088',
+      username: 'truncn24dtcn088'
+    };
+  })();
+
   // Dropdown list options
   const weeks = [
     '22/06 To 28/06',
@@ -127,7 +142,7 @@ export const WeeklyTimetable = ({ lang }: WeeklyTimetableProps) => {
       slotIndex: 1
     },
     {
-      subjectCode: '4902.01.HL',
+      subjectCode: '4902.01.CNTT2',
       subjectName: 'Capstone Project - Web Frontend Development',
       type: '4902 (Offline)',
       roomName: 'Sydney 6',
@@ -138,7 +153,7 @@ export const WeeklyTimetable = ({ lang }: WeeklyTimetableProps) => {
       slotIndex: 2
     },
     {
-      subjectCode: '4902.01.HL',
+      subjectCode: '4902.01.CNTT2',
       subjectName: 'Capstone Project - Web Frontend Development',
       type: '4902 (Offline)',
       roomName: 'Sydney 6',
@@ -166,7 +181,10 @@ export const WeeklyTimetable = ({ lang }: WeeklyTimetableProps) => {
         {/* Page Titles */}
         <div>
           <h2 className="services-section-title" style={{ textAlign: 'left', marginBottom: '8px' }}>
-            {t('HOẠT ĐỘNG CHO HUNGNVBS00679 (NGUYỄN VĂN HÙNG)', 'ACTIVITIES FOR HUNGNVBS00679 (NGUYỄN VĂN HÙNG)')}
+            {t(
+              `HOẠT ĐỘNG CHO ${(studentProfile.username || 'truncn24dtcn088').toUpperCase()} (${studentProfile.name.toUpperCase()})`, 
+              `ACTIVITIES FOR ${(studentProfile.username || 'truncn24dtcn088').toUpperCase()} (${studentProfile.name.toUpperCase()})`
+            )}
           </h2>
           <p style={{ color: '#F97316', fontSize: '12px', fontWeight: '700', letterSpacing: '0.2px', marginBottom: '20px' }}>
             {t('✏️ CÁC HOẠT ĐỘNG NÀY KHÔNG BAO GỒM HOẠT ĐỘNG NGOẠI KHÓA, HOẠT ĐỘNG CỦA CÂU LẠC BỘ...', '✏️ THESE ACTIVITIES DO NOT INCLUDE EXTRA-CURRICULUM ACTIVITIES, SUCH AS CLUB ACTIVITIES...')}
@@ -269,11 +287,11 @@ export const WeeklyTimetable = ({ lang }: WeeklyTimetableProps) => {
           <ul className="timetable-notes-list">
             <li>
               • <span className="attendance-attended" style={{ marginRight: '4px' }}>(Attended)</span>: 
-              {t('Nguyễn Văn Hùng đã tham gia hoạt động này', 'hungnvbs00679 had attended this activity')}
+              {t(`${studentProfile.name} đã tham gia hoạt động này`, `${studentProfile.username || 'truncn24dtcn088'} had attended this activity`)}
             </li>
             <li>
               • <span className="attendance-absent" style={{ marginRight: '4px' }}>(Absent)</span>: 
-              {t('Nguyễn Văn Hùng đã vắng mặt buổi này', 'hungnvbs00679 had NOT attended this activity')}
+              {t(`${studentProfile.name} đã vắng mặt buổi này`, `${studentProfile.username || 'truncn24dtcn088'} had NOT attended this activity`)}
             </li>
           </ul>
         </div>

@@ -20,6 +20,20 @@ export const TeacherFeedback = ({ lang }: TeacherFeedbackProps) => {
     return lang === 'en' ? enText : viText;
   };
 
+  const studentProfile = (() => {
+    const saved = localStorage.getItem('student_profile');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.name && parsed.id) return parsed;
+      } catch (e) {}
+    }
+    return {
+      name: 'Nguyễn Công Trứ',
+      id: 'N24DTCN088'
+    };
+  })();
+
   // Initialize mock feedback list
   const [feedbackList, setFeedbackList] = useState<FeedbackItem[]>([
     {
@@ -113,7 +127,10 @@ export const TeacherFeedback = ({ lang }: TeacherFeedbackProps) => {
         
         {/* Title Heading */}
         <h2 className="services-section-title">
-          {t('DANH SÁCH PHẢN HỒI CHO NGUYỄN VĂN HÙNG (BS00679)', 'FEEDBACK LIST FOR NGUYEN VAN HUNG (BS00679)')}
+          {t(
+            `DANH SÁCH PHẢN HỒI CHO ${studentProfile.name.toUpperCase()} (${studentProfile.id})`, 
+            `FEEDBACK LIST FOR ${studentProfile.name.toUpperCase()} (${studentProfile.id})`
+          )}
         </h2>
 
         {/* Feedback List Table */}

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ClipboardList, CheckCircle2, ArrowLeft, Upload, AlertCircle, Plus, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ClipboardList, CheckCircle2, ArrowLeft, Upload, AlertCircle, Plus, X, FileText } from 'lucide-react';
 
 interface ServiceItem {
   stt: number;
@@ -64,14 +64,16 @@ const INFO_CATEGORIES = [
 
 interface OnlineServicesProps {
   lang: 'vi' | 'en';
+  activeItem?: string;
+  setActiveItem?: (item: string) => void;
 }
 
-export const OnlineServices = ({ lang }: OnlineServicesProps) => {
+export const OnlineServices = ({ lang, activeItem, setActiveItem }: OnlineServicesProps) => {
   // Translation helper
   const t = (viText: string, enText: string) => {
     return lang === 'en' ? enText : viText;
   };
-  const [view, setView] = useState<'list' | 'attendance-recovery' | 'student-card-reissue' | 'change-info' | 'withdraw' | 'retake' | 'defer'>('list');
+  const [view, setView] = useState<'list' | 'attendance-recovery' | 'student-card-reissue' | 'change-info' | 'withdraw' | 'retake' | 'defer' | 'dk-vang-thi' | 'phuc-khao' | 'dk-thi-lai' | 'bao-luu-kqht' | 'other-services'>('list');
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
@@ -126,22 +128,177 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
   const [deferReason, setDeferReason] = useState('');
   const [deferProposal, setDeferProposal] = useState('');
   const [deferPhone, setDeferPhone] = useState('');
-  const [deferDocName, setDeferDocName] = useState('');
   const [deferFileName, setDeferFileName] = useState('');
   const [deferSendMethod, setDeferSendMethod] = useState('Nhận trực tiếp tại phòng ĐVSV');
-  const [deferReceiveMethod, setDeferReceiveMethod] = useState('Nhận trực tiếp tại phòng ĐVSV');
-  const [deferAddress, setDeferAddress] = useState('');
   const [deferFee] = useState('0');
 
   // Validation & Submit State
   const [validationError, setValidationError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
+  // --- Đăng ký vắng thi States ---
+  const [vtSubject, setVtSubject] = useState('[10587] SD102 - Web Design');
+  const [vtDate, setVtDate] = useState('2025-06-25');
+  const [vtSlot, setVtSlot] = useState('Ca 1 (07:30 - 09:30)');
+  const [vtReason, setVtReason] = useState('Do bị ốm, có xác nhận của cơ sở y tế.');
+  const [vtFileAttached, setVtFileAttached] = useState<boolean>(true);
+  const vtFileName = 'Giấy xác nhận bệnh.pdf';
+  const vtFileSize = '1.2 MB';
+
+  // --- Đăng ký phúc khảo States ---
+  const [pkSemester, setPkSemester] = useState('Học kỳ 2 - Năm học 2024 - 2025');
+  const [pkSubject, setPkSubject] = useState('CT313 - Cấu trúc dữ liệu và giải thuật');
+  const [pkScore, setPkScore] = useState('6.5');
+  const [pkContent, setPkContent] = useState('Em đề nghị Nhà trường phúc khảo lại bài thi vì em cho rằng kết quả chưa phản ánh đúng bài làm của em.');
+  const [pkNote, setPkNote] = useState('');
+  const [pkFileAttached, setPkFileAttached] = useState<boolean>(false);
+  const pkFileName = 'HoaDonPhucKhao.pdf';
+  const pkFileSize = '850 KB';
+
+  // --- Đăng ký thi lại / Thi bổ sung States ---
+  const [tlSemester, setTlSemester] = useState('Học kỳ 2 - Năm học 2024 - 2025');
+  const [tlSubject, setTlSubject] = useState('CT313 - Cấu trúc dữ liệu và giải thuật');
+  const [tlType, setTlType] = useState<'thi-lai' | 'thi-bo-sung'>('thi-lai');
+  const [tlReason, setTlReason] = useState('');
+  const [tlNote, setTlNote] = useState('');
+  const [tlFileAttached, setTlFileAttached] = useState<boolean>(false);
+  const tlFileName = 'HoaDonThiLai.pdf';
+  const tlFileSize = '920 KB';
+
+  // --- Bảo lưu kết quả học tập States ---
+  const [blSemester, setBlSemester] = useState('');
+  const [blReason, setBlReason] = useState('');
+  const [blDuration, setBlDuration] = useState('');
+  const [blNote, setBlNote] = useState('');
+  const [blFileAttached, setBlFileAttached] = useState<boolean>(false);
+  const [blShowWarningModal, setBlShowWarningModal] = useState<boolean>(true);
+
+  // --- Đăng ký dịch vụ khác States ---
+  const [otherContent, setOtherContent] = useState('');
+  const [otherDept, setOtherDept] = useState('TC&QLĐT');
+  const [otherPhone, setOtherPhone] = useState('');
+  const [otherFileName, setOtherFileName] = useState('');
+
+  const resetOtherForm = () => {
+    setOtherContent('');
+    setOtherDept('TC&QLĐT');
+    setOtherPhone('');
+    setOtherFileName('');
+  };
+
+  const handleOtherFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setOtherFileName(e.target.files[0].name);
+    }
+  };
+
+  const handleOtherSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!otherContent || !otherPhone) {
+      setValidationError(t('Vui lòng điền đầy đủ các thông tin bắt buộc (*)', 'Please fill in all required fields (*)'));
+      return;
+    }
+    setValidationError('');
+    setSubmitSuccess(true);
+  };
+
+
+  useEffect(() => {
+    if (activeItem === 'dk-vang-thi') {
+      setView('dk-vang-thi');
+      resetVangThiForm();
+      setSubmitSuccess(false);
+      setValidationError('');
+    } else if (activeItem === 'phuc-khao') {
+      setView('phuc-khao');
+      resetPhucKhaoForm();
+      setSubmitSuccess(false);
+      setValidationError('');
+    } else if (activeItem === 'dk-thi-lai') {
+      setView('dk-thi-lai');
+      resetThiLaiForm();
+      setSubmitSuccess(false);
+      setValidationError('');
+    } else if (activeItem === 'bao-luu-kqht') {
+      setView('bao-luu-kqht');
+      resetBaoLuuForm();
+      setSubmitSuccess(false);
+      setValidationError('');
+    } else {
+      setView('list');
+    }
+  }, [activeItem]);
+
+  const resetBaoLuuForm = () => {
+    setBlSemester('');
+    setBlReason('');
+    setBlDuration('');
+    setBlNote('');
+    setBlFileAttached(false);
+    setBlShowWarningModal(true);
+  };
+
+  const resetVangThiForm = () => {
+    setVtSubject('[10587] SD102 - Web Design');
+    setVtDate('2025-06-25');
+    setVtSlot('Ca 1 (07:30 - 09:30)');
+    setVtReason('Do bị ốm, có xác nhận của cơ sở y tế.');
+    setVtFileAttached(true);
+  };
+
+  const resetPhucKhaoForm = () => {
+    setPkSemester('Học kỳ 2 - Năm học 2024 - 2025');
+    setPkSubject('CT313 - Cấu trúc dữ liệu và giải thuật');
+    setPkScore('6.5');
+    setPkContent('Em đề nghị Nhà trường phúc khảo lại bài thi vì em cho rằng kết quả chưa phản ánh đúng bài làm của em.');
+    setPkNote('');
+    setPkFileAttached(false);
+  };
+
+  const resetThiLaiForm = () => {
+    setTlSemester('Học kỳ 2 - Năm học 2024 - 2025');
+    setTlSubject('CT313 - Cấu trúc dữ liệu và giải thuật');
+    setTlType('thi-lai');
+    setTlReason('');
+    setTlNote('');
+    setTlFileAttached(false);
+  };
+
+  const handleVangThiSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!vtSubject || !vtDate || !vtReason) {
+      setValidationError('Vui lòng nhập đầy đủ các trường thông tin bắt buộc (*).');
+      return;
+    }
+    setValidationError('');
+    setSubmitSuccess(true);
+  };
+
+  const handlePhucKhaoSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!pkSemester || !pkSubject || !pkScore || !pkContent || !pkFileAttached) {
+      setValidationError('Vui lòng nhập đầy đủ các trường thông tin bắt buộc (*).');
+      return;
+    }
+    setValidationError('');
+    setSubmitSuccess(true);
+  };
+
+  const handleThiLaiSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!tlSemester || !tlSubject || !tlType || !tlFileAttached) {
+      setValidationError('Vui lòng nhập đầy đủ các trường thông tin bắt buộc (*).');
+      return;
+    }
+    setValidationError('');
+    setSubmitSuccess(true);
+  };
+
   // Mock list of services
   const services: ServiceItem[] = [
     {
       stt: 1,
-      task: t('ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH', 'ATTENDANCE RECOVERY REGISTRATION'),
+      task: t('ĐĂNG KÝ NGHỈ BUỔI HỌC', 'LEAVE OF ABSENCE REGISTRATION'),
       desc: ''
     },
     {
@@ -171,10 +328,58 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
     },
     {
       stt: 7,
-      task: t('ĐĂNG KÝ VÀ DỊCH VỤ KHÁC', 'OTHER SERVICES & INQUIRIES'),
+      task: t('ĐĂNG KÝ VẮNG THI', 'EXAM ABSENCE REGISTRATION'),
+      desc: t('DÀNH CHO SINH VIÊN KHÔNG THỂ THAM DỰ KỲ THI THEO LỊCH DO LÝ DO CHÍNH ĐÁNG', 'FOR STUDENTS WHO CANNOT ATTEND EXAMS FOR VALID REASONS')
+    },
+    {
+      stt: 8,
+      task: t('ĐĂNG KÝ PHÚC KHẢO', 'EXAM RE-EVALUATION REGISTRATION'),
+      desc: t('DÀNH CHO SINH VIÊN CÓ NHU CẦU PHÚC KHẢO ĐIỂM THI', 'FOR STUDENTS WHO WANT TO APPEAL THEIR EXAM GRADES')
+    },
+    {
+      stt: 9,
+      task: t('ĐĂNG KÝ THI LẠI / THI BỔ SUNG', 'RE-TAKING / SUPPLEMENTARY EXAM REGISTRATION'),
+      desc: t('DÀNH CHO SINH VIÊN ĐĂNG KÝ THI LẠI HOẶC THI BỔ SUNG', 'FOR STUDENTS REGISTERING FOR RE-EXAMS OR SUPPLEMENTARY EXAMS')
+    },
+    {
+      stt: 10,
+      task: t('ĐĂNG KÝ BẢO LƯU KẾT QUẢ HỌC TẬP', 'ACADEMIC SUSPENSION REGISTRATION'),
+      desc: t('DÀNH CHO SINH VIÊN CÓ NHU CẦU BẢO LƯU KẾT QUẢ HỌC TẬP', 'FOR STUDENTS WHO WANT TO SUSPEND THEIR STUDIES')
+    },
+    {
+      stt: 11,
+      task: t('ĐĂNG KÝ DỊCH VỤ KHÁC', 'OTHER REGISTRATION & SERVICES'),
       desc: t('SỬ DỤNG CHUNG CHO CÁC DỊCH VỤ KHÔNG BỊ MẤT PHÍ NHƯ: THẮC MẮC, KHIẾU NẠI,...', 'FOR COMPLAINTS, INQUIRIES, AND FREE GENERAL SERVICES')
     }
   ];
+
+  const getSectionTitle = () => {
+    if (activeItem === 'dv-hoc-vu') {
+      return t('Danh sách dịch vụ học vụ', 'Academic Services List');
+    }
+    if (activeItem === 'dv-khao-thi') {
+      return t('Danh sách dịch vụ khảo thí', 'Examination Services List');
+    }
+    if (activeItem === 'dv-thong-tin') {
+      return t('Danh sách dịch vụ thông tin', 'Information Services List');
+    }
+    return t('Danh sách các dịch vụ trực tuyến', 'Online Service Registration List');
+  };
+
+  const getFilteredServices = () => {
+    if (activeItem === 'dv-hoc-vu') {
+      return services.filter(item => [1, 4, 5, 6, 10].includes(item.stt));
+    }
+    if (activeItem === 'dv-khao-thi') {
+      return services.filter(item => [7, 8, 9].includes(item.stt));
+    }
+    if (activeItem === 'dv-thong-tin') {
+      return services.filter(item => [2, 3, 11].includes(item.stt));
+    }
+    return services;
+  };
+
+  const displayServices = getFilteredServices();
 
   const handleRegisterClick = (service: ServiceItem) => {
     setValidationError('');
@@ -198,6 +403,17 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
     } else if (service.stt === 6) {
       setView('defer');
       resetDeferForm();
+    } else if (service.stt === 7) {
+      setActiveItem?.('dk-vang-thi');
+    } else if (service.stt === 8) {
+      setActiveItem?.('phuc-khao');
+    } else if (service.stt === 9) {
+      setActiveItem?.('dk-thi-lai');
+    } else if (service.stt === 10) {
+      setActiveItem?.('bao-luu-kqht');
+    } else if (service.stt === 11) {
+      setView('other-services');
+      resetOtherForm();
     } else {
       setSelectedService(service);
       setShowSuccessModal(false);
@@ -258,11 +474,8 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
     setDeferReason('');
     setDeferProposal('');
     setDeferPhone('');
-    setDeferDocName('');
     setDeferFileName('');
     setDeferSendMethod('Nhận trực tiếp tại phòng ĐVSV');
-    setDeferReceiveMethod('Nhận trực tiếp tại phòng ĐVSV');
-    setDeferAddress('');
   };
 
   const handleTeacherChange = (email: string) => {
@@ -320,7 +533,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
   const handleAttendanceSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!subject || !classCode || !date || !slot || !teacherAccount || !phone || !reason) {
-      setValidationError('Vui lòng điền đầy đủ các thông tin bắt buộc (*)');
+      setValidationError(t('Vui lòng điền đầy đủ các thông tin bắt buộc (*)', 'Please fill in all required fields (*)'));
       return;
     }
     setValidationError('');
@@ -354,7 +567,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
   const handleWithdrawSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!withdrawReason || !withdrawPhone) {
-      setValidationError('Vui lòng điền đầy đủ các thông tin bắt buộc (*)');
+      setValidationError(t('Vui lòng điền đầy đủ các thông tin bắt buộc (*)', 'Please fill in all required fields (*)'));
       return;
     }
     setValidationError('');
@@ -364,7 +577,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
   const handleRetakeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!retakeSubject || !retakeSlot || !retakeFallbackOption) {
-      setValidationError('Vui lòng điền đầy đủ các thông tin bắt buộc (*)');
+      setValidationError(t('Vui lòng điền đầy đủ các thông tin bắt buộc (*)', 'Please fill in all required fields (*)'));
       return;
     }
     setValidationError('');
@@ -373,12 +586,8 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
 
   const handleDeferSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!deferReturnDate || !deferReason || !deferProposal || !deferPhone || !deferDocName || !deferFileName) {
-      setValidationError('Vui lòng điền đầy đủ các thông tin bắt buộc (*)');
-      return;
-    }
-    if (deferReceiveMethod === 'Gửi chuyển phát nhanh về địa chỉ nhà' && !deferAddress) {
-      setValidationError('Vui lòng nhập địa chỉ nhận hồ sơ');
+    if (!deferReturnDate || !deferReason || !deferProposal || !deferPhone || !deferFileName) {
+      setValidationError(t('Vui lòng điền đầy đủ các thông tin bắt buộc (*)', 'Please fill in all required fields (*)'));
       return;
     }
     setValidationError('');
@@ -402,7 +611,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
         {view === 'list' && (
           <>
             {/* Page Title */}
-            <h2 className="services-section-title">{t('Danh sách các dịch vụ trực tuyến', 'Online Service Registration List')}</h2>
+            <h2 className="services-section-title">{getSectionTitle()}</h2>
 
             {/* Table Container */}
             <div className="services-table-wrapper">
@@ -416,9 +625,9 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {services.map((item) => (
+                  {displayServices.map((item, idx) => (
                     <tr key={item.stt} className="services-tr">
-                      <td className="services-td center services-td stt">{item.stt}</td>
+                      <td className="services-td center services-td stt">{idx + 1}</td>
                       <td className="services-td services-td task-name">{item.task}</td>
                       <td className="services-td services-td desc">
                         {item.desc || <span style={{ color: '#E2E8F0', fontStyle: 'italic' }}>—</span>}
@@ -454,12 +663,12 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
             {/* Navigation back */}
             <button onClick={() => setView('list')} className="recovery-back-btn">
               <ArrowLeft size={16} />
-              <span>Quay lại danh sách</span>
+              <span>{t('Quay lại danh sách', 'Back to list')}</span>
             </button>
 
             {/* Title Section */}
             <div className="recovery-title-section">
-              <h2 className="recovery-form-title">ĐĂNG KÝ KHÔI PHỤC ĐIỂM DANH</h2>
+              <h2 className="recovery-form-title">ĐĂNG KÝ NGHỈ BUỔI HỌC</h2>
               <p className="recovery-form-subtitle">
                 YOU ARE REQUIRED TO FULFILL BLANK BOXES BELOW TO FINISH YOUR REQUEST AND ATTACH SUPPORTING DOCUMENTS (IF ANY) BEFORE SUBMITTING THIS FORM
               </p>
@@ -470,15 +679,15 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                 <div className="recovery-success-icon-wrapper">
                   <CheckCircle2 size={48} className="text-emerald-500" />
                 </div>
-                <h3 className="recovery-success-title">Đăng ký dịch vụ thành công!</h3>
+                <h3 className="recovery-success-title">{t('Đăng ký dịch vụ thành công!', 'Service Registration Successful!')}</h3>
                 <p className="recovery-success-desc">
-                  Yêu cầu khôi phục điểm danh môn <strong>{subject}</strong> lớp <strong>{classCode}</strong> của bạn đã được ghi nhận thành công và gửi tới Ban Đào Tạo.
+                  Yêu cầu nghỉ buổi học môn <strong>{subject}</strong> lớp <strong>{classCode}</strong> của bạn đã được ghi nhận thành công và gửi tới Ban Đào Tạo.
                 </p>
                 <p className="recovery-success-notice">
                   ⚠️ Lưu ý: Vui lòng nhắc giảng viên <strong>{teacherName}</strong> xác nhận yêu cầu này để phòng đào tạo xử lý tiếp.
                 </p>
                 <button onClick={() => setView('list')} className="recovery-success-back-btn">
-                  Trở lại Dịch vụ trực tuyến
+                  {t('Trở lại Dịch vụ trực tuyến', 'Back to Online Services')}
                 </button>
               </div>
             ) : (
@@ -495,24 +704,24 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                 {/* Top Info Grid */}
                 <div className="recovery-summary-grid">
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">DỊCH VỤ</div>
-                    <div className="recovery-summary-badge">Đăng ký khôi phục điểm danh</div>
+                    <div className="recovery-summary-label">{t('DỊCH VỤ', 'SERVICE')}</div>
+                    <div className="recovery-summary-badge">Đăng ký nghỉ buổi học</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">KỲ ĐỢT DỊCH VỤ:</div>
+                    <div className="recovery-summary-label">{t('KỲ ĐỢT DỊCH VỤ:', 'SERVICE PERIOD:')}</div>
                     <div className="recovery-summary-value-box">FALL 2023</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">TRẠNG THÁI SINH VIÊN</div>
-                    <div className="recovery-summary-value-box">HL</div>
+                    <div className="recovery-summary-label">{t('TRẠNG THÁI SINH VIÊN', 'STUDENT STATUS')}</div>
+                    <div className="recovery-summary-value-box">CNTT2</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">SỐ DƯ</div>
-                    <div className="recovery-summary-value-box">VND 0 đ</div>
+                    <div className="recovery-summary-label">{t('SỐ DƯ', 'BALANCE')}</div>
+                    <div className="recovery-summary-value-box">{t('VND 0 đ', 'VND 0')}</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">NGÀNH HỌC</div>
-                    <div className="recovery-summary-value-box">Lập trình máy tính</div>
+                    <div className="recovery-summary-label">{t('NGÀNH HỌC', 'MAJOR')}</div>
+                    <div className="recovery-summary-value-box">{t('Lập trình máy tính', 'Computer Programming')}</div>
                   </div>
                 </div>
 
@@ -633,14 +842,14 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   {/* Row 7: Số điện thoại */}
                   <div className="recovery-field-row">
                     <div className="recovery-field-label">
-                      <span className="bullet-circle">o</span> Số điện thoại (*)
+                      <span className="bullet-circle">o</span> {t('Số điện thoại (*)', 'Phone Number (*)')}
                     </div>
                     <div className="recovery-field-input-wrapper">
                       <input 
                         type="tel" 
                         value={phone} 
                         onChange={(e) => setPhone(e.target.value)} 
-                        placeholder="Nhập số điện thoại của bạn"
+                        placeholder={t('Nhập số điện thoại của bạn', 'Enter your phone number')}
                         className="recovery-input-element"
                       />
                     </div>
@@ -655,7 +864,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                       <textarea 
                         value={reason} 
                         onChange={(e) => setReason(e.target.value.slice(0, 500))} 
-                        placeholder="Vui lòng ghi rõ yêu cầu cần xử lý"
+                        placeholder={t('Vui lòng ghi rõ yêu cầu cần xử lý', 'Please specify your request details')}
                         className="recovery-textarea-element"
                       />
                       <div className="recovery-char-counter">
@@ -667,7 +876,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   {/* Row 9: Phí dịch vụ */}
                   <div className="recovery-field-row">
                     <div className="recovery-field-label">
-                      <span className="bullet-circle">o</span> Phí dịch vụ
+                      <span className="bullet-circle">o</span> {t('Phí dịch vụ', 'Service Fee')}
                     </div>
                     <div className="recovery-field-input-wrapper">
                       <input 
@@ -682,7 +891,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   {/* Row 10: Tài liệu đính kèm */}
                   <div className="recovery-field-row" style={{ borderBottom: 'none' }}>
                     <div className="recovery-field-label">
-                      <span className="bullet-circle">o</span> Tài liệu đính kèm
+                      <span className="bullet-circle">o</span> {t('Tài liệu đính kèm', 'Attachments')}
                     </div>
                     <div className="recovery-field-input-wrapper">
                       <div className="recovery-file-upload-container">
@@ -710,16 +919,13 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                 {/* Important Notes */}
                 <div className="recovery-notes-box">
                   <div className="recovery-notes-title">Lưu ý:</div>
-                  <ul className="recovery-notes-list">
-                    <li>1. Sinh viên chỉ được đăng ký 1 lần/ môn/ kỳ trong vòng 2 ngày kể từ khi không được điểm danh.</li>
-                    <li>2. Khi đăng ký dịch vụ thành công, bạn vui lòng nhắc giảng viên xác nhận để phòng đào tạo xử lý tiếp.</li>
-                  </ul>
+                  <div style={{ minHeight: '24px' }}></div>
                 </div>
 
                 {/* Action Buttons */}
                 <div className="recovery-form-actions">
                   <button type="submit" className="recovery-btn-submit">
-                    SUBMIT
+                    {t('SUBMIT', 'SUBMIT')}
                   </button>
                 </div>
 
@@ -736,7 +942,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
             {/* Navigation back */}
             <button onClick={() => setView('list')} className="recovery-back-btn">
               <ArrowLeft size={16} />
-              <span>Quay lại danh sách</span>
+              <span>{t('Quay lại danh sách', 'Back to list')}</span>
             </button>
 
             {/* Title Section */}
@@ -760,7 +966,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   ⚠️ Lưu ý: Kết quả xử lý thẻ sinh viên sẽ được phòng ĐVSV cập nhật. Vui lòng chuẩn bị lệ phí khi nhận thẻ.
                 </p>
                 <button onClick={() => setView('list')} className="recovery-success-back-btn">
-                  Trở lại Dịch vụ trực tuyến
+                  {t('Trở lại Dịch vụ trực tuyến', 'Back to Online Services')}
                 </button>
               </div>
             ) : (
@@ -786,15 +992,15 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   </div>
                   <div className="recovery-summary-item">
                     <div className="recovery-summary-label">TÌNH THÁI SINH VIÊN</div>
-                    <div className="recovery-summary-value-box">HL</div>
+                    <div className="recovery-summary-value-box">CNTT2</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">SỐ DƯ</div>
-                    <div className="recovery-summary-value-box">VND 0 đ</div>
+                    <div className="recovery-summary-label">{t('SỐ DƯ', 'BALANCE')}</div>
+                    <div className="recovery-summary-value-box">{t('VND 0 đ', 'VND 0')}</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">NGÀNH HỌC</div>
-                    <div className="recovery-summary-value-box">Lập trình máy tính</div>
+                    <div className="recovery-summary-label">{t('NGÀNH HỌC', 'MAJOR')}</div>
+                    <div className="recovery-summary-value-box">{t('Lập trình máy tính', 'Computer Programming')}</div>
                   </div>
                 </div>
 
@@ -936,7 +1142,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
             {/* Navigation back */}
             <button onClick={() => setView('list')} className="recovery-back-btn">
               <ArrowLeft size={16} />
-              <span>Quay lại danh sách</span>
+              <span>{t('Quay lại danh sách', 'Back to list')}</span>
             </button>
 
             {/* Title Section */}
@@ -960,7 +1166,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   ⚠️ Lưu ý: Ban đào tạo sẽ liên hệ với bạn qua email/điện thoại nếu cần đối chiếu tài liệu gốc.
                 </p>
                 <button onClick={() => setView('list')} className="recovery-success-back-btn">
-                  Trở lại Dịch vụ trực tuyến
+                  {t('Trở lại Dịch vụ trực tuyến', 'Back to Online Services')}
                 </button>
               </div>
             ) : (
@@ -977,24 +1183,24 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                 {/* Top Info Grid */}
                 <div className="recovery-summary-grid">
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">DỊCH VỤ</div>
+                    <div className="recovery-summary-label">{t('DỊCH VỤ', 'SERVICE')}</div>
                     <div className="recovery-summary-badge">Đăng ký thay đổi thông tin</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">KỲ ĐỢT DỊCH VỤ:</div>
+                    <div className="recovery-summary-label">{t('KỲ ĐỢT DỊCH VỤ:', 'SERVICE PERIOD:')}</div>
                     <div className="recovery-summary-value-box">FALL 2023</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">TRẠNG THÁI SINH VIÊN</div>
-                    <div className="recovery-summary-value-box">HL</div>
+                    <div className="recovery-summary-label">{t('TRẠNG THÁI SINH VIÊN', 'STUDENT STATUS')}</div>
+                    <div className="recovery-summary-value-box">CNTT2</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">SỐ DƯ</div>
-                    <div className="recovery-summary-value-box">VND 0 đ</div>
+                    <div className="recovery-summary-label">{t('SỐ DƯ', 'BALANCE')}</div>
+                    <div className="recovery-summary-value-box">{t('VND 0 đ', 'VND 0')}</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">NGÀNH HỌC</div>
-                    <div className="recovery-summary-value-box">Lập trình máy tính</div>
+                    <div className="recovery-summary-label">{t('NGÀNH HỌC', 'MAJOR')}</div>
+                    <div className="recovery-summary-value-box">{t('Lập trình máy tính', 'Computer Programming')}</div>
                   </div>
                 </div>
 
@@ -1103,7 +1309,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                       <textarea 
                         value={changeNotes} 
                         onChange={(e) => setChangeNotes(e.target.value.slice(0, 500))} 
-                        placeholder="Vui lòng ghi rõ yêu cầu cần xử lý"
+                        placeholder={t('Vui lòng ghi rõ yêu cầu cần xử lý', 'Please specify your request details')}
                         className="recovery-textarea-element"
                       />
                       <div className="recovery-char-counter">
@@ -1115,7 +1321,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   {/* Row 2: Phí dịch vụ */}
                   <div className="recovery-field-row">
                     <div className="recovery-field-label">
-                      <span className="bullet-circle">o</span> Phí dịch vụ
+                      <span className="bullet-circle">o</span> {t('Phí dịch vụ', 'Service Fee')}
                     </div>
                     <div className="recovery-field-input-wrapper">
                       <input 
@@ -1130,7 +1336,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   {/* Row 3: Tài liệu đính kèm */}
                   <div className="recovery-field-row" style={{ borderBottom: 'none' }}>
                     <div className="recovery-field-label">
-                      <span className="bullet-circle">o</span> Tài liệu đính kèm
+                      <span className="bullet-circle">o</span> {t('Tài liệu đính kèm', 'Attachments')}
                     </div>
                     <div className="recovery-field-input-wrapper">
                       <div className="recovery-file-upload-container">
@@ -1158,7 +1364,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                 {/* Action Buttons */}
                 <div className="recovery-form-actions">
                   <button type="submit" className="recovery-btn-submit">
-                    SUBMIT
+                    {t('SUBMIT', 'SUBMIT')}
                   </button>
                 </div>
 
@@ -1175,7 +1381,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
             {/* Navigation back */}
             <button onClick={() => setView('list')} className="recovery-back-btn">
               <ArrowLeft size={16} />
-              <span>Quay lại danh sách</span>
+              <span>{t('Quay lại danh sách', 'Back to list')}</span>
             </button>
 
             {/* Title Section */}
@@ -1199,7 +1405,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   ⚠️ Lưu ý: Quá trình rút hồ sơ và thôi học có thể mất vài ngày làm việc. Phòng ĐVSV sẽ liên hệ trực tiếp với bạn và phụ huynh để xác nhận thông tin.
                 </p>
                 <button onClick={() => setView('list')} className="recovery-success-back-btn">
-                  Trở lại Dịch vụ trực tuyến
+                  {t('Trở lại Dịch vụ trực tuyến', 'Back to Online Services')}
                 </button>
               </div>
             ) : (
@@ -1216,24 +1422,24 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                 {/* Top Info Grid */}
                 <div className="recovery-summary-grid">
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">DỊCH VỤ</div>
+                    <div className="recovery-summary-label">{t('DỊCH VỤ', 'SERVICE')}</div>
                     <div className="recovery-summary-badge">Đăng ký thôi học</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">KỲ ĐỢT DỊCH VỤ:</div>
+                    <div className="recovery-summary-label">{t('KỲ ĐỢT DỊCH VỤ:', 'SERVICE PERIOD:')}</div>
                     <div className="recovery-summary-value-box">FALL 2023</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">TRẠNG THÁI SINH VIÊN</div>
-                    <div className="recovery-summary-value-box">HL</div>
+                    <div className="recovery-summary-label">{t('TRẠNG THÁI SINH VIÊN', 'STUDENT STATUS')}</div>
+                    <div className="recovery-summary-value-box">CNTT2</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">SỐ DƯ</div>
-                    <div className="recovery-summary-value-box">VND 0 đ</div>
+                    <div className="recovery-summary-label">{t('SỐ DƯ', 'BALANCE')}</div>
+                    <div className="recovery-summary-value-box">{t('VND 0 đ', 'VND 0')}</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">NGÀNH HỌC</div>
-                    <div className="recovery-summary-value-box">Lập trình máy tính</div>
+                    <div className="recovery-summary-label">{t('NGÀNH HỌC', 'MAJOR')}</div>
+                    <div className="recovery-summary-value-box">{t('Lập trình máy tính', 'Computer Programming')}</div>
                   </div>
                 </div>
 
@@ -1279,7 +1485,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   {/* Row 3: Số điện thoại */}
                   <div className="recovery-field-row">
                     <div className="recovery-field-label">
-                      <span className="bullet-circle">o</span> Số điện thoại (*)
+                      <span className="bullet-circle">o</span> {t('Số điện thoại (*)', 'Phone Number (*)')}
                     </div>
                     <div className="recovery-field-input-wrapper">
                       <input 
@@ -1295,7 +1501,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   {/* Row 4: Phí dịch vụ */}
                   <div className="recovery-field-row">
                     <div className="recovery-field-label">
-                      <span className="bullet-circle">o</span> Phí dịch vụ
+                      <span className="bullet-circle">o</span> {t('Phí dịch vụ', 'Service Fee')}
                     </div>
                     <div className="recovery-field-input-wrapper">
                       <input 
@@ -1310,7 +1516,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   {/* Row 5: Tài liệu đính kèm */}
                   <div className="recovery-field-row" style={{ borderBottom: 'none' }}>
                     <div className="recovery-field-label">
-                      <span className="bullet-circle">o</span> Tài liệu đính kèm
+                      <span className="bullet-circle">o</span> {t('Tài liệu đính kèm', 'Attachments')}
                     </div>
                     <div className="recovery-field-input-wrapper">
                       <div className="recovery-file-upload-container">
@@ -1338,7 +1544,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                 {/* Action Buttons */}
                 <div className="recovery-form-actions">
                   <button type="submit" className="recovery-btn-submit">
-                    SUBMIT
+                    {t('SUBMIT', 'SUBMIT')}
                   </button>
                 </div>
 
@@ -1355,7 +1561,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
             {/* Navigation back */}
             <button onClick={() => setView('list')} className="recovery-back-btn">
               <ArrowLeft size={16} />
-              <span>Quay lại danh sách</span>
+              <span>{t('Quay lại danh sách', 'Back to list')}</span>
             </button>
 
             {/* Title Section */}
@@ -1379,7 +1585,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   ⚠️ Lưu ý: Trong trường hợp bạn đã thanh toán nhưng trạng thái đơn chưa đổi sang "Đã thanh toán", vui lòng nhấn nút "Kiểm tra thanh toán" tại trang Dịch vụ đã đăng ký.
                 </p>
                 <button onClick={() => setView('list')} className="recovery-success-back-btn">
-                  Trở lại Dịch vụ trực tuyến
+                  {t('Trở lại Dịch vụ trực tuyến', 'Back to Online Services')}
                 </button>
               </div>
             ) : (
@@ -1396,24 +1602,24 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                 {/* Top Info Grid */}
                 <div className="recovery-summary-grid">
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">DỊCH VỤ</div>
+                    <div className="recovery-summary-label">{t('DỊCH VỤ', 'SERVICE')}</div>
                     <div className="recovery-summary-badge">Đăng ký học lại</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">KỲ ĐỢT DỊCH VỤ:</div>
+                    <div className="recovery-summary-label">{t('KỲ ĐỢT DỊCH VỤ:', 'SERVICE PERIOD:')}</div>
                     <div className="recovery-summary-value-box">SUMMER 2026</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">TRẠNG THÁI SINH VIÊN</div>
-                    <div className="recovery-summary-value-box">HL</div>
+                    <div className="recovery-summary-label">{t('TRẠNG THÁI SINH VIÊN', 'STUDENT STATUS')}</div>
+                    <div className="recovery-summary-value-box">CNTT2</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">SỐ DƯ</div>
-                    <div className="recovery-summary-value-box">VND 0 đ</div>
+                    <div className="recovery-summary-label">{t('SỐ DƯ', 'BALANCE')}</div>
+                    <div className="recovery-summary-value-box">{t('VND 0 đ', 'VND 0')}</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">NGÀNH HỌC</div>
-                    <div className="recovery-summary-value-box">Lập trình máy tính</div>
+                    <div className="recovery-summary-label">{t('NGÀNH HỌC', 'MAJOR')}</div>
+                    <div className="recovery-summary-value-box">{t('Lập trình máy tính', 'Computer Programming')}</div>
                   </div>
                 </div>
 
@@ -1619,7 +1825,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
             {/* Navigation back */}
             <button onClick={() => setView('list')} className="recovery-back-btn">
               <ArrowLeft size={16} />
-              <span>Quay lại danh sách</span>
+              <span>{t('Quay lại danh sách', 'Back to list')}</span>
             </button>
 
             {/* Title Section */}
@@ -1643,7 +1849,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   ⚠️ Lưu ý: Hồ sơ bản cứng (sao y công chứng) cần phải nộp trực tiếp hoặc gửi qua bưu điện cho phòng ĐVSV trong vòng 72 giờ để hoàn tất yêu cầu.
                 </p>
                 <button onClick={() => setView('list')} className="recovery-success-back-btn">
-                  Trở lại Dịch vụ trực tuyến
+                  {t('Trở lại Dịch vụ trực tuyến', 'Back to Online Services')}
                 </button>
               </div>
             ) : (
@@ -1660,24 +1866,24 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                 {/* Top Info Grid */}
                 <div className="recovery-summary-grid">
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">DỊCH VỤ</div>
+                    <div className="recovery-summary-label">{t('DỊCH VỤ', 'SERVICE')}</div>
                     <div className="recovery-summary-badge">Đăng ký tạm thời nghỉ học dài hạn</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">KỲ ĐỢT DỊCH VỤ:</div>
+                    <div className="recovery-summary-label">{t('KỲ ĐỢT DỊCH VỤ:', 'SERVICE PERIOD:')}</div>
                     <div className="recovery-summary-value-box">FALL 2025</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">TRẠNG THÁI SINH VIÊN</div>
-                    <div className="recovery-summary-value-box">HL</div>
+                    <div className="recovery-summary-label">{t('TRẠNG THÁI SINH VIÊN', 'STUDENT STATUS')}</div>
+                    <div className="recovery-summary-value-box">CNTT2</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">SỐ DƯ</div>
-                    <div className="recovery-summary-value-box">VND 0 đ</div>
+                    <div className="recovery-summary-label">{t('SỐ DƯ', 'BALANCE')}</div>
+                    <div className="recovery-summary-value-box">{t('VND 0 đ', 'VND 0')}</div>
                   </div>
                   <div className="recovery-summary-item">
-                    <div className="recovery-summary-label">NGÀNH HỌC</div>
-                    <div className="recovery-summary-value-box">Lập trình máy tính</div>
+                    <div className="recovery-summary-label">{t('NGÀNH HỌC', 'MAJOR')}</div>
+                    <div className="recovery-summary-value-box">{t('Lập trình máy tính', 'Computer Programming')}</div>
                   </div>
                 </div>
 
@@ -1703,10 +1909,10 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                     </div>
                   </div>
 
-                  {/* Row 2: Thời gian mong muốn quay lại hoàn thành môn */}
+                  {/* Row 2: Thời gian mong muốn quay lại */}
                   <div className="recovery-field-row">
                     <div className="recovery-field-label">
-                      <span className="bullet-circle">o</span> Thời gian mong muốn quay lại hoàn thành môn (*)
+                      <span className="bullet-circle">o</span> Thời gian mong muốn quay lại (*)
                     </div>
                     <div className="recovery-field-input-wrapper">
                       <input 
@@ -1728,7 +1934,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                       <textarea 
                         value={deferReason} 
                         onChange={(e) => setDeferReason(e.target.value.slice(0, 500))} 
-                        placeholder="Vui lòng ghi rõ yêu cầu cần xử lý"
+                        placeholder={t('Vui lòng ghi rõ yêu cầu cần xử lý', 'Please specify your request details')}
                         className="recovery-textarea-element"
                       />
                       <div className="recovery-char-counter">
@@ -1746,7 +1952,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                       <textarea 
                         value={deferProposal} 
                         onChange={(e) => setDeferProposal(e.target.value.slice(0, 500))} 
-                        placeholder="Vui lòng ghi rõ yêu cầu cần xử lý"
+                        placeholder={t('Vui lòng ghi rõ yêu cầu cần xử lý', 'Please specify your request details')}
                         className="recovery-textarea-element"
                       />
                       <div className="recovery-char-counter">
@@ -1758,7 +1964,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                   {/* Row 5: Số điện thoại */}
                   <div className="recovery-field-row">
                     <div className="recovery-field-label">
-                      <span className="bullet-circle">o</span> Số điện thoại (*)
+                      <span className="bullet-circle">o</span> {t('Số điện thoại (*)', 'Phone Number (*)')}
                     </div>
                     <div className="recovery-field-input-wrapper">
                       <input 
@@ -1771,21 +1977,7 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                     </div>
                   </div>
 
-                  {/* Row 6: Tên hồ sơ */}
-                  <div className="recovery-field-row">
-                    <div className="recovery-field-label">
-                      <span className="bullet-circle">o</span> Tên hồ sơ (*)
-                    </div>
-                    <div className="recovery-field-input-wrapper">
-                      <textarea 
-                        value={deferDocName} 
-                        onChange={(e) => setDeferDocName(e.target.value)} 
-                        placeholder="(Ví dụ: Hồ sơ bệnh án...)"
-                        className="recovery-textarea-element"
-                        style={{ minHeight: '60px' }}
-                      />
-                    </div>
-                  </div>
+
 
                   {/* Row 7: File đính kèm */}
                   <div className="recovery-field-row" style={{ alignItems: 'flex-start' }}>
@@ -1845,44 +2037,12 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                     </div>
                   </div>
 
-                  {/* Row 9: Hình thức nhận kết quả */}
-                  <div className="recovery-field-row">
-                    <div className="recovery-field-label">
-                      <span className="bullet-circle">o</span> Hình thức nhận kết quả (*)
-                    </div>
-                    <div className="recovery-field-input-wrapper">
-                      <select 
-                        value={deferReceiveMethod} 
-                        onChange={(e) => setDeferReceiveMethod(e.target.value)} 
-                        className="recovery-select-element"
-                      >
-                        <option value="Nhận trực tiếp tại phòng ĐVSV">Nhận trực tiếp tại phòng ĐVSV</option>
-                        <option value="Gửi chuyển phát nhanh về địa chỉ nhà">Gửi chuyển phát nhanh về địa chỉ nhà</option>
-                      </select>
-                    </div>
-                  </div>
 
-                  {/* Row 10: Địa chỉ nhận */}
-                  <div className="recovery-field-row">
-                    <div className="recovery-field-label">
-                      <span className="bullet-circle">o</span> Địa chỉ nhận
-                    </div>
-                    <div className="recovery-field-input-wrapper">
-                      <textarea 
-                        value={deferAddress} 
-                        onChange={(e) => setDeferAddress(e.target.value)} 
-                        placeholder="Nhập địa chỉ nhận kết quả (Chỉ áp dụng nếu nhận qua Chuyển phát nhanh)"
-                        disabled={deferReceiveMethod === 'Nhận trực tiếp tại phòng ĐVSV'}
-                        className={`recovery-textarea-element ${deferReceiveMethod === 'Nhận trực tiếp tại phòng ĐVSV' ? 'disabled-bg' : ''}`}
-                        style={{ minHeight: '60px' }}
-                      />
-                    </div>
-                  </div>
 
                   {/* Row 11: Phí dịch vụ */}
                   <div className="recovery-field-row" style={{ borderBottom: 'none' }}>
                     <div className="recovery-field-label">
-                      <span className="bullet-circle">o</span> Phí dịch vụ
+                      <span className="bullet-circle">o</span> {t('Phí dịch vụ', 'Service Fee')}
                     </div>
                     <div className="recovery-field-input-wrapper">
                       <input 
@@ -1899,7 +2059,1416 @@ export const OnlineServices = ({ lang }: OnlineServicesProps) => {
                 {/* Action Buttons */}
                 <div className="recovery-form-actions">
                   <button type="submit" className="recovery-btn-submit">
-                    SUBMIT
+                    {t('SUBMIT', 'SUBMIT')}
+                  </button>
+                </div>
+
+              </form>
+            )}
+
+          </div>
+        )}
+
+        {/* Form 1: Đăng ký vắng thi */}
+        {view === 'dk-vang-thi' && (
+          <div className="recovery-form-wrapper" style={{ animation: 'fadeIn 0.5s ease' }}>
+            <button onClick={() => setActiveItem?.('dv-khao-thi')} className="recovery-back-btn">
+              <ArrowLeft size={16} />
+              <span>{t('Quay lại danh sách', 'Back to list')}</span>
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', textAlign: 'left' }}>
+              <div style={{
+                backgroundColor: '#2563EB',
+                color: '#FFFFFF',
+                width: '40px',
+                height: '40px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+              }}>
+                <ClipboardList size={22} />
+              </div>
+              <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#1E293B', margin: 0, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                Đăng ký vắng thi
+              </h2>
+            </div>
+
+            {submitSuccess ? (
+              <div className="recovery-success-box" style={{ textAlign: 'center', padding: '32px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px' }}>
+                <div className="recovery-success-icon-wrapper" style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                  <CheckCircle2 size={56} className="text-emerald-500" />
+                </div>
+                <h3 className="recovery-success-title" style={{ fontSize: '20px', fontWeight: '800', color: '#0F172A', marginBottom: '8px' }}>
+                  Đăng ký vắng thi thành công!
+                </h3>
+                <p className="recovery-success-desc" style={{ color: '#475569', fontSize: '14.5px', marginBottom: '20px' }}>
+                  Đơn xin vắng thi môn <strong>{vtSubject}</strong> ngày <strong>{vtDate}</strong> của bạn đã được gửi đến Nhà trường xem xét xử lý.
+                </p>
+                <button onClick={() => { setSubmitSuccess(false); setActiveItem?.('dv-khao-thi'); }} className="recovery-success-back-btn" style={{ backgroundColor: '#2563EB', color: '#FFFFFF', border: 'none', padding: '10px 24px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>
+                  {t('Trở lại Dịch vụ trực tuyến', 'Back to Online Services')}
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleVangThiSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {validationError && (
+                  <div className="recovery-validation-banner" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 16px', backgroundColor: '#FEF2F2', borderLeft: '4px solid #EF4444', borderRadius: '4px', color: '#991B1B', fontSize: '13.5px' }}>
+                    <AlertCircle size={18} />
+                    <span>{validationError}</span>
+                  </div>
+                )}
+
+                <div style={{
+                  display: 'flex',
+                  gap: '12px',
+                  padding: '16px 20px',
+                  backgroundColor: '#F0F7FF',
+                  border: '1px solid #D0E7FF',
+                  borderRadius: '8px',
+                  color: '#1E3A8A',
+                  textAlign: 'left'
+                }}>
+                  <div style={{ color: '#2563EB', flexShrink: 0, marginTop: '2px' }}>
+                    <AlertCircle size={18} />
+                  </div>
+                  <div>
+                    <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 'bold' }}>Thông tin</h4>
+                    <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.5, color: '#1E3A8A' }}>
+                      Dành cho sinh viên không thể tham dự kỳ thi theo lịch do lý do chính đáng.<br />
+                      Sinh viên cần cung cấp lý do và minh chứng (nếu có) để Nhà trường xem xét xử lý theo quy định.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #E2E8F0',
+                  borderRadius: '8px',
+                  padding: '32px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '24px',
+                  textAlign: 'left'
+                }}>
+                  
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      1. Chọn môn học <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px' }}>
+                      <select 
+                        value={vtSubject}
+                        onChange={(e) => setVtSubject(e.target.value)}
+                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#1E293B', outline: 'none' }}
+                      >
+                        <option value="CT313 - Cấu trúc dữ liệu và giải thuật">CT313 - Cấu trúc dữ liệu và giải thuật</option>
+                        {SUBJECTS.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      2. Ngày thi <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px' }}>
+                      <input 
+                        type="date"
+                        value={vtDate}
+                        onChange={(e) => setVtDate(e.target.value)}
+                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#1E293B', outline: 'none', fontFamily: 'inherit' }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      3. Ca thi
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px' }}>
+                      <select 
+                        value={vtSlot}
+                        onChange={(e) => setVtSlot(e.target.value)}
+                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#1E293B', outline: 'none' }}
+                      >
+                        <option value="Ca 1 (07:30 - 09:30)">Ca 1 (07:30 - 09:30)</option>
+                        <option value="Ca 2 (09:40 - 11:40)">Ca 2 (09:40 - 11:40)</option>
+                        <option value="Ca 3 (12:30 - 14:30)">Ca 3 (12:30 - 14:30)</option>
+                        <option value="Ca 4 (14:40 - 16:40)">Ca 4 (14:40 - 16:40)</option>
+                        <option value="Ca 5 (17:00 - 19:00)">Ca 5 (17:00 - 19:00)</option>
+                        <option value="Ca 6 (19:10 - 21:10)">Ca 6 (19:10 - 21:10)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      4. Lý do vắng thi <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <textarea 
+                        value={vtReason}
+                        onChange={(e) => setVtReason(e.target.value.slice(0, 500))}
+                        maxLength={500}
+                        style={{ width: '100%', minHeight: '100px', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#1E293B', outline: 'none', fontFamily: 'inherit', resize: 'vertical' }}
+                      />
+                      <span style={{ alignSelf: 'flex-end', fontSize: '11px', color: '#64748B' }}>
+                        {vtReason.length}/500
+                      </span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      5. Tài liệu đính kèm (nếu có)
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      
+                      {!vtFileAttached ? (
+                        <div 
+                          onClick={() => setVtFileAttached(true)}
+                          style={{
+                            border: '2px dashed #E2E8F0',
+                            borderRadius: '8px',
+                            padding: '24px',
+                            textAlign: 'center',
+                            cursor: 'pointer',
+                            backgroundColor: '#FAFAFA',
+                            transition: 'border-color 0.2s',
+                          }}
+                          onMouseOver={(e) => e.currentTarget.style.borderColor = '#3B82F6'}
+                          onMouseOut={(e) => e.currentTarget.style.borderColor = '#E2E8F0'}
+                        >
+                          <Upload size={24} style={{ color: '#64748B', marginBottom: '8px', margin: '0 auto' }} />
+                          <p style={{ margin: '0 0 4px 0', fontSize: '13px', color: '#475569' }}>
+                            Kéo thả file vào đây hoặc <span style={{ color: '#2563EB', fontWeight: '600' }}>chọn file</span>
+                          </p>
+                          <span style={{ fontSize: '11px', color: '#94A3B8' }}>
+                            Định dạng: PDF, JPG, PNG (Tối đa 5MB)
+                          </span>
+                        </div>
+                      ) : (
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '12px 16px',
+                          border: '1px solid #E2E8F0',
+                          borderRadius: '8px',
+                          backgroundColor: '#F8FAFC'
+                        }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ color: '#64748B' }}>
+                              <FileText size={20} />
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                              <span style={{ fontSize: '13px', fontWeight: '600', color: '#1E293B' }}>{vtFileName}</span>
+                              <span style={{ fontSize: '11px', color: '#64748B' }}>{vtFileSize}</span>
+                            </div>
+                          </div>
+                          <button 
+                            type="button"
+                            onClick={() => setVtFileAttached(false)}
+                            style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer', padding: '4px' }}
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      )}
+
+                    </div>
+                  </div>
+
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '12px' }}>
+                  <button 
+                    type="button" 
+                    onClick={() => { resetVangThiForm(); setActiveItem?.('dv-khao-thi'); }}
+                    style={{
+                      padding: '10px 32px',
+                      backgroundColor: '#FFFFFF',
+                      border: '1px solid #CBD5E1',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#475569',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Hủy bỏ
+                  </button>
+                  <button 
+                    type="submit"
+                    style={{
+                      padding: '10px 32px',
+                      backgroundColor: '#2563EB',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#FFFFFF',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+                    }}
+                  >
+                    Gửi đăng ký
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        )}
+
+        {/* Form 2: Đăng ký phúc khảo */}
+        {view === 'phuc-khao' && (
+          <div className="recovery-form-wrapper" style={{ animation: 'fadeIn 0.5s ease' }}>
+            <button onClick={() => setActiveItem?.('dv-khao-thi')} className="recovery-back-btn">
+              <ArrowLeft size={16} />
+              <span>{t('Quay lại danh sách', 'Back to list')}</span>
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', textAlign: 'left' }}>
+              <div style={{
+                backgroundColor: '#2563EB',
+                color: '#FFFFFF',
+                width: '40px',
+                height: '40px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+              }}>
+                <ClipboardList size={22} />
+              </div>
+              <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#1E293B', margin: 0, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                Đăng ký phúc khảo
+              </h2>
+            </div>
+
+            {submitSuccess ? (
+              <div className="recovery-success-box" style={{ textAlign: 'center', padding: '32px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px' }}>
+                <div className="recovery-success-icon-wrapper" style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                  <CheckCircle2 size={56} className="text-emerald-500" />
+                </div>
+                <h3 className="recovery-success-title" style={{ fontSize: '20px', fontWeight: '800', color: '#0F172A', marginBottom: '8px' }}>
+                  Đăng ký phúc khảo thành công!
+                </h3>
+                <p className="recovery-success-desc" style={{ color: '#475569', fontSize: '14.5px', marginBottom: '20px' }}>
+                  Yêu cầu phúc khảo môn <strong>{pkSubject}</strong> ({pkSemester}) điểm hiện tại: <strong>{pkScore}</strong> của bạn đã được ghi nhận.
+                </p>
+                <button onClick={() => { setSubmitSuccess(false); setActiveItem?.('dv-khao-thi'); }} className="recovery-success-back-btn" style={{ backgroundColor: '#2563EB', color: '#FFFFFF', border: 'none', padding: '10px 24px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>
+                  {t('Trở lại Dịch vụ trực tuyến', 'Back to Online Services')}
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handlePhucKhaoSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {validationError && (
+                  <div className="recovery-validation-banner" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 16px', backgroundColor: '#FEF2F2', borderLeft: '4px solid #EF4444', borderRadius: '4px', color: '#991B1B', fontSize: '13.5px' }}>
+                    <AlertCircle size={18} />
+                    <span>{validationError}</span>
+                  </div>
+                )}
+
+                <div style={{
+                  display: 'flex',
+                  gap: '12px',
+                  padding: '16px 20px',
+                  backgroundColor: '#F0F7FF',
+                  border: '1px solid #D0E7FF',
+                  borderRadius: '8px',
+                  color: '#1E3A8A',
+                  textAlign: 'left'
+                }}>
+                  <div style={{ color: '#2563EB', flexShrink: 0, marginTop: '2px' }}>
+                    <AlertCircle size={18} />
+                  </div>
+                  <div>
+                    <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 'bold' }}>Thông tin</h4>
+                    <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.5, color: '#1E3A8A' }}>
+                      Dành cho sinh viên có nhu cầu đề nghị Nhà trường kiểm tra, rà soát lại kết quả điểm thi đã công bố.<br />
+                      Sinh viên vui lòng thanh toán <strong>50.000đ</strong> phí phúc khảo. Nhà trường sẽ chỉ tiếp nhận và xử lý hồ sơ sau khi xác nhận thanh toán.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #E2E8F0',
+                  borderRadius: '8px',
+                  padding: '32px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '24px',
+                  textAlign: 'left'
+                }}>
+                  
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      1. Chọn học kỳ <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px' }}>
+                      <select 
+                        value={pkSemester}
+                        onChange={(e) => setPkSemester(e.target.value)}
+                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#1E293B', outline: 'none' }}
+                      >
+                        <option value="Học kỳ 2 - Năm học 2024 - 2025">Học kỳ 2 - Năm học 2024 - 2025</option>
+                        <option value="Học kỳ 1 - Năm học 2024 - 2025">Học kỳ 1 - Năm học 2024 - 2025</option>
+                        <option value="Học kỳ 3 - Năm học 2023 - 2024">Học kỳ 3 - Năm học 2023 - 2024</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      2. Chọn môn học <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px' }}>
+                      <select 
+                        value={pkSubject}
+                        onChange={(e) => setPkSubject(e.target.value)}
+                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#1E293B', outline: 'none' }}
+                      >
+                        <option value="CT313 - Cấu trúc dữ liệu và giải thuật">CT313 - Cấu trúc dữ liệu và giải thuật</option>
+                        {SUBJECTS.filter(s => !s.includes('CT313')).map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      3. Điểm hiện tại <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px' }}>
+                      <input 
+                        type="text"
+                        value={pkScore}
+                        onChange={(e) => setPkScore(e.target.value)}
+                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#1E293B', outline: 'none' }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      4. Nội dung đề nghị phúc khảo <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <textarea 
+                        value={pkContent}
+                        onChange={(e) => setPkContent(e.target.value.slice(0, 500))}
+                        maxLength={500}
+                        style={{ width: '100%', minHeight: '100px', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#1E293B', outline: 'none', fontFamily: 'inherit', resize: 'vertical' }}
+                      />
+                      <span style={{ alignSelf: 'flex-end', fontSize: '11px', color: '#64748B' }}>
+                        {pkContent.length}/500
+                      </span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      5. Ghi chú bổ sung
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <textarea 
+                        value={pkNote}
+                        onChange={(e) => setPkNote(e.target.value.slice(0, 300))}
+                        maxLength={300}
+                        placeholder="Nhập thông tin bổ sung (nếu có)"
+                        style={{ width: '100%', minHeight: '80px', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#1E293B', outline: 'none', fontFamily: 'inherit', resize: 'vertical' }}
+                      />
+                      <span style={{ alignSelf: 'flex-end', fontSize: '11px', color: '#64748B' }}>
+                        {pkNote.length}/300
+                      </span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      6. Đính kèm tệp (Hóa đơn thanh toán) <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      {!pkFileAttached ? (
+                        <div 
+                          onClick={() => setPkFileAttached(true)}
+                          style={{
+                            border: '2px dashed #E2E8F0',
+                            borderRadius: '8px',
+                            padding: '24px',
+                            textAlign: 'center',
+                            cursor: 'pointer',
+                            backgroundColor: '#FAFAFA',
+                            transition: 'border-color 0.2s',
+                          }}
+                          onMouseOver={(e) => e.currentTarget.style.borderColor = '#3B82F6'}
+                          onMouseOut={(e) => e.currentTarget.style.borderColor = '#E2E8F0'}
+                        >
+                          <Upload size={24} style={{ color: '#64748B', marginBottom: '8px', margin: '0 auto' }} />
+                          <p style={{ margin: '0 0 4px 0', fontSize: '13px', color: '#475569' }}>
+                            Kéo thả file vào đây hoặc <span style={{ color: '#2563EB', fontWeight: '600' }}>chọn file</span>
+                          </p>
+                          <span style={{ fontSize: '11px', color: '#94A3B8' }}>
+                            Định dạng: PDF, JPG, PNG (Tối đa 5MB)
+                          </span>
+                        </div>
+                      ) : (
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '12px 16px',
+                          border: '1px solid #E2E8F0',
+                          borderRadius: '8px',
+                          backgroundColor: '#F8FAFC'
+                        }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ color: '#64748B' }}>
+                              <FileText size={20} />
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                              <span style={{ fontSize: '13px', fontWeight: '600', color: '#1E293B' }}>{pkFileName}</span>
+                              <span style={{ fontSize: '11px', color: '#64748B' }}>{pkFileSize}</span>
+                            </div>
+                          </div>
+                          <button 
+                            type="button"
+                            onClick={() => setPkFileAttached(false)}
+                            style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer', padding: '4px' }}
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 18px',
+                  backgroundColor: '#F0F9FF',
+                  border: '1px solid #BAE6FD',
+                  borderRadius: '6px',
+                  color: '#0369A1',
+                  fontSize: '13px',
+                  textAlign: 'left'
+                }}>
+                  <div style={{ color: '#0284C7', flexShrink: 0 }}>
+                    <CheckCircle2 size={16} />
+                  </div>
+                  <span>
+                    <strong>Lưu ý:</strong> Nhà trường sẽ phản hồi kết quả phúc khảo theo quy định. Sinh viên vui lòng theo dõi thông báo trên hệ thống.
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '12px' }}>
+                  <button 
+                    type="button" 
+                    onClick={() => { resetPhucKhaoForm(); setActiveItem?.('dv-khao-thi'); }}
+                    style={{
+                      padding: '10px 32px',
+                      backgroundColor: '#FFFFFF',
+                      border: '1px solid #CBD5E1',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#475569',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Hủy bỏ
+                  </button>
+                  <button 
+                    type="submit"
+                    style={{
+                      padding: '10px 32px',
+                      backgroundColor: '#2563EB',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#FFFFFF',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+                    }}
+                  >
+                    Gửi đăng ký
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        )}
+
+        {/* Form 3: Đăng ký thi lại / Thi bổ sung */}
+        {view === 'dk-thi-lai' && (
+          <div className="recovery-form-wrapper" style={{ animation: 'fadeIn 0.5s ease' }}>
+            <button onClick={() => setActiveItem?.('dv-khao-thi')} className="recovery-back-btn">
+              <ArrowLeft size={16} />
+              <span>{t('Quay lại danh sách', 'Back to list')}</span>
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', textAlign: 'left' }}>
+              <div style={{
+                backgroundColor: '#2563EB',
+                color: '#FFFFFF',
+                width: '40px',
+                height: '40px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+              }}>
+                <ClipboardList size={22} />
+              </div>
+              <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#1E293B', margin: 0, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                Đăng ký thi lại / Thi bổ sung
+              </h2>
+            </div>
+
+            {submitSuccess ? (
+              <div className="recovery-success-box" style={{ textAlign: 'center', padding: '32px', backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px' }}>
+                <div className="recovery-success-icon-wrapper" style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+                  <CheckCircle2 size={56} className="text-emerald-500" />
+                </div>
+                <h3 className="recovery-success-title" style={{ fontSize: '20px', fontWeight: '800', color: '#0F172A', marginBottom: '8px' }}>
+                  Đăng ký thi lại thành công!
+                </h3>
+                <p className="recovery-success-desc" style={{ color: '#475569', fontSize: '14.5px', marginBottom: '20px' }}>
+                  Yêu cầu <strong>{tlType === 'thi-lai' ? 'Thi lại' : 'Thi bổ sung'}</strong> môn <strong>{tlSubject}</strong> ({tlSemester}) đã được gửi đi.
+                </p>
+                <button onClick={() => { setSubmitSuccess(false); setActiveItem?.('dv-khao-thi'); }} className="recovery-success-back-btn" style={{ backgroundColor: '#2563EB', color: '#FFFFFF', border: 'none', padding: '10px 24px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}>
+                  {t('Trở lại Dịch vụ trực tuyến', 'Back to Online Services')}
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleThiLaiSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {validationError && (
+                  <div className="recovery-validation-banner" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 16px', backgroundColor: '#FEF2F2', borderLeft: '4px solid #EF4444', borderRadius: '4px', color: '#991B1B', fontSize: '13.5px' }}>
+                    <AlertCircle size={18} />
+                    <span>{validationError}</span>
+                  </div>
+                )}
+
+                <div style={{
+                  display: 'flex',
+                  gap: '12px',
+                  padding: '16px 20px',
+                  backgroundColor: '#F0F7FF',
+                  border: '1px solid #D0E7FF',
+                  borderRadius: '8px',
+                  color: '#1E3A8A',
+                  textAlign: 'left'
+                }}>
+                  <div style={{ color: '#2563EB', flexShrink: 0, marginTop: '2px' }}>
+                    <AlertCircle size={18} />
+                  </div>
+                  <div>
+                    <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 'bold' }}>Thông tin</h4>
+                    <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.5, color: '#1E3A8A' }}>
+                      Dành cho sinh viên đăng ký tham gia kỳ thi lại hoặc kỳ thi bổ sung theo quy định đào tạo của Nhà trường.<br />
+                      Sinh viên vui lòng thanh toán lệ phí <strong>300.000đ</strong> cho mỗi lần thi lại/thi bổ sung và đính kèm hóa đơn thanh toán để hoàn tất hồ sơ. Nhà trường sẽ chỉ tiếp nhận và xử lý hồ sơ sau khi xác nhận thanh toán.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #E2E8F0',
+                  borderRadius: '8px',
+                  padding: '32px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '24px',
+                  textAlign: 'left'
+                }}>
+                  
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      1. Chọn học kỳ <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px' }}>
+                      <select 
+                        value={tlSemester}
+                        onChange={(e) => setTlSemester(e.target.value)}
+                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#1E293B', outline: 'none' }}
+                      >
+                        <option value="Học kỳ 2 - Năm học 2024 - 2025">Học kỳ 2 - Năm học 2024 - 2025</option>
+                        <option value="Học kỳ 1 - Năm học 2024 - 2025">Học kỳ 1 - Năm học 2024 - 2025</option>
+                        <option value="Học kỳ 3 - Năm học 2023 - 2024">Học kỳ 3 - Năm học 2023 - 2024</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      2. Chọn môn học <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px' }}>
+                      <select 
+                        value={tlSubject}
+                        onChange={(e) => setTlSubject(e.target.value)}
+                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#1E293B', outline: 'none' }}
+                      >
+                        <option value="CT313 - Cấu trúc dữ liệu và giải thuật">CT313 - Cấu trúc dữ liệu và giải thuật</option>
+                        {SUBJECTS.filter(s => !s.includes('CT313')).map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '2px' }}>
+                      3. Hình thức đăng ký <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#1E293B', cursor: 'pointer' }}>
+                          <input 
+                            type="radio"
+                            name="tlType"
+                            checked={tlType === 'thi-lai'}
+                            onChange={() => setTlType('thi-lai')}
+                            style={{ width: '16px', height: '16px', accentColor: '#2563EB' }}
+                          />
+                          Thi lại
+                        </label>
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#1E293B', cursor: 'pointer' }}>
+                          <input 
+                            type="radio"
+                            name="tlType"
+                            checked={tlType === 'thi-bo-sung'}
+                            onChange={() => setTlType('thi-bo-sung')}
+                            style={{ width: '16px', height: '16px', accentColor: '#2563EB' }}
+                          />
+                          Thi bổ sung
+                        </label>
+                      </div>
+
+                      <div style={{
+                        padding: '12px 16px',
+                        backgroundColor: '#F8FAFC',
+                        border: '1px solid #E2E8F0',
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        color: '#475569',
+                        lineHeight: 1.6
+                      }}>
+                        <div style={{ marginBottom: '4px' }}>• <strong>Thi lại:</strong> Dành cho sinh viên đã thi nhưng không đạt.</div>
+                        <div>• <strong>Thi bổ sung:</strong> Dành cho sinh viên chưa thi do được phép dự thi bổ sung theo quy định.</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      4. Lý do đăng ký
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <textarea 
+                        value={tlReason}
+                        onChange={(e) => setTlReason(e.target.value.slice(0, 300))}
+                        maxLength={300}
+                        placeholder="Nhập lý do đăng ký (nếu có)"
+                        style={{ width: '100%', minHeight: '80px', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#1E293B', outline: 'none', fontFamily: 'inherit', resize: 'vertical' }}
+                      />
+                      <span style={{ alignSelf: 'flex-end', fontSize: '11px', color: '#64748B' }}>
+                        {tlReason.length}/300
+                      </span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      5. Ghi chú bổ sung
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <textarea 
+                        value={tlNote}
+                        onChange={(e) => setTlNote(e.target.value.slice(0, 300))}
+                        maxLength={300}
+                        placeholder="Nhập thông tin bổ sung (nếu có)"
+                        style={{ width: '100%', minHeight: '80px', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#1E293B', outline: 'none', fontFamily: 'inherit', resize: 'vertical' }}
+                      />
+                      <span style={{ alignSelf: 'flex-end', fontSize: '11px', color: '#64748B' }}>
+                        {tlNote.length}/300
+                      </span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                    <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                      6. Đính kèm tệp (Hóa đơn thanh toán) <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <div style={{ flex: 1, minWidth: '280px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      {!tlFileAttached ? (
+                        <div 
+                          onClick={() => setTlFileAttached(true)}
+                          style={{
+                            border: '2px dashed #E2E8F0',
+                            borderRadius: '8px',
+                            padding: '24px',
+                            textAlign: 'center',
+                            cursor: 'pointer',
+                            backgroundColor: '#FAFAFA',
+                            transition: 'border-color 0.2s',
+                          }}
+                          onMouseOver={(e) => e.currentTarget.style.borderColor = '#3B82F6'}
+                          onMouseOut={(e) => e.currentTarget.style.borderColor = '#E2E8F0'}
+                        >
+                          <Upload size={24} style={{ color: '#64748B', marginBottom: '8px', margin: '0 auto' }} />
+                          <p style={{ margin: '0 0 4px 0', fontSize: '13px', color: '#475569' }}>
+                            Kéo thả file vào đây hoặc <span style={{ color: '#2563EB', fontWeight: '600' }}>chọn file</span>
+                          </p>
+                          <span style={{ fontSize: '11px', color: '#94A3B8' }}>
+                            Định dạng: PDF, JPG, PNG (Tối đa 5MB)
+                          </span>
+                        </div>
+                      ) : (
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '12px 16px',
+                          border: '1px solid #E2E8F0',
+                          borderRadius: '8px',
+                          backgroundColor: '#F8FAFC'
+                        }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ color: '#64748B' }}>
+                              <FileText size={20} />
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                              <span style={{ fontSize: '13px', fontWeight: '600', color: '#1E293B' }}>{tlFileName}</span>
+                              <span style={{ fontSize: '11px', color: '#64748B' }}>{tlFileSize}</span>
+                            </div>
+                          </div>
+                          <button 
+                            type="button"
+                            onClick={() => setTlFileAttached(false)}
+                            style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'pointer', padding: '4px' }}
+                          >
+                            <X size={16} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 18px',
+                  backgroundColor: '#FFFBEB',
+                  border: '1px solid #FDE68A',
+                  borderRadius: '6px',
+                  color: '#B45309',
+                  fontSize: '13px',
+                  textAlign: 'left'
+                }}>
+                  <div style={{ color: '#D97706', flexShrink: 0 }}>
+                    <AlertCircle size={16} />
+                  </div>
+                  <span>
+                    <strong>Lưu ý:</strong> Sinh viên cần theo dõi thông báo lịch thi được phòng Đào tạo công bố. Việc đăng ký không đảm bảo được xếp lịch thi.
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '12px' }}>
+                  <button 
+                    type="button" 
+                    onClick={() => { resetThiLaiForm(); setActiveItem?.('dv-khao-thi'); }}
+                    style={{
+                      padding: '10px 32px',
+                      backgroundColor: '#FFFFFF',
+                      border: '1px solid #CBD5E1',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#475569',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Hủy bỏ
+                  </button>
+                  <button 
+                    type="submit"
+                    style={{
+                      padding: '10px 32px',
+                      backgroundColor: '#2563EB',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#FFFFFF',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+                    }}
+                  >
+                    Gửi đăng ký
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        )}
+
+        {/* Form 4: Đăng ký bảo lưu kết quả học tập */}
+        {view === 'bao-luu-kqht' && (
+          <div className="recovery-form-wrapper" style={{ animation: 'fadeIn 0.5s ease', position: 'relative' }}>
+            <button onClick={() => setActiveItem?.('dv-khao-thi')} className="recovery-back-btn">
+              <ArrowLeft size={16} />
+              <span>{t('Quay lại danh sách', 'Back to list')}</span>
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', textAlign: 'left' }}>
+              <div style={{
+                backgroundColor: '#2563EB',
+                color: '#FFFFFF',
+                width: '40px',
+                height: '40px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)'
+              }}>
+                <FileText size={22} />
+              </div>
+              <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#1E293B', margin: 0, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                Đăng ký bảo lưu kết quả học tập
+              </h2>
+            </div>
+
+            <form style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              
+              {/* Top Warning/Info Box */}
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                padding: '16px 20px',
+                backgroundColor: '#E9EDF7',
+                border: '1px solid #D1D9EB',
+                borderRadius: '8px',
+                color: '#1E3A8A',
+                textAlign: 'left'
+              }}>
+                <div style={{ color: '#2563EB', flexShrink: 0, marginTop: '2px' }}>
+                  <AlertCircle size={18} />
+                </div>
+                <div>
+                  <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 'bold', color: '#1E293B' }}>Thông tin</h4>
+                  <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.5, color: '#334155' }}>
+                    Dành cho sinh viên có nhu cầu bảo lưu kết quả học tập.<br />
+                    Sinh viên chỉ được đăng ký sau khi đã hoàn thành <strong style={{ color: '#0056B3' }}>tối thiểu 1 học kỳ</strong>.
+                  </p>
+                </div>
+              </div>
+
+              {/* Form inputs panel */}
+              <div style={{
+                backgroundColor: '#FFFFFF',
+                border: '1px solid #E2E8F0',
+                borderRadius: '8px',
+                padding: '32px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '24px',
+                textAlign: 'left',
+                opacity: blShowWarningModal ? 0.6 : 1,
+                filter: blShowWarningModal ? 'blur(1px)' : 'none',
+                transition: 'opacity 0.3s, filter 0.3s'
+              }}>
+                
+                {/* 1. Học kỳ đăng ký */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                  <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                    1. Học kỳ đăng ký <span style={{ color: '#EF4444' }}>*</span>
+                  </label>
+                  <div style={{ flex: 1, minWidth: '280px' }}>
+                    <select 
+                      disabled
+                      value={blSemester}
+                      onChange={(e) => setBlSemester(e.target.value)}
+                      style={{ width: '100%', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#64748B', backgroundColor: '#F8FAFC', outline: 'none', cursor: 'not-allowed' }}
+                    >
+                      <option value="">Chọn học kỳ đăng ký</option>
+                      <option value="Học kỳ 1">Học kỳ 1</option>
+                      <option value="Học kỳ 2">Học kỳ 2</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* 2. Lý do bảo lưu */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                  <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                    2. Lý do bảo lưu <span style={{ color: '#EF4444' }}>*</span>
+                  </label>
+                  <div style={{ flex: 1, minWidth: '280px' }}>
+                    <select 
+                      disabled
+                      value={blReason}
+                      onChange={(e) => setBlReason(e.target.value)}
+                      style={{ width: '100%', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#64748B', backgroundColor: '#F8FAFC', outline: 'none', cursor: 'not-allowed' }}
+                    >
+                      <option value="">Chọn lý do bảo lưu</option>
+                      <option value="Sức khỏe">Sức khỏe</option>
+                      <option value="Tài chính">Tài chính</option>
+                      <option value="Cá nhân">Cá nhân</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* 3. Thời gian bảo lưu dự kiến */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                  <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                    3. Thời gian bảo lưu dự kiến <span style={{ color: '#EF4444' }}>*</span>
+                  </label>
+                  <div style={{ flex: 1, minWidth: '280px' }}>
+                    <div style={{ position: 'relative', width: '100%' }}>
+                      <input 
+                        type="text"
+                        placeholder="Chọn thời gian bảo lưu"
+                        disabled
+                        value={blDuration}
+                        onChange={(e) => setBlDuration(e.target.value)}
+                        style={{ width: '100%', padding: '10px 14px', paddingRight: '40px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#64748B', backgroundColor: '#F8FAFC', outline: 'none', cursor: 'not-allowed' }}
+                      />
+                      <div style={{
+                        position: 'absolute',
+                        right: '12px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        color: '#64748B',
+                        pointerEvents: 'none'
+                      }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. Thông tin bổ sung */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                  <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                    4. Thông tin bổ sung
+                  </label>
+                  <div style={{ flex: 1, minWidth: '280px' }}>
+                    <div style={{ position: 'relative', width: '100%' }}>
+                      <textarea 
+                        placeholder=""
+                        disabled
+                        value={blNote}
+                        onChange={(e) => setBlNote(e.target.value)}
+                        style={{ width: '100%', padding: '10px 14px', border: '1px solid #CBD5E1', borderRadius: '6px', fontSize: '14px', color: '#64748B', backgroundColor: '#F8FAFC', height: '100px', resize: 'none', outline: 'none', cursor: 'not-allowed' }}
+                      />
+                      <div style={{
+                        position: 'absolute',
+                        right: '12px',
+                        bottom: '8px',
+                        fontSize: '12px',
+                        color: '#94A3B8'
+                      }}>
+                        0/300
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 5. Đính kèm minh chứng */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+                  <label style={{ width: '220px', flexShrink: 0, fontSize: '14px', fontWeight: '600', color: '#1E293B', marginTop: '10px' }}>
+                    5. Đính kèm minh chứng (nếu có)
+                  </label>
+                  <div style={{ flex: 1, minWidth: '280px' }}>
+                    {!blFileAttached ? (
+                      <div style={{
+                        width: '100%',
+                        padding: '24px',
+                        border: '1px dashed #CBD5E1',
+                        borderRadius: '8px',
+                        backgroundColor: '#F8FAFC',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        color: '#94A3B8',
+                        cursor: 'not-allowed'
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-upload-cloud"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m16 16-4-4-4 4"/></svg>
+                          <span style={{ fontSize: '14px' }}>
+                            Kéo thả file vào đây hoặc <span style={{ color: '#0056B3', textDecoration: 'underline', cursor: 'not-allowed' }}>chọn file</span>
+                          </span>
+                        </div>
+                        <span style={{ fontSize: '12px', color: '#94A3B8' }}>
+                          Định dạng: PDF, JPG, PNG (Tối đa 5MB)
+                        </span>
+                      </div>
+                    ) : (
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '12px 16px',
+                        border: '1px solid #E2E8F0',
+                        borderRadius: '8px',
+                        backgroundColor: '#F8FAFC',
+                        color: '#64748B',
+                        cursor: 'not-allowed'
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <FileText size={20} />
+                          <span>minh-chung.pdf</span>
+                        </div>
+                        <button type="button" onClick={() => setBlFileAttached(false)} disabled style={{ background: 'none', border: 'none', color: '#64748B', cursor: 'not-allowed' }}>
+                          <X size={16} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Bottom Warning/Note */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '12px 18px',
+                backgroundColor: '#FFFBEB',
+                border: '1px solid #FDE68A',
+                borderRadius: '6px',
+                color: '#B45309',
+                fontSize: '13px',
+                textAlign: 'left',
+                opacity: blShowWarningModal ? 0.6 : 1,
+                filter: blShowWarningModal ? 'blur(1px)' : 'none',
+                transition: 'opacity 0.3s, filter 0.3s'
+              }}>
+                <div style={{ color: '#D97706', flexShrink: 0 }}>
+                  <AlertCircle size={16} />
+                </div>
+                <span>
+                  <strong>Lưu ý:</strong> Nhà trường sẽ xem xét và phản hồi yêu cầu bảo lưu theo quy định.
+                </span>
+              </div>
+
+              {/* Bottom Buttons */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '16px',
+                marginTop: '12px',
+                opacity: blShowWarningModal ? 0.6 : 1,
+                filter: blShowWarningModal ? 'blur(1px)' : 'none',
+                transition: 'opacity 0.3s, filter 0.3s'
+              }}>
+                <button 
+                  type="button" 
+                  onClick={() => { resetBaoLuuForm(); setActiveItem?.('dv-hoc-vu'); }}
+                  style={{
+                    padding: '10px 32px',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid #CBD5E1',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#475569',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Hủy bỏ
+                </button>
+                <button 
+                  type="button"
+                  disabled
+                  style={{
+                    padding: '10px 32px',
+                    backgroundColor: '#CBD5E1',
+                    border: 'none',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#94A3B8',
+                    cursor: 'not-allowed'
+                  }}
+                >
+                  Gửi đăng ký
+                </button>
+              </div>
+            </form>
+
+            {/* In-page Warning Modal Overlay */}
+            {blShowWarningModal && (
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 10,
+                animation: 'fadeIn 0.2s ease forwards',
+                borderRadius: '8px'
+              }}>
+                <div style={{
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '12px',
+                  padding: '36px 32px 32px 32px',
+                  maxWidth: '480px',
+                  width: '90%',
+                  boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                  border: '1px solid #E2E8F0',
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '16px',
+                  animation: 'scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards'
+                }}>
+                  {/* Orange circle with exclamation mark */}
+                  <div style={{
+                    width: '56px',
+                    height: '56px',
+                    borderRadius: '50%',
+                    border: '3px solid #F97316',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#F97316',
+                    marginBottom: '4px'
+                  }}>
+                    <span style={{ fontSize: '32px', fontWeight: 'bold', fontFamily: 'serif', lineHeight: 1 }}>!</span>
+                  </div>
+
+                  <h3 style={{
+                    fontSize: '20px',
+                    fontWeight: '700',
+                    color: '#1E293B',
+                    margin: 0,
+                    fontFamily: "'Plus Jakarta Sans', sans-serif"
+                  }}>
+                    Không thể đăng ký
+                  </h3>
+
+                  <p style={{
+                    fontSize: '14.5px',
+                    color: '#475569',
+                    lineHeight: 1.6,
+                    margin: 0,
+                    textAlign: 'center'
+                  }}>
+                    Bạn chỉ được phép đăng ký bảo lưu kết quả học tập<br />
+                    sau khi đã hoàn thành <strong style={{ color: '#0056B3' }}>tối thiểu 1 học kỳ</strong>.<br />
+                    Vui lòng kiểm tra lại thông tin học tập của mình.
+                  </p>
+
+                  <button
+                    onClick={() => setBlShowWarningModal(false)}
+                    style={{
+                      marginTop: '8px',
+                      padding: '10px 48px',
+                      backgroundColor: '#0056B3',
+                      color: '#FFFFFF',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontSize: '15px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.2s',
+                      outline: 'none'
+                    }}
+                  >
+                    Đóng
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {view === 'other-services' && (
+          <div className="recovery-form-wrapper" style={{ animation: 'fadeIn 0.5s ease' }}>
+            
+            {/* Navigation back */}
+            <button onClick={() => setView('list')} className="recovery-back-btn">
+              <ArrowLeft size={16} />
+              <span>{t('Quay lại danh sách', 'Back to list')}</span>
+            </button>
+
+            {/* Title Section */}
+            <div className="recovery-title-section">
+              <h2 className="recovery-form-title">{t('ĐĂNG KÝ DỊCH VỤ KHÁC', 'OTHER REGISTRATION & SERVICES')}</h2>
+              <p className="recovery-form-subtitle">
+                YOU ARE REQUIRED TO FULFILL BLANK BOXES BELOW TO FINISH YOUR REQUEST AND ATTACH SUPPORTING DOCUMENTS (IF ANY) BEFORE SUBMITTING THIS FORM
+              </p>
+            </div>
+
+            {submitSuccess ? (
+              <div className="recovery-success-box">
+                <div className="recovery-success-icon-wrapper">
+                  <CheckCircle2 size={48} className="text-emerald-500" />
+                </div>
+                <h3 className="recovery-success-title">{t('Đăng ký dịch vụ thành công!', 'Service Registration Successful!')}</h3>
+                <p className="recovery-success-desc">
+                  {t('Yêu cầu đăng ký dịch vụ khác của bạn đã được gửi thành công tới Ban Đào Tạo.', 'Your request for other service has been successfully submitted to the Academic Affairs Department.')}
+                </p>
+                <button onClick={() => setView('list')} className="recovery-success-back-btn">
+                  {t('Trở lại Dịch vụ trực tuyến', 'Back to Online Services')}
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleOtherSubmit} className="recovery-form-element">
+                
+                {/* Error Banner */}
+                {validationError && (
+                  <div className="recovery-validation-banner">
+                    <AlertCircle size={18} />
+                    <span>{validationError}</span>
+                  </div>
+                )}
+
+                {/* Top Info Grid */}
+                <div className="recovery-summary-grid">
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">{t('DỊCH VỤ', 'SERVICE')}</div>
+                    <div className="recovery-summary-badge">{t('Đăng ký dịch vụ khác', 'Other registration & services')}</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">{t('KỲ ĐỢT DỊCH VỤ:', 'SERVICE PERIOD:')}</div>
+                    <div className="recovery-summary-value-box">FALL 2023</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">{t('TRẠNG THÁI SINH VIÊN', 'STUDENT STATUS')}</div>
+                    <div className="recovery-summary-value-box">CNTT2</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">{t('SỐ DƯ', 'BALANCE')}</div>
+                    <div className="recovery-summary-value-box">{t('VND 0 đ', 'VND 0')}</div>
+                  </div>
+                  <div className="recovery-summary-item">
+                    <div className="recovery-summary-label">{t('NGÀNH HỌC', 'MAJOR')}</div>
+                    <div className="recovery-summary-value-box">{t('Lập trình máy tính', 'Computer Programming')}</div>
+                  </div>
+                </div>
+
+                {/* Main Form Fields Layout */}
+                <div className="recovery-fields-card">
+                  
+                  {/* Row 1: Nội dung yêu cầu xử lý */}
+                  <div className="recovery-field-row" style={{ minHeight: '140px', alignItems: 'stretch' }}>
+                    <div className="recovery-field-label" style={{ alignSelf: 'flex-start', paddingTop: '16px' }}>
+                      <span className="bullet-circle">o</span> {t('Nội dung yêu cầu xử lý (*)', 'Request Details (*)')}
+                    </div>
+                    <div className="recovery-field-input-wrapper" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <textarea 
+                        value={otherContent} 
+                        onChange={(e) => setOtherContent(e.target.value.slice(0, 500))} 
+                        placeholder={t('Vui lòng ghi rõ yêu cầu cần xử lý', 'Please specify your request details')}
+                        className="recovery-textarea-element"
+                        style={{ minHeight: '100px', resize: 'vertical' }}
+                      />
+                      <div className="recovery-char-counter">
+                        {otherContent.length} / 500 {t('ký tự', 'characters')}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Row 2: Phòng ban xử lý */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> {t('Phòng ban xử lý', 'Processing Department')}
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <select 
+                        value={otherDept} 
+                        onChange={(e) => setOtherDept(e.target.value)} 
+                        className="recovery-select-element"
+                      >
+                        <option value="TC&QLĐT">TC&QLĐT</option>
+                        <option value="ĐVSV">ĐVSV</option>
+                        <option value="KT">KT</option>
+                        <option value="CTSV">CTSV</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 3: Số điện thoại */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> {t('Số điện thoại (*)', 'Phone Number (*)')}
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <input 
+                        type="tel" 
+                        value={otherPhone} 
+                        onChange={(e) => setOtherPhone(e.target.value)} 
+                        placeholder={t('Nhập số điện thoại của bạn', 'Enter your phone number')}
+                        className="recovery-input-element"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 4: Phí dịch vụ */}
+                  <div className="recovery-field-row">
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> {t('Phí dịch vụ', 'Service Fee')}
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <input 
+                        type="text" 
+                        value="0" 
+                        readOnly 
+                        className="recovery-input-element disabled-bg"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 5: Tài liệu đính kèm */}
+                  <div className="recovery-field-row" style={{ borderBottom: 'none' }}>
+                    <div className="recovery-field-label">
+                      <span className="bullet-circle">o</span> {t('Tài liệu đính kèm', 'Attachments')}
+                    </div>
+                    <div className="recovery-field-input-wrapper">
+                      <div className="recovery-file-upload-container">
+                        <input 
+                          type="file" 
+                          id="other-file-attachment" 
+                          onChange={handleOtherFileChange}
+                          style={{ display: 'none' }}
+                        />
+                        <div className="recovery-file-info-row">
+                          <span className="recovery-file-path-input">
+                            {otherFileName || t('Choose file', 'Choose file')}
+                          </span>
+                          <label htmlFor="other-file-attachment" className="recovery-file-browse-btn">
+                            {t('Browse', 'Browse')}
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                {/* Action Buttons */}
+                <div className="recovery-form-actions">
+                  <button type="submit" className="recovery-btn-submit">
+                    {t('SUBMIT', 'SUBMIT')}
                   </button>
                 </div>
 

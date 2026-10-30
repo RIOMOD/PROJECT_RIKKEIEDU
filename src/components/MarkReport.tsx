@@ -25,6 +25,20 @@ export const MarkReport = ({ lang }: MarkReportProps) => {
     return lang === 'en' ? enText : viText;
   };
 
+  const studentProfile = (() => {
+    const saved = localStorage.getItem('student_profile');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.name && parsed.id) return parsed;
+      } catch (e) {}
+    }
+    return {
+      name: 'Nguyễn Công Trứ',
+      id: 'N24DTCN088'
+    };
+  })();
+
   const headers = [
     t('STT', 'No.'),
     t('Kỳ', 'TermNo'),
@@ -320,7 +334,7 @@ export const MarkReport = ({ lang }: MarkReportProps) => {
       subjectName: 'Software Development Life Cycle',
       semesterVi: 'MÙA THU 2024',
       semesterEn: 'FALL 2024',
-      group: '7408.01.HL.LCS',
+      group: '7408.01.CNTT2.LCS',
       startDate: '08/11/2024',
       endDate: '12/12/2024',
       gradeNum: '0.0',
@@ -480,7 +494,7 @@ export const MarkReport = ({ lang }: MarkReportProps) => {
       subjectName: 'Data Structures & Algorithms',
       semesterVi: 'MÙA THU 2025',
       semesterEn: 'FALL 2025',
-      group: '7430.01.HL',
+      group: '7430.01.CNTT2',
       startDate: '15/10/2025',
       endDate: '17/12/2025',
       gradeNum: '1.0',
@@ -625,7 +639,7 @@ export const MarkReport = ({ lang }: MarkReportProps) => {
         
         {/* Page Title */}
         <h2 className="mark-report-title">
-          {t('PHIẾU ĐIỂM CỦA NGUYỄN VĂN HÙNG (BS00679)', 'Grade report for Nguyễn Văn Hùng (BS00679)')}
+          {t(`PHIẾU ĐIỂM CỦA ${studentProfile.name.toUpperCase()} (${studentProfile.id})`, `Grade report for ${studentProfile.name} (${studentProfile.id})`)}
         </h2>
 
         {/* Grade Table */}
@@ -668,7 +682,7 @@ export const MarkReport = ({ lang }: MarkReportProps) => {
                     </td>
 
                     {/* Subject Code */}
-                    <td className="mark-td text-center font-bold font-mono" style={{ padding: '10px 8px', textAlign: 'center', borderRight: '1px solid #e2e8f0', fontSize: '12.5px', color: '#0066cc', textDecoration: 'underline', cursor: 'pointer' }}>
+                    <td className="mark-td text-center font-bold font-mono" style={{ padding: '10px 8px', textAlign: 'center', borderRight: '1px solid #e2e8f0', fontSize: '12.5px', color: 'var(--primary-text-theme, #0066cc)', textDecoration: 'underline', cursor: 'pointer' }}>
                       {row.subjectCode}
                     </td>
 

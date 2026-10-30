@@ -16,6 +16,20 @@ export const Curriculum = ({ lang }: CurriculumProps) => {
     return lang === 'en' ? enText : viText;
   };
 
+  const studentProfile = (() => {
+    const saved = localStorage.getItem('student_profile');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.name && parsed.id) return parsed;
+      } catch (e) {}
+    }
+    return {
+      name: 'Nguyễn Công Trứ',
+      id: 'N24DTCN088'
+    };
+  })();
+
   const headers1 = [
     t('SUBJECT CODE', 'SUBJECT CODE'),
     t('SUBJECT NAME', 'SUBJECT NAME'),
@@ -70,14 +84,14 @@ export const Curriculum = ({ lang }: CurriculumProps) => {
           <div className="transcript-info-left" style={{ gap: '4px' }}>
             <div className="transcript-info-item" style={{ gap: '6px' }}>
               <GraduationCap size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
-              <span className="transcript-info-label" style={{ color: '#334155', fontWeight: 'bold' }}>
+              <span className="transcript-info-label" style={{ color: 'var(--text-dark)', fontWeight: 'bold' }}>
                 STUDENT:{' '}
               </span>
-              <span className="transcript-info-val" style={{ color: '#334155', fontWeight: 'bold' }}>Nguyễn Văn Hùng - BS00679</span>
+              <span className="transcript-info-val" style={{ color: 'var(--text-dark)', fontWeight: 'bold' }}>{studentProfile.name} - {studentProfile.id}</span>
             </div>
             <div className="transcript-info-item" style={{ gap: '6px' }}>
               <BookOpen size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
-              <span className="transcript-info-label" style={{ color: '#334155', fontWeight: 'bold' }}>Syllabus:BC_V6_01</span>
+              <span className="transcript-info-label" style={{ color: 'var(--text-dark)', fontWeight: 'bold' }}>Syllabus:BC_V6_01</span>
             </div>
           </div>
         </div>
@@ -102,7 +116,7 @@ export const Curriculum = ({ lang }: CurriculumProps) => {
                 return (
                   <tr key={index} className={`transcript-tr ${rowClass}`}>
                     {/* Subject Code */}
-                    <td className="transcript-td text-center font-mono font-bold" style={{ border: '1px solid #cbd5e1', color: '#0066cc', textDecoration: 'underline', cursor: 'pointer' }}>
+                    <td className="transcript-td text-center font-mono font-bold" style={{ border: '1px solid #cbd5e1', color: 'var(--primary-text-theme, #0066cc)', textDecoration: 'underline', cursor: 'pointer' }}>
                       {row.subjectCode}
                     </td>
 
@@ -125,7 +139,7 @@ export const Curriculum = ({ lang }: CurriculumProps) => {
         {/* Table 2: Subject Prerequisite */}
         <div className="transcript-obsolete-header" style={{ borderBottom: 'none', marginBottom: '10px', marginTop: '16px' }}>
           <BookOpen size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
-          <span className="transcript-obsolete-text" style={{ fontWeight: 'bold', color: '#334155' }}>
+          <span className="transcript-obsolete-text" style={{ fontWeight: 'bold', color: 'var(--text-dark)' }}>
             {t('Subject Prequisite', 'Subject Prequisite')}
           </span>
         </div>
@@ -143,7 +157,7 @@ export const Curriculum = ({ lang }: CurriculumProps) => {
             </thead>
             <tbody>
               <tr className="transcript-tr">
-                <td colSpan={3} className="transcript-td text-center" style={{ border: '1px solid #cbd5e1', padding: '16px', color: '#64748b' }}>
+                <td colSpan={3} className="transcript-td text-center" style={{ border: '1px solid #cbd5e1', padding: '16px', color: 'var(--text-muted)' }}>
                   No data available in table
                 </td>
               </tr>

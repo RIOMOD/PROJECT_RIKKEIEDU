@@ -1,0 +1,150 @@
+import { useState } from 'react';
+import { Sidebar } from './components/Sidebar';
+import { Header } from './components/Header';
+import { Dashboard } from './components/Dashboard';
+import { OnlineServices } from './components/OnlineServices';
+import { RegistrationHistory } from './components/RegistrationHistory';
+import { TeacherFeedback } from './components/TeacherFeedback';
+import { WeeklyTimetable } from './components/WeeklyTimetable';
+import { ClassTimetable } from './components/ClassTimetable';
+import { ExamSchedule } from './components/ExamSchedule';
+import { AttendanceReport } from './components/AttendanceReport';
+import { MarkReport } from './components/MarkReport';
+import { AcademicTranscript } from './components/AcademicTranscript';
+import { Curriculum } from './components/Curriculum';
+import { Profile } from './components/Profile';
+import { Login } from './components/Login';
+import { TuitionReport } from './components/TuitionReport';
+import { Footer } from './components/Footer';
+import { Construction, ArrowLeft } from 'lucide-react';
+
+function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [activeItem, setActiveItem] = useState('trang-chu');
+  const [lang, setLang] = useState<'vi' | 'en'>('vi');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState<'student' | 'parent'>('student');
+
+  // Human-readable title mapping for breadcrumbs & page headers (Bilingual)
+  const menuTitles: Record<string, { vi: string; en: string }> = {
+    'trang-chu': { vi: 'Trang chủ', en: 'Home' },
+    'dv-truc-tuyen': { vi: 'Trang chủ / Cổng thông tin học thuật RIKKEI', en: 'Home / Academic Portal RIKKEI' },
+    'lich-su-dk': { vi: 'Trang chủ / Cổng thông tin học thuật RIKKEI', en: 'Home / Academic Portal RIKKEI' },
+    'phan-hoi-clgd': { vi: 'Trang chủ / Nhận xét', en: 'Home / Feedback' },
+    'tkb-hang-tuan': { vi: 'Trang chủ / Thời khóa biểu hàng tuần', en: 'Home / Weekly Timetable' },
+    'tkb-lop-hoc': { vi: 'Trang chủ / Thời khóa biểu lớp học', en: 'Home / Class Timetable' }, // Match screenshot breadcrumbs
+    'xem-lich-thi': { vi: 'Home / View Exam Schedule', en: 'Home / View Exam Schedule' },
+    'bc-diem-danh': { vi: 'Trang chủ / Báo cáo điểm danh', en: 'Home / Attendance Report' },
+    'bc-mark': { vi: 'Trang chủ / Báo cáo Mark', en: 'Home / Mark Report' },
+    'bang-diem-ht': { vi: 'Home / Academic Transcript', en: 'Home / Academic Transcript' },
+    'chuong-trinh-gd': { vi: 'Home / Curriculum', en: 'Home / Curriculum' },
+    'so-tay-sv': { vi: 'Sổ tay sinh viên', en: 'Student Handbook' },
+    'profile': { vi: 'Home / RIKKEI Academic Portal', en: 'Home / RIKKEI Academic Portal' },
+    'hoc-phi': { vi: 'Trang chủ / Báo cáo đóng học phí', en: 'Home / Tuition Payment Report' }
+  };
+
+  // Helper to render page content based on selected sidebar item
+  const renderContent = () => {
+    if (activeItem === 'trang-chu') {
+      return <Dashboard lang={lang} role={userRole} setActiveItem={setActiveItem} />;
+    }
+    
+    if (activeItem === 'dv-truc-tuyen') {
+      return <OnlineServices lang={lang} />;
+    }
+
+    if (activeItem === 'lich-su-dk') {
+      return <RegistrationHistory lang={lang} />;
+    }
+
+    if (activeItem === 'phan-hoi-clgd') {
+      return <TeacherFeedback lang={lang} />;
+    }
+
+    if (activeItem === 'tkb-hang-tuan') {
+      return <WeeklyTimetable lang={lang} />;
+    }
+
+    if (activeItem === 'tkb-lop-hoc') {
+      return <ClassTimetable lang={lang} />;
+    }
+
+    if (activeItem === 'xem-lich-thi') {
+      return <ExamSchedule lang={lang} />;
+    }
+
+    if (activeItem === 'bc-diem-danh') {
+      return <AttendanceReport lang={lang} />;
+    }
+
+    if (activeItem === 'bc-mark') {
+      return <MarkReport lang={lang} />;
+    }
+
+    if (activeItem === 'bang-diem-ht') {
+      return <AcademicTranscript lang={lang} />;
+    }
+
+    if (activeItem === 'chuong-trinh-gd') {
+      return <Curriculum lang={lang} />;
+    }
+
+    if (activeItem === 'profile') {
+      return <Profile lang={lang} />;
+    }
+
+    if (activeItem === 'hoc-phi') {
+      return <TuitionReport lang={lang} />;
+    }
+
+    const currentTitle = menuTitles[activeItem]?.[lang] || 'Cổng thông tin';
+
+    // Interactive Placeholder for sub-features
+    return (
+      <div className="placeholder-screen">
+        <div className="placeholder-icon-wrapper">
+          <Construction size={48} />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <h2 className="placeholder-title">{currentTitle}</h2>
+          <p className="placeholder-desc">
+            {lang === 'en' 
+              ? 'This feature is currently under development according to RK RIKKEI student portal roadmaps. Return to home to view recent announcements.'
+              : 'Tính năng này đang được phát triển theo lộ trình của cổng thông tin sinh viên RK. Quay lại trang chủ để xem thông báo mới nhất.'
+            }
+          </p>
+        </div>
+        <button 
+          onClick={() => setActiveItem('trang-chu')}
+          className="back-btn"
+        >
+          <ArrowLeft size={16} />
+          <span>{lang === 'en' ? 'Back to Home' : 'Quay lại trang chủ'}</span>
+        </button>
+      </div>
+    );
+  };
+
+  const getPageTitle = () => {
+    return menuTitles[activeItem]?.[lang] || 'Portal';
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <Login 
+        onLogin={(userLang, role) => {
+          setLang(userLang);
+          setUserRole(role);
+          setIsLoggedIn(true);
+        }}
+        currentLang={lang}
+        onLangChange={setLang}
+      />
+    );
+  }
+
+  return (
+    <div className={`app-container ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      {/* Navigation Drawer Sidebar */}
+      <Sidebar 

@@ -9,12 +9,26 @@ export const TuitionReport = ({ lang }: TuitionReportProps) => {
     return lang === 'en' ? enText : viText;
   };
 
-  const student = {
-    name: 'Nguyễn Văn Hùng',
-    id: 'BS00679',
-    class: 'k6',
-    major: t('Lập trình máy tính', 'Computer Programming')
-  };
+  const student = (() => {
+    const saved = localStorage.getItem('student_profile');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.name && parsed.id) return {
+          name: parsed.name,
+          id: parsed.id,
+          class: parsed.class || 'K24',
+          major: t('Lập trình máy tính', 'Computer Programming')
+        };
+      } catch (e) {}
+    }
+    return {
+      name: 'Nguyễn Công Trứ',
+      id: 'N24DTCN088',
+      class: 'K24',
+      major: t('Lập trình máy tính', 'Computer Programming')
+    };
+  })();
 
   const summary = {
     total: '124,000,000 VND',

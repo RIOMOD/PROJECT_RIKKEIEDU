@@ -1,14 +1,58 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LearningIllustration } from './LearningIllustration';
-import { Search } from 'lucide-react';
+import { Search, Eye, EyeOff } from 'lucide-react';
 
 interface DashboardProps {
   lang: 'vi' | 'en';
   role?: 'student' | 'parent';
-  setActiveItem?: (item: string) => void;
+  setActiveItem?: (item: string, resetScroll?: boolean) => void;
 }
 
 export const Dashboard = ({ lang, role = 'student', setActiveItem }: DashboardProps) => {
+  const [showFullName, setShowFullName] = useState(false);
+
+  const getProfile = () => {
+    const saved = localStorage.getItem('student_profile');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.name && parsed.id) return parsed;
+      } catch (e) {}
+    }
+    return {
+      name: 'Nguyễn Công Trứ',
+      id: 'N24DTCN088',
+      dob: '15/12/2004',
+      class: 'K24',
+      campus: 'CNTT2',
+      avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=120'
+    };
+  };
+
+  const [studentProfile, setStudentProfile] = useState(getProfile);
+
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      setStudentProfile(getProfile());
+    };
+    window.addEventListener('student_profile_updated', handleProfileUpdate);
+    return () => {
+      window.removeEventListener('student_profile_updated', handleProfileUpdate);
+    };
+  }, []);
+
+  const maskName = (fullName: string) => {
+    return fullName
+      .split(' ')
+      .map(word => {
+        if (!word) return '';
+        const firstLetter = word.charAt(0);
+        const dots = '.'.repeat(word.length - 1);
+        return `${firstLetter}${dots}`;
+      })
+      .join(' ');
+  };
+
   const [searchQuery, setSearchQuery] = useState('');
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
@@ -89,7 +133,7 @@ export const Dashboard = ({ lang, role = 'student', setActiveItem }: DashboardPr
             {/* Top Section: Greetings & Student Metadata */}
             <div style={{ textAlign: 'left' }}>
               <h1 style={{ fontSize: '32px', fontWeight: '800', color: '#0F172A', margin: '0 0 8px 0', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                {t('Welcome back, parents of Nguyễn Văn Hùng', 'Welcome back, parents of Nguyễn Văn Hùng')}
+                {t(`Chào mừng phụ huynh của ${studentProfile.name}`, `Welcome back, parents of ${studentProfile.name}`)}
               </h1>
               <p 
                 onClick={() => setActiveItem && setActiveItem('profile')}
@@ -100,10 +144,10 @@ export const Dashboard = ({ lang, role = 'student', setActiveItem }: DashboardPr
                 {t('Lập trình máy tính', 'Computer Programming')}
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', fontSize: '12.5px' }}>
-                <span style={{ backgroundColor: '#EF562F', color: '#FFFFFF', padding: '6px 12px', borderRadius: '4px', fontWeight: 'bold' }}>BS00679</span>
-                <span style={{ backgroundColor: '#F59E0B', color: '#FFFFFF', padding: '6px 12px', borderRadius: '4px', fontWeight: 'bold' }}>15/12/2004</span>
-                <span style={{ backgroundColor: '#EF562F', color: '#FFFFFF', padding: '6px 12px', borderRadius: '4px', fontWeight: 'bold' }}>k6</span>
-                <span style={{ backgroundColor: '#10B981', color: '#FFFFFF', padding: '6px 12px', borderRadius: '4px', fontWeight: 'bold' }}>HL</span>
+                <span style={{ backgroundColor: '#EF562F', color: '#FFFFFF', padding: '6px 12px', borderRadius: '4px', fontWeight: 'bold' }}>{studentProfile.id}</span>
+                <span style={{ backgroundColor: '#F59E0B', color: '#FFFFFF', padding: '6px 12px', borderRadius: '4px', fontWeight: 'bold' }}>{studentProfile.dob || '15/12/2004'}</span>
+                <span style={{ backgroundColor: '#EF562F', color: '#FFFFFF', padding: '6px 12px', borderRadius: '4px', fontWeight: 'bold' }}>{studentProfile.class || 'K24'}</span>
+                <span style={{ backgroundColor: '#10B981', color: '#FFFFFF', padding: '6px 12px', borderRadius: '4px', fontWeight: 'bold' }}>{studentProfile.campus || 'CNTT2'}</span>
                 <span style={{ backgroundColor: '#3B82F6', color: '#FFFFFF', padding: '6px 12px', borderRadius: '4px', fontWeight: 'bold' }}>SUMMER 2026</span>
               </div>
             </div>
@@ -118,7 +162,7 @@ export const Dashboard = ({ lang, role = 'student', setActiveItem }: DashboardPr
               {/* Right Side Hawking Quote & Menu buttons */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', textAlign: 'left' }}>
                 <div style={{ borderLeft: '4px solid #EF562F', paddingLeft: '16px' }}>
-                  <blockquote style={{ fontSize: '17.5px', fontWeight: '700', color: '#1e293b', fontStyle: 'italic', margin: '0 0 8px 0', lineHeight: '1.5' }}>
+                  <blockquote style={{ fontSize: '17.5px', fontWeight: '700', color: 'var(--text-dark)', fontStyle: 'italic', margin: '0 0 8px 0', lineHeight: '1.5' }}>
                     {t(
                       '"Dù cuộc sống có vẻ khó khăn thế nào, luôn có điều gì đó bạn có thể làm và thành công."',
                       '"However difficult life may seem, there is always something you can do and succeed at."'
@@ -140,8 +184,8 @@ export const Dashboard = ({ lang, role = 'student', setActiveItem }: DashboardPr
                       gap: '16px',
                       padding: '16px 20px',
                       borderRadius: '12px',
-                      backgroundColor: '#ffffff',
-                      border: '1px solid #E2E8F0',
+                      backgroundColor: 'var(--bg-sidebar)',
+                      border: '1px solid var(--border-color)',
                       cursor: 'pointer',
                       transition: 'all 0.25s ease',
                       boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
@@ -152,7 +196,7 @@ export const Dashboard = ({ lang, role = 'student', setActiveItem }: DashboardPr
                       e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.05)';
                     }}
                     onMouseOut={(e) => {
-                      e.currentTarget.style.borderColor = '#E2E8F0';
+                      e.currentTarget.style.borderColor = 'var(--border-color)';
                       e.currentTarget.style.transform = 'none';
                       e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)';
                     }}
@@ -175,10 +219,10 @@ export const Dashboard = ({ lang, role = 'student', setActiveItem }: DashboardPr
                       </svg>
                     </div>
                     <div>
-                      <h4 style={{ fontSize: '15px', fontWeight: '800', color: '#1E293B', margin: '0 0 2px 0' }}>
+                      <h4 style={{ fontSize: '15px', fontWeight: '800', color: 'var(--text-dark)', margin: '0 0 2px 0' }}>
                         {t('Hồ sơ Sinh viên', 'Student Profile')}
                       </h4>
-                      <p style={{ fontSize: '12.5px', color: '#64748B', margin: 0, lineHeight: '1.4' }}>
+                      <p style={{ fontSize: '12.5px', color: 'var(--text-muted)', margin: 0, lineHeight: '1.4' }}>
                         {t('Xem hồ sơ sinh viên gồm thông tin cá nhân, học tập, quyết định, vv...', 'View student profile details including personal info, academic status, decisions, etc...')}
                       </p>
                     </div>
@@ -193,8 +237,8 @@ export const Dashboard = ({ lang, role = 'student', setActiveItem }: DashboardPr
                       gap: '16px',
                       padding: '16px 20px',
                       borderRadius: '12px',
-                      backgroundColor: '#ffffff',
-                      border: '1px solid #E2E8F0',
+                      backgroundColor: 'var(--bg-sidebar)',
+                      border: '1px solid var(--border-color)',
                       cursor: 'pointer',
                       transition: 'all 0.25s ease',
                       boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
@@ -205,7 +249,7 @@ export const Dashboard = ({ lang, role = 'student', setActiveItem }: DashboardPr
                       e.currentTarget.style.boxShadow = '0 8px 16px rgba(0,0,0,0.05)';
                     }}
                     onMouseOut={(e) => {
-                      e.currentTarget.style.borderColor = '#E2E8F0';
+                      e.currentTarget.style.borderColor = 'var(--border-color)';
                       e.currentTarget.style.transform = 'none';
                       e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)';
                     }}
@@ -225,10 +269,10 @@ export const Dashboard = ({ lang, role = 'student', setActiveItem }: DashboardPr
                       </svg>
                     </div>
                     <div>
-                      <h4 style={{ fontSize: '15px', fontWeight: '800', color: '#1E293B', margin: '0 0 2px 0' }}>
+                      <h4 style={{ fontSize: '15px', fontWeight: '800', color: 'var(--text-dark)', margin: '0 0 2px 0' }}>
                         {t('Đổi mật khẩu', 'Change Password')}
                       </h4>
-                      <p style={{ fontSize: '12.5px', color: '#64748B', margin: 0, lineHeight: '1.4' }}>
+                      <p style={{ fontSize: '12.5px', color: 'var(--text-muted)', margin: 0, lineHeight: '1.4' }}>
                         {t('Thay đổi mật khẩu đăng nhập', 'Change your portal login password')}
                       </p>
                     </div>
@@ -313,15 +357,41 @@ export const Dashboard = ({ lang, role = 'student', setActiveItem }: DashboardPr
               
               {/* Greeting */}
               <div>
-                <h2 className="greeting-title">{t('Chào mừng trở lại,', 'Welcome back,')}</h2>
-                <h2 className="greeting-title">Nguyễn Văn Hùng</h2>
+                <h2 className="greeting-title" style={{ marginBottom: '4px' }}>{t('Chào ngày mới,', 'Hello to a new day,')}</h2>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <h2 className="greeting-title" style={{ margin: 0 }}>
+                    {showFullName ? studentProfile.name : maskName(studentProfile.name)}
+                  </h2>
+                  <button 
+                    onClick={() => setShowFullName(!showFullName)}
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      padding: '4px', 
+                      cursor: 'pointer', 
+                      display: 'inline-flex', 
+                      alignItems: 'center', 
+                      color: '#64748B',
+                      transition: 'color 0.2s',
+                      outline: 'none'
+                    }}
+                    title={showFullName ? t('Ẩn tên', 'Hide name') : t('Hiện tên', 'Show name')}
+                  >
+                    {showFullName ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
               </div>
 
               {/* Announcements List */}
               <div className="announcements-list">
                 {filteredAnnouncements.length > 0 ? (
                   filteredAnnouncements.map((ann) => (
-                    <div key={ann.id} className="announcement-item">
+                    <div 
+                      key={ann.id} 
+                      className="announcement-item"
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => window.open(window.location.origin + window.location.pathname + '?noticeId=' + ann.id, '_blank')}
+                    >
                       {/* Calendar + Star SVG Icon (exactly like mockup) */}
                       <div className="announcement-icon-wrapper">
                         {/* Calendar Outline */}

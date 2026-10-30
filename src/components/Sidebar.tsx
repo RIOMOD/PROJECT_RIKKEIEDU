@@ -8,20 +8,20 @@ import {
   ClipboardList, 
   UserCheck, 
   MessageSquare, 
-  Calendar, 
   Clock, 
   FileText, 
   BookOpen,
   FileSpreadsheet,
   BarChart2,
-  Eye
+  Eye,
+  HelpCircle
 } from 'lucide-react';
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   activeItem: string;
-  setActiveItem: (item: string) => void;
+  setActiveItem: (item: string, resetScroll?: boolean) => void;
   lang: 'vi' | 'en';
   role?: 'student' | 'parent';
   isCollapsed?: boolean;
@@ -63,7 +63,7 @@ export const Sidebar = ({
   };
 
   const handleLogoClick = () => {
-    setActiveItem('trang-chu');
+    setActiveItem('trang-chu', true);
     // Scroll the content container to the top
     const scrollContainer = document.querySelector('.scrollable-content');
     if (scrollContainer) {
@@ -158,18 +158,6 @@ export const Sidebar = ({
                 </span>
               </div>
 
-              {/* BÁO CÁO MARK */}
-              <div 
-                onClick={() => handleLinkClick('bc-mark')}
-                className={`sidebar-link ${activeItem === 'bc-mark' ? 'active' : ''}`}
-                style={{ margin: '4px 10px' }}
-              >
-                <span className="sidebar-link-content">
-                  <FileSpreadsheet size={16} className="text-orange-500" />
-                  <span>{t('Báo cáo Mark', 'Mark Report')}</span>
-                </span>
-              </div>
-
               {/* BẢNG ĐIỂM HỌC TẬP */}
               <div 
                 onClick={() => handleLinkClick('bang-diem-ht')}
@@ -179,6 +167,18 @@ export const Sidebar = ({
                 <span className="sidebar-link-content">
                   <FileText size={16} className="text-orange-500" />
                   <span>{t('Bảng điểm học tập', 'Academic Transcript')}</span>
+                </span>
+              </div>
+
+              {/* CHƯƠNG TRÌNH KHUNG */}
+              <div 
+                onClick={() => handleLinkClick('chuong-trinh-gd')}
+                className={`sidebar-link ${activeItem === 'chuong-trinh-gd' ? 'active' : ''}`}
+                style={{ margin: '4px 10px' }}
+              >
+                <span className="sidebar-link-content">
+                  <BookOpen size={16} className="text-orange-500" />
+                  <span>{t('Chương trình khung', 'Curriculum')}</span>
                 </span>
               </div>
             </>
@@ -203,7 +203,7 @@ export const Sidebar = ({
                   setOpenSubmenus(prev => ({ ...prev, dangKy: true }));
                   if (onToggleCollapse) onToggleCollapse();
                 }}
-                className={`sidebar-link ${['dv-truc-tuyen', 'lich-su-dk', 'phan-hoi-clgd'].includes(activeItem) ? 'active' : ''}`}
+                className={`sidebar-link ${['dv-truc-tuyen', 'dv-hoc-vu', 'dv-thong-tin', 'dv-khao-thi', 'lich-su-dk', 'phan-hoi-clgd', 'dk-vang-thi', 'phuc-khao', 'dk-thi-lai', 'bao-luu-kqht'].includes(activeItem) ? 'active' : ''}`}
                 style={{ margin: '4px 10px' }}
                 title={t('Đăng ký / Phản hồi', 'Registration / Feedback')}
               >
@@ -242,6 +242,19 @@ export const Sidebar = ({
                 <span className="sidebar-link-content">
                   <BarChart2 size={16} className="text-orange-500" />
                   <span>{t('Báo cáo', 'Reports')}</span>
+                </span>
+              </div>
+
+              {/* Q&A */}
+              <div 
+                onClick={() => handleLinkClick('q-a')}
+                className={`sidebar-link ${activeItem === 'q-a' ? 'active' : ''}`}
+                style={{ margin: '4px 10px' }}
+                title={t('? Q&A', '? Q&A')}
+              >
+                <span className="sidebar-link-content">
+                  <HelpCircle size={16} className="text-orange-500" />
+                  <span>{t('? Q&A', '? Q&A')}</span>
                 </span>
               </div>
 
@@ -302,10 +315,22 @@ export const Sidebar = ({
 
                     <div className={`submenu-container ${openSubmenus.dichVuTrucTuyen ? 'open' : ''}`}>
                       <div 
-                        onClick={() => handleLinkClick('dv-truc-tuyen')}
-                        className={`sidebar-sublink ${activeItem === 'dv-truc-tuyen' ? 'active' : ''}`}
+                        onClick={() => handleLinkClick('dv-hoc-vu')}
+                        className={`sidebar-sublink ${['dv-hoc-vu', 'bao-luu-kqht'].includes(activeItem) ? 'active' : ''}`}
                       >
-                        <span>&gt; {t('Dịch vụ trực tuyến', 'Online Service')}</span>
+                        <span>&gt; {t('Học vụ', 'Academic Affairs')}</span>
+                      </div>
+                      <div 
+                        onClick={() => handleLinkClick('dv-thong-tin')}
+                        className={`sidebar-sublink ${activeItem === 'dv-thong-tin' ? 'active' : ''}`}
+                      >
+                        <span>&gt; {t('Thông tin', 'Information')}</span>
+                      </div>
+                      <div 
+                        onClick={() => handleLinkClick('dv-khao-thi')}
+                        className={`sidebar-sublink ${['dv-khao-thi', 'dk-vang-thi', 'phuc-khao', 'dk-thi-lai'].includes(activeItem) ? 'active' : ''}`}
+                      >
+                        <span>&gt; {t('Khảo thí', 'Testing/Exam')}</span>
                       </div>
                       <div 
                         onClick={() => handleLinkClick('lich-su-dk')}
@@ -354,6 +379,7 @@ export const Sidebar = ({
                     </span>
                   </div>
 
+                  {/*
                   <div 
                     onClick={() => handleLinkClick('tkb-lop-hoc')}
                     className={`sidebar-link ${activeItem === 'tkb-lop-hoc' ? 'active' : ''}`}
@@ -363,7 +389,9 @@ export const Sidebar = ({
                       <span>{t('Thời khóa biểu lớp học', 'Class Timetable')}</span>
                     </span>
                   </div>
+                  */}
 
+                  {/*
                   <div 
                     onClick={() => handleLinkClick('xem-lich-thi')}
                     className={`sidebar-link ${activeItem === 'xem-lich-thi' ? 'active' : ''}`}
@@ -373,6 +401,7 @@ export const Sidebar = ({
                       <span>{t('Xem lịch thi', 'View Exam Schedule')}</span>
                     </span>
                   </div>
+                  */}
                 </div>
               </div>
 
@@ -435,6 +464,18 @@ export const Sidebar = ({
                     </span>
                   </div>
                 </div>
+              </div>
+
+              {/* Q&A SECTION */}
+              <div 
+                onClick={() => handleLinkClick('q-a')}
+                className={`sidebar-link ${activeItem === 'q-a' ? 'active' : ''}`}
+                style={{ fontWeight: '700', paddingLeft: '16px', margin: '4px 10px' }}
+              >
+                <span className="sidebar-link-content">
+                  <HelpCircle size={16} className="text-orange-500" />
+                  <span>{t('? Q&A', '? Q&A')}</span>
+                </span>
               </div>
 
               {/* SỔ TAY SINH VIÊN SECTION */}

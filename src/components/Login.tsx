@@ -419,13 +419,9 @@ export const Login = ({ onLogin, currentLang, onLangChange }: LoginProps) => {
         <div style={{
           marginTop: '24px',
           textAlign: 'center',
-          minHeight: '75px',
+          height: '95px',
           maxWidth: '380px',
           width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
           zIndex: 2,
           position: 'relative'
         }}>
@@ -433,13 +429,18 @@ export const Login = ({ onLogin, currentLang, onLangChange }: LoginProps) => {
             <div
               key={idx}
               style={{
-                position: idx === currentImageIdx ? 'relative' : 'absolute',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
                 opacity: idx === currentImageIdx ? 1 : 0,
                 transition: 'opacity 0.6s ease-in-out',
                 pointerEvents: idx === currentImageIdx ? 'auto' : 'none',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                justifyContent: 'center',
                 width: '100%'
               }}
             >

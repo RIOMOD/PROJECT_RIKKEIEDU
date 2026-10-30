@@ -22,6 +22,20 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
     return lang === 'en' ? enText : viText;
   };
 
+  const studentProfile = (() => {
+    const saved = localStorage.getItem('student_profile');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.name && parsed.id) return parsed;
+      } catch (e) {}
+    }
+    return {
+      name: 'Nguyễn Công Trứ',
+      id: 'N24DTCN088'
+    };
+  })();
+
   const headers = [
     t('STT', 'No'),
     t('Học kỳ học thuật', 'Term'),
@@ -315,14 +329,14 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
           <div className="transcript-info-left" style={{ gap: '4px' }}>
             <div className="transcript-info-item" style={{ gap: '6px' }}>
               <GraduationCap size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
-              <span className="transcript-info-label" style={{ color: '#334155', fontWeight: 'bold' }}>
+              <span className="transcript-info-label" style={{ color: 'var(--text-dark)', fontWeight: 'bold' }}>
                 {t('SINH VIÊN', 'STUDENT')}:{' '}
               </span>
-              <span className="transcript-info-val" style={{ color: '#334155', fontWeight: 'bold' }}>Nguyễn Văn Hùng - BS00679</span>
+              <span className="transcript-info-val" style={{ color: 'var(--text-dark)', fontWeight: 'bold' }}>{studentProfile.name} - {studentProfile.id}</span>
             </div>
             <div className="transcript-info-item" style={{ gap: '6px' }}>
               <BookOpen size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
-              <span className="transcript-info-label" style={{ color: '#334155', fontWeight: 'bold' }}>{t('Khung chương trình', 'Syllabus')}: BC_V6_01</span>
+              <span className="transcript-info-label" style={{ color: 'var(--text-dark)', fontWeight: 'bold' }}>{t('Khung chương trình', 'Syllabus')}: BC_V6_01</span>
             </div>
           </div>
           <div className="transcript-info-right">
@@ -368,7 +382,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
                     </td>
 
                     {/* Mã môn */}
-                    <td className="transcript-td text-center font-bold font-mono" style={{ border: '1px solid #cbd5e1', color: '#0066cc', textDecoration: 'underline', cursor: 'pointer' }}>
+                    <td className="transcript-td text-center font-bold font-mono" style={{ border: '1px solid #cbd5e1', color: 'var(--primary-text-theme, #0066cc)', textDecoration: 'underline', cursor: 'pointer' }}>
                       {row.subjectCode}
                     </td>
 
@@ -390,7 +404,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
                     {/* Điểm (Số) */}
                     <td className="transcript-td text-center font-bold" style={{ border: '1px solid #cbd5e1' }}>
                       {row.grade ? (
-                        <span className="grade-link-blue" style={{ color: '#0066cc' }}>{row.grade}</span>
+                        <span className="grade-link-blue" style={{ color: 'var(--primary-text-theme, #0066cc)' }}>{row.grade}</span>
                       ) : (
                         ''
                       )}
@@ -405,7 +419,7 @@ export const AcademicTranscript = ({ lang }: AcademicTranscriptProps) => {
         {/* Bottom Obsolete section */}
         <div className="transcript-obsolete-header" style={{ borderBottom: 'none', marginBottom: '10px' }}>
           <BookOpen size={16} className="text-orange-500" style={{ color: 'var(--primary)' }} />
-          <span className="transcript-obsolete-text" style={{ fontWeight: 'bold', color: '#334155' }}>
+          <span className="transcript-obsolete-text" style={{ fontWeight: 'bold', color: 'var(--text-dark)' }}>
             {t('CÁC KHÓA HỌC DỰ BỊ TIẾNG ANH & KHÓA HỌC CŨ', 'ENGLISH PREPARATORY & OBSOLETE COURSES')}
           </span>
         </div>
